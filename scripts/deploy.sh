@@ -10,30 +10,29 @@
 #   - On this "webOS TV Lite" build, /usr/bin/luna-send is root-only (rwx------),
 #     so we drive installs through the world-executable /usr/bin/luna-send-pub,
 #     exactly as the ares CLI config (command-service.json) does.
-#   - luna-send-pub over a non-interactive SSH exec returns before the async
-#     reply unless kept alive; `-t N` runs the call N times (a benchmark count,
-#     NOT a timeout), which both keeps it alive and lets the first real reply
-#     through. We parse the first meaningful payload.
+#   - luna-send-pub exits early when stdin closes. Keep its input open for a
+#     bounded interval and request one reply. Do not use benchmark mode (-t),
+#     which repeats mutating requests.
 #
 # Usage: bash scripts/deploy.sh [--no-build]
 set -euo pipefail
 
-HOST="192.168.40.124"
-PORT="9922"
-USER="prisoner"
-KEY="${REFRAME_KEY:-$HOME/.ssh/reframe-tv_dec}"   # decrypted dev key
+TV_HOST="${REFRAME_HOST:-192.168.40.124}"
+TV_PORT="9922"
+TV_USER="prisoner"
+TV_KEY="${REFRAME_KEY:-$HOME/.ssh/reframe-tv_dec}"   # decrypted dev key
 APP_ID="com.reframe.home"
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-KNOWN_HOSTS="${REFRAME_KNOWN_HOSTS:-$ROOT/docs/fingerprint-ssh-known-hosts.txt}"
+KNOWN_HOSTS="${REFRAME_KNOWN_HOSTS:-$PROJECT_ROOT/docs/fingerprint-ssh-known-hosts.txt}"
 # Record first-use trust locally; reject changes to a previously saved host key.
-SSH_OPTS=(-o StrictHostKeyChecking=accept-new -o "UserKnownHostsFile=$KNOWN_HOSTS" \
+SSH_OPTS=(-o BatchMode=yes -o StrictHostKeyChecking=accept-new -o "UserKnownHostsFile=$KNOWN_HOSTS" \
   -o ConnectTimeout=10 -o HostKeyAlgorithms=+ssh-rsa \
-  -o PubkeyAcceptedAlgorithms=+ssh-rsa -i "$KEY")
-ssh_tv() { ssh "${SSH_OPTS[@]}" -p "$PORT" "$USER@$HOST" "$@"; }
+  -o PubkeyAcceptedAlgorithms=+ssh-rsa -i "$TV_KEY")
+ssh_tv() { ssh "${SSH_OPTS[@]}" -p "$TV_PORT" "$TV_USER@$TV_HOST" "$@"; }
 
-if [[ ! -f "$KEY" ]]; then
-  echo "Dev key not found at $KEY." >&2
+if [[ ! -f "$TV_KEY" ]]; then
+  echo "Dev key not found at $TV_KEY." >&2
   echo "Fetch it: ares-novacom --device reframe-tv --getkey  (passphrase from the Dev Mode app)," >&2
   echo "then decrypt a copy: ssh-keygen -p -P <passphrase> -N '' -f <copy>" >&2
   exit 1
@@ -41,28 +40,40 @@ fi
 
 if [[ "${1:-}" != "--no-build" ]]; then
   echo "==> build + package"
-  ( cd "$ROOT" && npm run build >/dev/null && ares-package dist -o . >/dev/null )
+  ( cd "$PROJECT_ROOT" && npm run build >/dev/null && ares-package dist -o . >/dev/null )
 fi
 
-IPK="$(cd "$ROOT" && ls -t ${APP_ID}_*.ipk 2>/dev/null | head -n1)"
+IPK="$(cd "$PROJECT_ROOT" && ls -t ${APP_ID}_*.ipk 2>/dev/null | head -n1)"
 [[ -n "$IPK" ]] || { echo "no ipk found; run without --no-build" >&2; exit 1; }
 echo "==> ipk: $IPK"
 
 echo "==> copy to TV"
-scp "${SSH_OPTS[@]}" -P "$PORT" "$ROOT/$IPK" "$USER@$HOST:/media/developer/temp/" >/dev/null
+scp "${SSH_OPTS[@]}" -P "$TV_PORT" "$PROJECT_ROOT/$IPK" "$TV_USER@$TV_HOST:/media/developer/temp/" >/dev/null
 
-# luna-send-pub returns before the async reply unless kept alive; `-t N` repeats
-# the call N times (keeps the process alive long enough for replies). We don't
-# parse the noisy stream — the filesystem and `ps` are the reliable oracles.
-echo "==> install"
-ssh_tv "/usr/bin/luna-send-pub -t 40 -f luna://com.webos.appInstallService/dev/install \
-  '{\"id\":\"$APP_ID\",\"ipkUrl\":\"/media/developer/temp/$IPK\",\"subscribe\":true}' >/dev/null 2>&1; \
-  sleep 3; \
-  test -f /media/developer/apps/usr/palm/applications/$APP_ID/index.html \
-    && echo INSTALLED || echo INSTALL_FAILED"
+# A failed or empty reply must fail deployment, not look like a successful app.
+check_success() {
+  node -e 'const fs = require("fs");
+    try {
+      const reply = JSON.parse(fs.readFileSync(0, "utf8"));
+      if (reply.returnValue !== true) throw new Error(JSON.stringify(reply));
+    } catch (error) { console.error("TV request failed: " + error.message); process.exit(1); }'
+}
 
-echo "==> launch"
-ssh_tv "/usr/bin/luna-send-pub -t 8 -f luna://com.webos.applicationManager/launch \
-  '{\"id\":\"$APP_ID\"}' >/dev/null 2>&1; sleep 1; \
-  ps -ef 2>/dev/null | grep -- '--app-id=$APP_ID' | grep -qv grep \
-    && echo RUNNING || echo NOT_RUNNING"
+EXPECTED_VERSION=$(node -e 'const fs = require("fs"); console.log(JSON.parse(fs.readFileSync(process.argv[1], "utf8")).version)' "$PROJECT_ROOT/public/appinfo.json")
+
+echo "==> install (one request)"
+ssh_tv "(sleep 8) | /usr/bin/luna-send-pub -i -w 7000 -n 1 -f luna://com.webos.appInstallService/dev/install \
+  '{\"id\":\"$APP_ID\",\"ipkUrl\":\"/media/developer/temp/$IPK\",\"subscribe\":true}'" | check_success
+
+INSTALLED_VERSION=$(ssh_tv "cat /media/developer/apps/usr/palm/applications/$APP_ID/appinfo.json" | \
+  node -e 'const fs = require("fs"); console.log(JSON.parse(fs.readFileSync(0, "utf8")).version)')
+if [[ "$INSTALLED_VERSION" != "$EXPECTED_VERSION" ]]; then
+  echo "Installed version $INSTALLED_VERSION differs from expected $EXPECTED_VERSION; stop before launch." >&2
+  exit 1
+fi
+echo "INSTALLED $INSTALLED_VERSION"
+
+echo "==> launch (one request)"
+ssh_tv "(sleep 7) | /usr/bin/luna-send-pub -i -w 6000 -n 1 -f luna://com.webos.applicationManager/launch \
+  '{\"id\":\"$APP_ID\"}'" | check_success
+echo "LAUNCH ACCEPTED"

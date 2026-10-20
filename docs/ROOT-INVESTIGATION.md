@@ -130,7 +130,10 @@ request.
 
 Inventory also confirms the configured Netflix, YouTube, Prime Video, Disney+,
 HDMI 1/2, and Live TV IDs are installed. The configured Spotify ID was not
-listed. Actual tile launching in Reframe remains untested.
+listed and was replaced with Settings in 0.1.1. The later native bridge fix
+verified Settings, YouTube, and HDMI 1/2 launch replies from actual Reframe
+tiles; see [bridge validation](BRIDGE-VALIDATION.md). Playback/casting and
+post-root compatibility remain untested.
 
 ### Source review pin
 

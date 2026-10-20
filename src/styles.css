@@ -149,10 +149,12 @@ body {
   text-transform: uppercase;
 }
 
-/* ---- Dev-only toast (never shown on TV) ---- */
-.dev-toast {
+/* ---- Status and launch errors ---- */
+.toast {
   position: fixed;
   bottom: 2rem;
+  max-width: 85vw;
+  text-align: center;
   left: 50%;
   transform: translateX(-50%) translateY(2rem);
   background: var(--accent);
@@ -164,7 +166,7 @@ body {
   transition: opacity 0.2s ease, transform 0.2s ease;
   pointer-events: none;
 }
-.dev-toast.show {
+.toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }

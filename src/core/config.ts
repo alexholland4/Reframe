@@ -32,7 +32,7 @@ export const config: ReframeConfig = {
     { label: "YouTube", appId: "youtube.leanback.v4", accent: "#ff0000" },
     { label: "Prime Video", appId: "amazon", accent: "#00a8e1" },
     { label: "Disney+", appId: "com.disney.disneyplus-prod", accent: "#113ccf" },
-    { label: "Spotify", appId: "com.webos.app.spotify-beehive", accent: "#1db954" },
+    { label: "Settings", appId: "com.palm.app.settings", accent: "#b8c4d6" },
     { label: "HDMI 1", appId: "com.webos.app.hdmi1", accent: "#6ea8fe" },
     { label: "HDMI 2", appId: "com.webos.app.hdmi2", accent: "#6ea8fe" },
     { label: "Live TV", appId: "com.webos.app.livetv", accent: "#9b87f5" },

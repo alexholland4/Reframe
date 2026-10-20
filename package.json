@@ -1,6 +1,6 @@
 {
   "name": "reframe",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight, personalized, ad-free home screen for LG webOS TVs.",
   "private": true,
   "type": "module",
@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "package": "npm run build && ares-package dist",
     "install:tv": "ares-install ./*.ipk",
-    "launch:tv": "ares-launch com.reframe.home"
+    "launch:tv": "ares-launch com.reframe.home",
+    "test": "node --test tests/*.test.mjs"
   },
   "devDependencies": {
     "typescript": "5.7.3",

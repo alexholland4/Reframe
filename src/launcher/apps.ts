@@ -34,6 +34,7 @@ async function activate(tile: AppTile, el: HTMLElement): Promise<void> {
     // In the browser this path isn't hit (mock resolves); on TV, surface it.
     console.error(`launch failed: ${tile.appId}`, err);
     el.classList.add("launch-error");
+    flashToast(`Could not open ${tile.label}: ${err instanceof Error ? err.message : "TV request failed"}`);
     setTimeout(() => el.classList.remove("launch-error"), 1200);
   } finally {
     setTimeout(() => el.classList.remove("launching"), 600);
@@ -45,10 +46,12 @@ async function activate(tile: AppTile, el: HTMLElement): Promise<void> {
 }
 
 function flashToast(msg: string): void {
-  let toast = document.querySelector<HTMLElement>(".dev-toast");
+  let toast = document.querySelector<HTMLElement>(".toast");
   if (!toast) {
     toast = document.createElement("div");
-    toast.className = "dev-toast";
+    toast.className = "toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
     document.body.appendChild(toast);
   }
   toast.textContent = msg;

@@ -3,6 +3,23 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Native bridge update, 2026-10-20:** Reframe 0.1.1 is installed. It now uses
+PalmServiceBridge directly (alternate bridge supported), rejects native errors,
+retains/cancels requests, and only mocks desktop previews. Added a Settings tile
+in place of the unavailable Spotify placeholder and restored normal platform
+Back handling. Seventeen transport regression tests and the build passed.
+Actual Reframe Settings, YouTube, HDMI 1, and HDMI 2 tiles returned native launch
+success across separate live runs; Reframe was restored. Manual playback,
+remote-button, Settings-page, and iPhone casting results are pending. See
+[`BRIDGE-VALIDATION.md`](BRIDGE-VALIDATION.md) for limits and helper lifecycle
+findings. Root, persistence, Home interception, and reboot remain untouched.
+
+The original source checkpoint is GitHub commit `c344f63`. Deployment was also
+changed to one bounded interactive install/launch call with parsed replies and
+an installed-version check, replacing benchmark-mode repeated requests. The
+individual commands were validated live; the revised Bash script itself has
+only been syntax-checked, not used for an additional reinstall in this pass.
+
 **Git checkpoint preparation, 2026-10-20:** The owner requested a reviewed
 source/docs checkpoint on GitHub before rooting. The repository already had a
 minimal initial commit; this checkpoint adds the app, diagnostic scripts, and
@@ -20,9 +37,9 @@ record the native/iPhone casting baseline, then prepare staged root/rollback.
 **System compatibility requirement, 2026-10-20:** The owner requires normal
 Settings, native apps/playback, and casting to remain usable. See
 [`SYSTEM-COMPATIBILITY.md`](SYSTEM-COMPATIBILITY.md) for the installed component
-IDs, staged acceptance checks, remote escape requirement, and pending bridge
-blocker. Corrected the source Settings helper to the inventoried
-`com.palm.app.settings`; this source edit has not been deployed. No root or
+IDs, staged acceptance checks, remote escape requirement, and native launch
+results. The Settings helper/tile uses the inventoried `com.palm.app.settings`
+and is deployed in 0.1.1. No root or
 Home interception has been installed. The owner uses an iPhone for Screen
 Mirroring, AirPlay playback, and the
 YouTube app Cast button. All three are required acceptance paths, to be tested
@@ -113,11 +130,11 @@ MAC addresses and NDUID, so don't commit it or paste it anywhere public).
 - `/usr/bin/luna-send` is **root-only** (`rwx------`) on this TV Lite build. Use
   **`/usr/bin/luna-send-pub`** (world-executable), which is what the ares CLI's
   own `command-service.json` does.
-- `luna-send-pub` over a non-interactive SSH exec **exits before the async
-  reply arrives**. `-t N` repeats the call N times (it's a benchmark count,
-  **not a timeout**), which keeps the process alive long enough. The output is
-  noisy, so `deploy.sh` checks the filesystem and `ps` to verify results instead
-  of parsing it.
+- `luna-send-pub` exits early when stdin reaches EOF. Holding stdin open
+  with `(sleep N) | luna-send-pub -i -n 1 -w TIMEOUT ...` permits a single
+  request and reply. `-t N` is benchmark mode that repeats calls; do not use
+  it to keep mutating requests alive. `deploy.sh` now parses replies and
+  checks the installed app version.
 - The `prisoner` role is **sandboxed on the Luna bus**. Privileged methods are
   denied, e.g. `applicationManager/getForegroundAppInfo` returns
   `Denied method call ... for category /`. `com.webos.service.config/getConfigs`
@@ -214,7 +231,7 @@ src/
   styles.css            theme tokens on :root, 4K layout, focus styles, dev toast
   core/
     config.ts           static config: name, location (lat/lon), clock24h, tiles[]
-    luna.ts             Luna bridge: window.webOS.service.request on TV, console mock in browser
+    luna.ts             Native PalmServiceBridge requests; desktop-only preview mocks
     tv.ts               launchApp(id), switchToHdmi(n), switchToLiveTv(), openSettings(page)
     focus.ts            spatial D-pad focus: elements with [data-focusable]; arrows 37-40,
                         Enter 13 → click(); Back 461 defined but unhandled; score = primary + 3×cross
@@ -235,10 +252,11 @@ docs/
 
 Current tile config (`src/core/config.ts`): Netflix (`netflix`), YouTube
 (`youtube.leanback.v4`), Prime Video (`amazon`), Disney+
-(`com.disney.disneyplus-prod`), Spotify (`com.webos.app.spotify-beehive`), HDMI 1/2
-(`com.webos.app.hdmi1|2`), Live TV (`com.webos.app.livetv`). Paired inventory now
-confirms all of these IDs except the configured Spotify ID are installed.
-Actual tile launching from Reframe remains unverified.
+(`com.disney.disneyplus-prod`), Settings (`com.palm.app.settings`), HDMI 1/2
+(`com.webos.app.hdmi1|2`), and Live TV (`com.webos.app.livetv`). All IDs are
+present in the paired inventory. Settings, YouTube, and HDMI 1/2 tile launch
+requests have successful native replies; playback and remaining tiles still
+need verification.
 
 Weather location is a **placeholder** (New York City, 40.7128, -74.006, label
 "Local"). The real location hasn't been set.
@@ -251,16 +269,16 @@ Weather location is a **placeholder** (New York City, 40.7128, -74.006, label
 npm install
 npm run dev              # http://localhost:5173; arrow keys = D-pad, Enter = OK
 npm run build            # tsc --noEmit + vite build → dist/
-bash scripts/deploy.sh   # build, package, install, launch on TV (prints INSTALLED / RUNNING)
+bash scripts/deploy.sh   # build, package, install, launch on TV (prints INSTALLED / LAUNCH ACCEPTED)
 bash scripts/deploy.sh --no-build   # reuse the newest .ipk in the repo root
 ```
 
-Deploy flow inside `deploy.sh`: `ares-package dist -o .` →
-`scp` the ipk to `/media/developer/temp/` →
-`luna-send-pub -t 40 luna://com.webos.appInstallService/dev/install {"id","ipkUrl","subscribe":true}` →
-check that `index.html` exists in the install dir →
-`luna-send-pub -t 8 luna://com.webos.applicationManager/launch {"id":"com.reframe.home"}` →
-check `ps` for the app.
+Deploy flow inside `deploy.sh`: `ares-package dist -o .` -> SFTP-copy the IPK
+to `/media/developer/temp/` -> one interactive Luna install call with stdin
+held open -> parse acceptance and check installed app version -> one
+interactive Luna launch call -> parse acceptance. The revised script has been
+syntax-checked; equivalent individual commands were validated live. Launch
+acceptance is not playback/foreground verification.
 
 Uninstall: the README/PHASE-0 docs give `ares-install --remove ...`, but ares
 can't authenticate (§2). The working equivalent would be `luna-send-pub` to
@@ -279,14 +297,9 @@ Bash scripts run under Git Bash on Windows (the dev machine is Windows 11).
 - `deploy.sh` installed and launched the app on the TV (INSTALLED + RUNNING).
 
 ### Known issues / unverified (check these first)
-1. **The Luna bridge is probably inactive on the TV.** `isOnTV()` checks for
-   `window.webOS.service.request`, which is provided by the **`webOSTV.js`**
-   library. That library **isn't bundled or included** anywhere. If the global
-   is missing on the device, the app falls into **mock mode**: tile presses
-   just log, and the footer says "Browser preview". Fix options: vendor
-   `webOSTV.js` (from LG's webOS TV SDK) and load it in `index.html`, or call the
-   native `PalmServiceBridge` directly. Then confirm tile launches actually
-   switch apps/inputs on the TV.
+1. **Bridge fixed in 0.1.1.** Native launches for Settings, YouTube, and HDMI
+   1/2 have successful replies. Do not equate those with manual playback or
+   casting acceptance; those checks are pending in `SYSTEM-COMPATIBILITY.md`.
 2. **Remote ares commands fail authentication.** README now documents
    `deploy.sh`; PHASE-0 flags its older ares steps as historical. The bundled
    `fingerprint-tv.sh` still uses ares. The actual fingerprint was gathered over
@@ -295,21 +308,22 @@ Bash scripts run under Git Bash on Windows (the dev machine is Windows 11).
    `fingerprint-20261019.txt` (local date).
 4. Whether the app has been **visually checked on the TV** (layout at 4K,
    focus, weather loading, fonts) isn't recorded. Do a visual pass.
-5. **The Back key (461) isn't handled.** With `disableBackHistoryAPI: true`,
-   decide what Back should do: nothing, or exit to the system.
+5. Back now delegates to webOS (`disableBackHistoryAPI: false`). Verify the
+   physical remote and exit/navigation behavior manually.
 6. The greeting doesn't update across time boundaries. The clock and weather
    don't refresh on resume (no `visibilitychange`/`webOSRelaunch` handling).
    Weather is fetched only once.
 7. Paired SSAP inventory confirms Netflix, YouTube, Prime Video, Disney+, HDMI
-   1/2, and Live TV IDs are installed. The configured Spotify ID is not listed.
-   Reframe's actual tile launches remain unverified. System app metadata is
+   1/2, and Live TV IDs are installed. The absent Spotify placeholder was
+   replaced by Settings. Four native tile launch requests are now verified. System app metadata is
    available through paired SSAP even when denied in the prisoner shell.
 8. **Git:** the owner requested the first full source/docs checkpoint on
    `main`. Check Git history/status for its commit and synchronization state;
    local-only evidence and generated artifacts are deliberately excluded.
 
 ### Suggested next steps (Phase 1 polish → Phase 2)
-1. Fix the bridge (#1) and verify app/HDMI launching on the TV.
+1. Complete the manual Settings/playback/iPhone casting baseline. Four native
+   tile launch requests already pass; remaining app tiles need verification.
 2. Set the real weather location and name. Move config to `localStorage` (the
    shape in `config.ts` was kept stable for this), then add a settings UI.
 3. Phase 2 widgets/personalization: real app icons (small assets), themes via

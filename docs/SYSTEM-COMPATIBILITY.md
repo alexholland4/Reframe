@@ -34,7 +34,7 @@ can launch the app from its current permissions.
 
 | Function | Installed app ID | Current evidence |
 | --- | --- | --- |
-| System Settings | `com.palm.app.settings` | Present; Reframe helper corrected from the unlisted `com.webos.app.settings` ID. No live launch check in this pass. |
+| System Settings | `com.palm.app.settings` | Version 0.1.1 Settings tile returned native launch success; remote Settings/Back and settings pages need manual checks. |
 | LG Home | `com.webos.app.home` | Present; no Home interception installed. |
 | Home Hub | `com.webos.app.homeconnect` | Present. |
 | AirPlay | `airplay` | Present; sender/session test pending. |
@@ -42,17 +42,16 @@ can launch the app from its current permissions.
 | Chromecast built-in | `com.webos.chromecast` | Present; discovery/session test pending. |
 | Chromecast settings | `com.webos.chromecast-settings` | Present. |
 | App casting | `com.webos.app.appcasting` | Present; not evidence that every app uses this component. |
-| Netflix / YouTube / Prime Video / Disney+ | `netflix` / `youtube.leanback.v4` / `amazon` / `com.disney.disneyplus-prod` | Installed; tile launches and playback still unverified. |
-| HDMI 1 / HDMI 2 / Live TV | `com.webos.app.hdmi1` / `com.webos.app.hdmi2` / `com.webos.app.livetv` | Installed; switching and return paths still unverified. |
+| Netflix / YouTube / Prime Video / Disney+ | `netflix` / `youtube.leanback.v4` / `amazon` / `com.disney.disneyplus-prod` | YouTube tile returned native launch success. Playback and other streaming app tiles still need checks. |
+| HDMI 1 / HDMI 2 / Live TV | `com.webos.app.hdmi1` / `com.webos.app.hdmi2` / `com.webos.app.livetv` | HDMI 1/2 tiles returned native launch success and Reframe was restored. Actual HDMI signal and Live TV remain unverified. |
 
-Known Reframe blocker: `src/core/luna.ts` expects the `webOS.service.request`
-global supplied by webOSTV.js, but the current page does not load that library.
-Absent that global, it reports mock success even on a TV. App inventory and a
-successful SSH launch of Reframe do not validate its tiles. Before relying on
-Reframe as Home, fix and validate native bridge detection, real launch responses,
-and clear failures for missing/denied apps. Spotify's configured ID was not in
-the saved inventory and must not be assumed available. The Settings helper's
-optional page targets also remain unverified for this firmware.
+The previous bridge blocker was fixed in version 0.1.1: Reframe uses the native
+bridge directly, detects the TV independently, and rejects failed, malformed,
+or unanswered requests. Settings replaced the absent Spotify placeholder.
+Back is delegated to webOS. [Bridge validation](BRIDGE-VALIDATION.md) records
+17 local regression tests and actual tile launch replies. Successful launch
+requests do not establish normal playback, remote navigation, casting, or
+post-root compatibility. Settings deep-link page targets remain unverified.
 
 ## Owner's required casting paths
 
@@ -87,14 +86,15 @@ tests or evidence of a specific receiving protocol.
 ## Acceptance checks and stages
 
 Record results with firmware, sender device/protocol, launch origin, and stage.
-Every row below is **pending**; this document specifies checks, not results.
+The rows below specify full acceptance checks. Native launch replies for four
+tiles are recorded above; full manual baseline checks remain **pending**.
 Establish the baseline first. Repeat after root/persistence with Home interception
 off, then after any Home interception is enabled. Test cold boot and standby
 wake separately when it is safe to reboot under the root attempt plan.
 
 | Area | Required checks |
 | --- | --- |
-| Settings | Remote gear opens quick settings and All Settings from Reframe, native playback, and casting. Open picture, sound, and network pages without changing saved values. Launch Settings from Reframe once its bridge is fixed. Dialogs retain focus and Back works. |
+| Settings | Remote gear opens quick settings and All Settings from Reframe, native playback, and casting. Open picture, sound, and network pages without changing saved values. Confirm the Settings tile visibly opens the native Settings UI. Dialogs retain focus and Back works. |
 | Apps and playback | Launch actual installed streaming apps using the remote and Reframe. Play an entitled sample, confirm audio, pause/resume, logins, and Back/Home navigation. Include the owner's usual DRM streaming service. |
 | Casting | Required: iPhone Screen Mirroring, AirPlay playback, and YouTube iPhone Cast. Verify discovery, pairing/permission dialog, audio/video, sender controls, disconnect, reconnect, and normal navigation afterward. Start while Reframe is visible and while another app is active. |
 | Inputs and controls | HDMI 1/2 and Live TV where connected/configured; remote Input and app buttons; volume/mute, playback controls, and CEC behavior where used. Returning Home must not interrupt the selected source prematurely. |
