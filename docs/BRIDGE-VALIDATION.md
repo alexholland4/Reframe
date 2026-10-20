@@ -65,10 +65,11 @@ only when the TV is available. `--only settings|youtube|hdmi1|hdmi2` limits it.
 
 Native launch acceptance does not prove visible Settings pages, streaming
 playback/DRM, HDMI signal, physical remote controls, or casting. Those manual
-checks remain pending in [SYSTEM-COMPATIBILITY.md](SYSTEM-COMPATIBILITY.md),
-including the owner's iPhone Screen Mirroring, AirPlay playback, and YouTube
-Cast. Do not start root or Home integration on the strength of these four
-launch replies alone.
+checks were subsequently confirmed by the owner for Settings/Back, YouTube
+video with sound, and all three iPhone casting paths. See the owner-confirmed
+baseline in [SYSTEM-COMPATIBILITY.md](SYSTEM-COMPATIBILITY.md). Detailed power
+transition/other-service checks remain pending. Root backup/rollback preparation
+is still required; baseline success does not prove post-root compatibility.
 
 ## Deployment findings
 

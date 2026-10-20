@@ -5,6 +5,32 @@ normal system Settings, app launching, and casting. This is an acceptance
 condition for the project, alongside the risk/undo gates in
 [ROOT-ATTEMPT-PLAN.md](ROOT-ATTEMPT-PLAN.md).
 
+## Owner-confirmed baseline - 2026-10-20
+
+On Reframe **0.1.1**, before root or Home/boot interception, the owner confirmed:
+
+| Check | Owner's result |
+| --- | --- |
+| Native Settings and physical remote Back | Working normally |
+| YouTube video playback with sound | Working |
+| iPhone Screen Mirroring while Reframe is visible | Working; no issues reported |
+| iPhone AirPlay video/audio playback | Working; no issues reported |
+| Cast button in the YouTube iPhone app | Working; no issues reported |
+
+The owner answered the Settings/Back/playback check with "Settings, Back, and
+playback all work" and the three casting-path check with "everything worked".
+The latter question included connection prompts, controls, and disconnects;
+no problems were reported. These are owner-observed results, not automated
+measurements. Exact iPhone model, iOS version, source media, and each individual
+control/reconnect sequence were not itemized. Do not invent that detail.
+
+This establishes the requested normal-use baseline on current firmware
+33.30.97 / webOS TV Lite 10.3.0. It does not establish behavior after rooting,
+Home interception, standby/wake, or cold boot. Other streaming services/DRM,
+Live TV, HDMI signal/CEC, and the future remote escape still need their own
+checks where applicable. Repeat these same owner-confirmed checks after each
+root/persistence/Home integration stage.
+
 ## Design requirements
 
 - Keep LG Home, Settings, Home Hub, installed streaming apps, and casting/network
@@ -34,15 +60,15 @@ can launch the app from its current permissions.
 
 | Function | Installed app ID | Current evidence |
 | --- | --- | --- |
-| System Settings | `com.palm.app.settings` | Version 0.1.1 Settings tile returned native launch success; remote Settings/Back and settings pages need manual checks. |
+| System Settings | `com.palm.app.settings` | Version 0.1.1 tile returned native launch success; owner confirmed Settings/Back working. Individual settings pages were not itemized. |
 | LG Home | `com.webos.app.home` | Present; no Home interception installed. |
 | Home Hub | `com.webos.app.homeconnect` | Present. |
-| AirPlay | `airplay` | Present; sender/session test pending. |
+| AirPlay | `airplay` | Owner confirmed iPhone Screen Mirroring and AirPlay playback working before root. |
 | Screen Share | `com.webos.app.miracast` | Present; sender/session test pending. |
 | Chromecast built-in | `com.webos.chromecast` | Present; discovery/session test pending. |
 | Chromecast settings | `com.webos.chromecast-settings` | Present. |
 | App casting | `com.webos.app.appcasting` | Present; not evidence that every app uses this component. |
-| Netflix / YouTube / Prime Video / Disney+ | `netflix` / `youtube.leanback.v4` / `amazon` / `com.disney.disneyplus-prod` | YouTube tile returned native launch success. Playback and other streaming app tiles still need checks. |
+| Netflix / YouTube / Prime Video / Disney+ | `netflix` / `youtube.leanback.v4` / `amazon` / `com.disney.disneyplus-prod` | YouTube tile returned native launch success; owner confirmed video with sound. Other streaming apps/DRM remain unverified. |
 | HDMI 1 / HDMI 2 / Live TV | `com.webos.app.hdmi1` / `com.webos.app.hdmi2` / `com.webos.app.livetv` | HDMI 1/2 tiles returned native launch success and Reframe was restored. Actual HDMI signal and Live TV remain unverified. |
 
 The previous bridge blocker was fixed in version 0.1.1: Reframe uses the native
@@ -80,14 +106,17 @@ Home interception is enabled:
 Repeat session starts with Reframe visible and another app active, then check
 standby/wake and cold boot under the safe reboot gates. Pairing/code dialogs
 must retain focus; Reframe must yield to the receiver and must not interrupt
-playback. These are pending manual checks with the owner's iPhone, not completed
-tests or evidence of a specific receiving protocol.
+playback. The owner confirmed the three normal-use iPhone paths above. Detailed repeat
+checks after power transitions and future integration stages remain pending;
+these results do not identify the YouTube receiving protocol.
 
 ## Acceptance checks and stages
 
 Record results with firmware, sender device/protocol, launch origin, and stage.
 The rows below specify full acceptance checks. Native launch replies for four
-tiles are recorded above; full manual baseline checks remain **pending**.
+tiles and the owner-confirmed normal-use baseline are recorded above. Expanded
+checks and repeats after root, power transitions, and Home integration remain
+**pending**.
 Establish the baseline first. Repeat after root/persistence with Home interception
 off, then after any Home interception is enabled. Test cold boot and standby
 wake separately when it is safe to reboot under the root attempt plan.

@@ -3,14 +3,39 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Stopping point, 2026-10-20:** The owner asked to finish at a working state
+and defer the root attempt until tomorrow/next session. Reframe 0.1.1 is
+installed; Settings/Back, YouTube playback with sound, and all three required
+iPhone casting paths are owner-confirmed working. No root exploit/installer,
+HBC installation, persistence hook, Home interception, or reboot has occurred.
+Do not continue TV diagnostics or execute a root attempt during this stop.
+
+Resume from `ROOT-ATTEMPT-PLAN.md`: recheck firmware and Developer Mode access,
+then finish acquisition-only staging, original-state backups/change journal,
+and rollback review before any installer or persistent changes. Root proof,
+installation, persistence, and Home takeover remain separate stages. Retain
+Developer Mode until replacement access is verified; do not blindly follow an
+uninstall/reboot prompt. The stock all-in-one installer is not the next command.
+The current stage is a stable app baseline, not a prepared root recovery image.
+
+**Owner-confirmed normal-use baseline, 2026-10-20:** Settings, physical
+remote Back, YouTube video with sound, iPhone Screen Mirroring, AirPlay
+video/audio, and YouTube iPhone Cast all worked with Reframe 0.1.1. No problems
+were reported for the requested casting prompts/controls/disconnect checks.
+See `SYSTEM-COMPATIBILITY.md` for scope and remaining checks. This is the
+pre-root baseline; no root or Home/boot integration has been performed.
+Next is staged acquisition/backup/rollback preparation, not a stock all-in-one
+installer or an automatic reboot.
+
 **Native bridge update, 2026-10-20:** Reframe 0.1.1 is installed. It now uses
 PalmServiceBridge directly (alternate bridge supported), rejects native errors,
 retains/cancels requests, and only mocks desktop previews. Added a Settings tile
 in place of the unavailable Spotify placeholder and restored normal platform
 Back handling. Seventeen transport regression tests and the build passed.
 Actual Reframe Settings, YouTube, HDMI 1, and HDMI 2 tiles returned native launch
-success across separate live runs; Reframe was restored. Manual playback,
-remote-button, Settings-page, and iPhone casting results are pending. See
+success across separate live runs; Reframe was restored. The owner later confirmed Settings/Back, YouTube playback with sound, and
+all three iPhone casting paths; individual settings pages, other services, and
+power transitions were not itemized. See
 [`BRIDGE-VALIDATION.md`](BRIDGE-VALIDATION.md) for limits and helper lifecycle
 findings. Root, persistence, Home interception, and reboot remain untouched.
 
@@ -322,8 +347,10 @@ Bash scripts run under Git Bash on Windows (the dev machine is Windows 11).
    local-only evidence and generated artifacts are deliberately excluded.
 
 ### Suggested next steps (Phase 1 polish → Phase 2)
-1. Complete the manual Settings/playback/iPhone casting baseline. Four native
-   tile launch requests already pass; remaining app tiles need verification.
+1. The owner-confirmed normal-use Settings/Back/YouTube/iPhone baseline passes.
+   Prepare staged root acquisition and backup/rollback; retain repeat checks
+   after each future root/persistence/Home stage. Remaining app tiles and
+   power transitions still need verification where applicable.
 2. Set the real weather location and name. Move config to `localStorage` (the
    shape in `config.ts` was kept stable for this), then add a settings UI.
 3. Phase 2 widgets/personalization: real app icons (small assets), themes via

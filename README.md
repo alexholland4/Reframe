@@ -15,8 +15,9 @@ have not been performed.**
 Version **0.1.1** uses the TV's native service bridge directly, without requiring
 webOSTV.js. Detected TVs never fall back to mock launches. Settings, YouTube,
 HDMI 1, and HDMI 2 tiles returned successful native launch replies on this TV;
-playback, input signal, physical remote keys, and iPhone casting still need
-manual verification. The unavailable Spotify placeholder was replaced with
+the owner also confirmed Settings/Back, YouTube playback with sound, and all
+three iPhone casting paths. HDMI signal, other services, and power transitions
+still need their applicable checks. The unavailable Spotify placeholder was replaced with
 Settings. Back now uses the platform's normal handling. Weather coordinates
 remain placeholders. See [bridge validation](docs/BRIDGE-VALIDATION.md).
 
@@ -90,7 +91,7 @@ playback or casting. Logs go to ignored `docs/fingerprint-launches-*.txt`.
 - [Root attempt plan](docs/ROOT-ATTEMPT-PLAN.md): persistent effects, risks, and
   preparation required before an attempt; nothing has been executed.
 - [System compatibility](docs/SYSTEM-COMPATIBILITY.md): native functionality and
-  casting acceptance checks, all still pending.
+  casting baseline, plus repeat checks required after later integration stages.
 
 `src/core/` contains configuration, remote focus, and TV service helpers;
 `src/widgets/` contains the clock, greeting, and weather; `src/launcher/`

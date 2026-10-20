@@ -6,6 +6,27 @@ reasonable, while prioritizing avoiding a bricked TV and understanding undo.
 **No root installer has been executed.** Conditional willingness does not make
 rollback proven; the preparation gates below still apply.
 
+## Stop/resume instruction - 2026-10-20
+
+The owner requested stopping at the working Reframe 0.1.1 baseline tonight
+and attempting root in the next session. No further TV actions are part of
+this checkpoint. On resume, recheck the actual firmware and Developer Mode
+connection, preserve the confirmed Settings/playback/iPhone casting baseline,
+and complete the acquisition-only/backup/rollback preparation below. No custom
+acquisition-only payload has been prepared or tested. Do not run the stock
+all-in-one installer as an automatic continuation from baseline success.
+
+## Completed prerequisites
+
+GitHub contains the original source checkpoint `c344f63` and native bridge fix
+`4cb3696`. Reframe 0.1.1 is installed; 17 bridge regression tests and the build
+passed. Actual Settings, YouTube, and HDMI 1/2 tile launches returned native
+success. The owner confirmed normal Settings/Back, YouTube video with sound,
+and iPhone Screen Mirroring, AirPlay playback, and YouTube Cast. See
+[SYSTEM-COMPATIBILITY.md](SYSTEM-COMPATIBILITY.md) for that baseline and limits.
+Acquisition-only staging, targeted privileged backups, and verified rollback
+are still outstanding. No root installer has run.
+
 ## Native functionality is a required acceptance condition
 
 The owner requires Settings, installed-app launching/playback, and casting to
