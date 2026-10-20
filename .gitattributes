@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Keep Bash scripts executable by Git Bash and on the TV after checkout.
+*.sh text eol=lf

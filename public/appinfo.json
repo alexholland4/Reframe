@@ -1,0 +1,15 @@
+{
+  "id": "com.reframe.home",
+  "version": "0.1.0",
+  "vendor": "Reframe",
+  "type": "web",
+  "main": "index.html",
+  "title": "Reframe",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#0b0f14",
+  "iconColor": "#6ea8fe",
+  "disableBackHistoryAPI": true,
+  "resolution": "3840x2160",
+  "supportTouchMode": "none"
+}

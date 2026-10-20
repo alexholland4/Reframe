@@ -1,0 +1,34 @@
+# Dependencies and generated app packages
+node_modules/
+dist/
+*.ipk
+
+# Device fingerprints, inventories, pairing credentials, and trust pins
+docs/fingerprint*.txt
+
+# Downloaded research code/packages and future device backups
+.research/
+/backups/
+
+# Local secrets and SSH material
+.env
+.env.*
+!.env.example
+!.env.*.example
+.ssh/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+reframe-tv_dec
+reframe-tv_webos
+
+# Runtime and OS caches
+*.log
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+/Microsoft/
