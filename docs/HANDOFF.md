@@ -3,23 +3,34 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current checkpoint, 2026-10-21 - guarded root callback restored; launcher prepared:**
-The corrected once-per-boot startup was installed, tested by deliberately
-restarting only its SSH listener, and registered again (activity 109 at this
-checkpoint; always query the current ID). Root SSH and developer SSH work.
-The new optional boot/wake launcher is locally prepared and tested, but NOT yet
-installed. It allows one launch from LG Home or owner-confirmed soundbar HDMI 2,
-yields to native apps/casting/other inputs, and leaves Home/Back available.
-See [`LAUNCH-PERSISTENCE.md`](LAUNCH-PERSISTENCE.md) for behavior and undo.
-The updated startup hook still needs deployment before enabling the helper.
+**Current checkpoint, 2026-10-21 - boot launch passes; standby fix prepared:**
+Root SSH/HBC startup and Reframe boot launch are verified after a controlled
+restart with Developer Mode retained. Fresh uptime (~50s), new daemon/helper
+PIDs and a new root-written startup record were captured. The TV first displayed
+HDMI 2, then automatically opened Reframe after a few seconds, owner-confirmed.
+The earliest foreground query still reported HDMI 2 during the app transition;
+a later query reported Reframe. Do not treat a launch reply alone as visibility.
 
-LAUNCH-only recovery pairing is accepted and private. SSAP-only entry recovered
-actual root/key-only SSH; its final foreground cleanup timed out, so a complete
-rerun with the corrected cleanup fallback remains required. High load was
-mostly blocked native driver tasks; CPU sampled 26.5% busy and no startup storm
-was demonstrated. Developer Mode/regular marker/signed script remain unchanged;
-long-term independence from its ~975h session is not established. Earlier
-checkpoints below are historical and superseded by this current status.
+Standby/wake initially returned to LG Home without Reframe. The helper used
+bootManager power events; source now subscribes to native tvpower/getPowerState,
+which actually reports `subscribed:true`, and keeps the latest eight power
+events for diagnosis. Reframe itself no longer disarms a new wake window before
+LG restores Home, while other apps/casts/inputs still do. Regression tests pass;
+the corrected helper still needs deployment and live standby validation.
+Home/Back are not intercepted. Launcher-only undo/reinstall already passed.
+See [`LAUNCH-PERSISTENCE.md`](LAUNCH-PERSISTENCE.md).
+
+SSAP-only recovery passed with root SSH deliberately stopped, actual UID/EUID 0,
+staging cleanup, Reframe restore and authenticated root return. Earlier SSAP
+transient launch failures are documented in [`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
+Owner confirms all requested native/iPhone features work. The isolated YouTube
+check passed after stopping overlapping recovery cleanup requests.
+
+Developer Mode/regular marker/signed script remain unchanged. Session-independent
+root transition code is locally being prepared but is not installed/executed.
+Its preparation must include complete private LG package backup, marker journal
+and tested marker undo before native LG app removal. No firmware partition or
+signed startup patch is planned. Earlier checkpoints below are historical.
 
 **First controlled restart: root startup VERIFIED with Developer Mode retained.**
 Root SSH, HBC UID 0 and a fresh startup record returned automatically; kernel

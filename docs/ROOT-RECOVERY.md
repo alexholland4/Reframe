@@ -86,3 +86,27 @@ screen; connection/signal flags alone cannot classify it as a video source.
 Home Auto Launch/Power On Screen was already Home/On and was not changed.
 A later boot/wake launcher may treat that specific audio-only input as a startup
 fallback, while yielding to actual video apps/casting/other HDMI inputs.
+
+
+## Complete independent retest, 2026-10-21
+
+After installing the optional launcher, a retest first hit a launch rejection;
+root SSH was restored through the retained developer/HBC route. Another SSAP
+launch was accepted but did not produce a page report. The stock diagnostic
+entry reads its URL only on initial page load; that is a possible explanation,
+not a demonstrated cause of those transient failures. A separate SSAP close
+request was denied with 403; no permission expansion was requested.
+
+A subsequent full run succeeded, then the decisive test deliberately stopped
+only the dedicated root SSH listener and used SSAP-only entry again. It reported
+actual UID/EUID 0 and owned-process/staging cleanup, executed the hash-verified
+existing startup, restored Reframe, and exited successfully. Strict dedicated-key
+root SSH subsequently returned UID 0. Developer SSH was not the entry or cleanup
+transport in that successful run. The launcher PID was preserved, avoiding a
+duplicate helper. Recovery remains dependent on working native app/control
+services and has shown transient launch failures; it is not bootloader rescue.
+
+The controller explicitly restores Reframe at completion. That interrupted an
+overlapping owner YouTube test; functional checks must be isolated from all
+such app-launch/recovery requests. The helper's latest automatic-launch record
+predated the interruption. The owner reported other functionality still worked.

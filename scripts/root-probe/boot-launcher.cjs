@@ -5,7 +5,7 @@ const decoder = require("./luna-stream.cjs");
 const base = "/var/lib/reframe", pidPath = "/var/run/reframe-launch.pid";
 if (process.getuid() !== 0) throw new Error("Root required");
 const state = makePolicy(), children = new Set();
-let timer, stopping = false;
+let timer, stopping = false, latest = {state:"watching", powerEvents:[]};
 
 function enabled() {
   try {
@@ -14,8 +14,9 @@ function enabled() {
   } catch { return false; }
 }
 function status(value) {
+  latest = {...latest, ...value};
   const tmp = base + "/launcher-status." + process.pid + ".tmp";
-  fs.writeFileSync(tmp, JSON.stringify({...value, pid:process.pid, at:new Date().toISOString()}), {flag:"wx", mode:384});
+  fs.writeFileSync(tmp, JSON.stringify({...latest, pid:process.pid, at:new Date().toISOString()}), {flag:"wx", mode:384});
   fs.renameSync(tmp, base + "/launcher-status.json");
 }
 function stop(reason) {
@@ -80,5 +81,9 @@ process.on("SIGINT", () => stop("interrupted"));
 status({state:"watching"});
 stream("luna://com.webos.applicationManager/getForegroundAppInfo", {subscribe:true}, true,
   reply => { if (enabled()) consider(state.foreground(reply.appId, Date.now())); });
-stream("luna://com.webos.bootManager/getBootStatus", {subscribe:true}, true,
-  reply => { if (enabled()) consider(state.power(reply.powerStatus, Date.now())); });
+stream("luna://com.webos.service.tvpower/power/getPowerState", {subscribe:true}, true,
+  reply => {
+    if (!enabled()) return;
+    status({powerEvents:[...latest.powerEvents, {state:reply.state, at:new Date().toISOString()}].slice(-8)});
+    consider(state.power(reply.state, Date.now()));
+  });

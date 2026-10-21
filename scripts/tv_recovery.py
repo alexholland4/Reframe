@@ -60,6 +60,8 @@ def launch(target, params=None):
                 continue
             result = reply.get("payload", {})
             if reply.get("type") == "error" or result.get("returnValue") is not True:
+                (PROJECT / "docs/fingerprint-recovery-launch-error.txt").write_text(
+                    json.dumps(reply, indent=2) + "\n", encoding="utf-8")
                 raise RuntimeError("TV rejected recovery app launch")
             return result
     finally:
