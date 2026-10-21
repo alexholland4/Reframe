@@ -8,7 +8,7 @@ const html = readFileSync(new URL("../scripts/root-probe/probe.html", import.met
 const runId = "1234567890abcdef12345678";
 const stage = "/media/internal/downloads/reframe-uid-" + runId;
 const base = "http://192.168.40.1:12345/" + runId + "/";
-const constants = { __RUN_ID__: runId, __STAGE_DIR__: stage, __REPORT_URL__: base + "result",
+const constants = { __SNAPSHOT_ENABLED__: false, __SNAPSHOT_SPEC__: null, __RUN_ID__: runId, __STAGE_DIR__: stage, __REPORT_URL__: base + "result",
   __BASE_URL__: base, __APP_ID__: "com.webos.app.adoverlayex" };
 function expand(source) {
   for (const [marker, value] of Object.entries(constants)) source = source.replaceAll(marker, JSON.stringify(value));

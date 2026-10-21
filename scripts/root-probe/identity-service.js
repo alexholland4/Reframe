@@ -1,4 +1,4 @@
-/* Reframe identity-only service. No installer, shell commands, or startup changes.
+/* Reframe identity / read-only protected-state service. No installer, shell commands, or startup changes.
  * Launch argument layout: SlopBro 21023d56ca424607bb03d2939609cc658c655fc7.
  * This module reports its own identity and removes only its marked staging files.
  */
@@ -7,6 +7,8 @@ var http = require("http");
 var runId = __RUN_ID__;
 var stageDir = __STAGE_DIR__;
 var reportUrl = __REPORT_URL__;
+var snapshotEnabled = __SNAPSHOT_ENABLED__;
+/* __SNAPSHOT_IMPLEMENTATION__ */
 
 function inspect(path) {
   try {
@@ -46,7 +48,7 @@ function run() {
     return arg === stageDir || arg === stageDir + "/main.js";
   });
   var report = {
-    schema: 1, kind: "identity-only", runId: runId,
+    schema: 1, kind: snapshotEnabled ? "protected-snapshot" : "identity-only", runId: runId,
     uid: process.getuid(), euid: process.geteuid(), gid: process.getgid(),
     pid: process.pid, ppid: process.ppid, argv: process.argv, execPath: process.execPath,
     moduleDirectory: __dirname, ownsProcess: ownsProcess,
@@ -62,6 +64,12 @@ function run() {
       return /^(Name|Pid|PPid|Uid|Gid|CapEff|NoNewPrivs):/.test(line);
     });
   } catch (error) { report.processStatusError = error.code || String(error); }
+  if (snapshotEnabled) {
+    try {
+      if (report.uid === 0 && report.euid === 0) report.snapshot = captureProtectedState(fs, __SNAPSHOT_SPEC__);
+      else report.snapshotError = "Root identity required before protected capture";
+    } catch (error) { report.snapshotError = error.code || String(error); }
+  }
   report.cleanup = cleanup();
   var body = JSON.stringify(report);
   var finished = false;

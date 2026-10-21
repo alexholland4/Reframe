@@ -14,8 +14,15 @@ at `c7ef279` before execution. See [`ROOT-IDENTITY-PROBE.md`](ROOT-IDENTITY-PROB
 for evidence and limits. **Root acquisition is now proven; persistence and
 rollback are not.** Next: targeted privileged original-state backups and
 rollback review before any persistent installation. Do not run the stock
-all-in-one installer based only on this proof. Post-probe manual health checks
-are pending; the pre-probe owner-confirmed baseline remains recorded separately.
+all-in-one installer based only on this proof. The owner confirmed Reframe, Settings, and Back still work after the probe.
+Casting/playback have not been retested after it; the pre-probe baseline is recorded separately.
+
+**Protected backup preparation:** The controller now has a separately selected
+`--snapshot` mode for a fixed, bounded, read-only list of relevant host state.
+Its generated payload and offline capture/extraction checks pass (35 Node tests
+and 3 Python tests). This mode has not run at this checkpoint. It performs no
+installation, Developer Mode change, startup hook, or reboot. See
+[`PROTECTED-STATE-BACKUP.md`](PROTECTED-STATE-BACKUP.md).
 
 Older notes below describe earlier stages and are superseded where they call
 root execution unverified. They do not establish present authorization to

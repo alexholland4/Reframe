@@ -2,11 +2,12 @@
 """Prepare (default) or execute (--execute) a limited root identity probe.
 
 Execution temporarily opens an existing overlay app and invokes the pinned
-SlopBro service route with an identity-only module. No installer, shell command,
+SlopBro service route with an identity-only or fixed-list read-only snapshot module. No installer, shell command,
 HBC/startup change, or reboot is included. Download history may remain even if
 the module removes its own uniquely marked files. Raw results remain ignored.
 """
 import argparse
+import base64
 import hashlib
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import ipaddress
@@ -27,7 +28,7 @@ PIN = "21023d56ca424607bb03d2939609cc658c655fc7"
 APPS = {"adoverlayex": "interactiveUrl", "adoverlay": "interactiveUrl"}
 
 
-def render(run_id, base_url, app_id):
+def render(run_id, base_url, app_id, snapshot=False):
     if not re.fullmatch(r"[a-f0-9]{24}", run_id):
         raise ValueError("Invalid run identifier")
     if app_id not in {"com.webos.app." + name for name in APPS}:
@@ -39,6 +40,8 @@ def render(run_id, base_url, app_id):
         raise ValueError("Callback URL must be scoped to this run")
     stage = "/media/internal/downloads/reframe-uid-" + run_id
     values = {
+        "__SNAPSHOT_ENABLED__": snapshot,
+        "__SNAPSHOT_SPEC__": json.loads((TEMPLATES / "snapshot-paths.json").read_text(encoding="utf-8")) if snapshot else None,
         "__RUN_ID__": run_id,
         "__STAGE_DIR__": stage,
         "__REPORT_URL__": base_url + "result",
@@ -48,6 +51,8 @@ def render(run_id, base_url, app_id):
     files = {}
     for output, template in [("main.js", "identity-service.js"), ("probe.html", "probe.html")]:
         source = (TEMPLATES / template).read_text(encoding="utf-8")
+        source = source.replace("/* __SNAPSHOT_IMPLEMENTATION__ */",
+            (TEMPLATES / "snapshot-state.js").read_text(encoding="utf-8") if snapshot else "")
         for marker, value in values.items():
             source = source.replace(marker, json.dumps(value))
         if re.search(r"__[A-Z_]+__", source):
@@ -66,9 +71,77 @@ def verify_source_pin():
         raise RuntimeError("Reviewed upstream launch source is missing or differs from its pin")
 
 
+def save_snapshot(report, run_id, backup_parent=None):
+    """Validate the complete fixed allowlist and hashes before writing local copies."""
+    if not re.fullmatch(r"[a-f0-9]{24}", run_id):
+        raise ValueError("Invalid backup identifier")
+    if (report.get("kind") != "protected-snapshot" or report.get("runId") != run_id or
+            type(report.get("uid")) is not int or report["uid"] != 0 or
+            type(report.get("euid")) is not int or report["euid"] != 0):
+        raise ValueError("Root snapshot identity is required")
+    spec = json.loads((TEMPLATES / "snapshot-paths.json").read_text(encoding="utf-8"))
+    snapshot = report.get("snapshot", {})
+    counters = snapshot.get("counterListing")
+    if (snapshot.get("schema") != 1 or not isinstance(counters, list) or
+            len(counters) > spec["maxCounters"] or len(set(counters)) != len(counters) or
+            any(not isinstance(name, str) or not re.fullmatch(r"dc[^/\\:\x00]*", name)
+                for name in counters)):
+        raise ValueError("Invalid or incomplete counter listing")
+    expected = set(spec["files"] + spec["metadata"] + spec["virtual"] +
+                   [spec["counterDirectory"] + "/" + name for name in counters])
+    readable = expected - set(spec["metadata"])
+    entries = snapshot.get("entries")
+    if not isinstance(entries, list) or len(entries) != len(expected):
+        raise ValueError("Incomplete snapshot path list")
+    seen, copies, manifest_entries = set(), [], []
+    total = 0
+    for entry in entries:
+        path = entry.get("path")
+        if path not in expected or path in seen:
+            raise ValueError("Unexpected or duplicate snapshot path")
+        seen.add(path)
+        if entry.get("error") and not (entry.get("error") == "ENOENT" and entry.get("exists") is False):
+            raise ValueError("Capture failed for " + path + ": " + str(entry["error"]))
+        if type(entry.get("exists")) is not bool:
+            raise ValueError("Missing existence record for " + path)
+        if not entry["exists"] and entry.get("error") != "ENOENT":
+            raise ValueError("Unexplained missing path: " + path)
+        metadata = {key: value for key, value in entry.items() if key != "base64"}
+        if entry.get("contentsCaptured") is True:
+            if path not in readable or not entry["exists"] or entry.get("type") != "file":
+                raise ValueError("Unexpected captured content")
+            data = base64.b64decode(entry.get("base64", ""), validate=True)
+            if (type(entry.get("bytes")) is not int or entry["bytes"] != len(data) or
+                    len(data) > spec["maxFileBytes"] or
+                    hashlib.sha256(data).hexdigest() != entry.get("sha256")):
+                raise ValueError("Invalid length or checksum for " + path)
+            total += len(data)
+            relative = Path("files", *path.lstrip("/").split("/"))
+            copies.append((relative, data))
+            metadata["localFile"] = relative.as_posix()
+        elif "base64" in entry or (path in readable and entry["exists"] and entry.get("type") == "file"):
+            raise ValueError("Incomplete content record: " + path)
+        manifest_entries.append(metadata)
+    if total > spec["maxTotalBytes"] or total != snapshot.get("totalBytes"):
+        raise ValueError("Invalid total capture size")
+    target = (backup_parent or PROJECT / "backups") / ("protected-" + run_id)
+    target.mkdir(parents=True, exist_ok=False)
+    for relative, data in copies:
+        destination = target / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
+    (target / "manifest.json").write_text(json.dumps({
+        "schema": 1, "runId": run_id, "kind": report["kind"], "uid": report["uid"],
+        "totalBytes": total, "entries": manifest_entries,
+        "limits": {key: spec[key] for key in ("maxFileBytes", "maxTotalBytes", "maxCounters")},
+    }, indent=2) + "\n", encoding="utf-8")
+    return target
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true", help="actually launch the limited service probe")
+    parser.add_argument("--snapshot", action="store_true", help="capture the fixed protected-state allowlist, read-only")
     parser.add_argument("--host", default="192.168.40.124")
     parser.add_argument("--app", choices=APPS, default="adoverlayex")
     args = parser.parse_args()
@@ -81,7 +154,7 @@ def main():
     folder = PROJECT / ".research" / ("root-identity-" + run_id)
     folder.mkdir()
     if not args.execute:
-        files, stage = render(run_id, "http://127.0.0.1:0/" + run_id + "/", app_id)
+        files, stage = render(run_id, "http://127.0.0.1:0/" + run_id + "/", app_id, args.snapshot)
         for name, data in files.items():
             (folder / name).write_bytes(data)
         print("Prepared inert review files in", folder.name)
@@ -132,13 +205,13 @@ def main():
                 return
             try:
                 size = int(self.headers.get("Content-Length", "0"))
-                if not 0 < size <= 32768:
+                if not 0 < size <= (1048576 if args.snapshot and name == "result" else 32768):
                     raise ValueError("Invalid result size")
                 report = json.loads(self.rfile.read(size))
                 if not isinstance(report, dict):
                     raise ValueError("Invalid result")
                 if name == "result":
-                    if (report.get("runId") != run_id or report.get("kind") != "identity-only" or
+                    if (report.get("runId") != run_id or report.get("kind") != ("protected-snapshot" if args.snapshot else "identity-only") or
                             type(report.get("uid")) is not int or type(report.get("euid")) is not int):
                         raise ValueError("Unexpected identity result")
                     if identity_received.is_set():
@@ -165,7 +238,7 @@ def main():
 
     server.get_request = bounded_request
     base_url = "http://%s:%s%s" % (local_ip, server.server_address[1], prefix)
-    files, stage = render(run_id, base_url, app_id)
+    files, stage = render(run_id, base_url, app_id, args.snapshot)
     for name, data in files.items():
         (folder / name).write_bytes(data)
     (folder / "manifest.json").write_text(json.dumps({
@@ -196,7 +269,7 @@ def main():
             raise RuntimeError("App launch was not confirmed: " + target)
 
     try:
-        print("Launching one identity-only probe via", app_id, flush=True)
+        print("Launching one " + ("read-only protected snapshot" if args.snapshot else "identity-only probe") + " via", app_id, flush=True)
         print("No HBC, installer, startup change, kernel exploit, or reboot is included.", flush=True)
         launch(app_id, {APPS[args.app]: base_url + "probe.html"})
         deadline = time.monotonic() + 40
@@ -236,6 +309,10 @@ def main():
     if not identity.get("ownsProcess") or not identity.get("cleanup", {}).get("removedDirectory"):
         print("Identity received, but process ownership/cleanup is incomplete; stop before further changes.")
         raise SystemExit(4)
+
+    if args.snapshot:
+        target = save_snapshot(identity, run_id)
+        print("Validated protected backup saved locally:", target.relative_to(PROJECT), flush=True)
 
 
 if __name__ == "__main__":

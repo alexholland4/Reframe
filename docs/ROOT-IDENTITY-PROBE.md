@@ -37,9 +37,10 @@ history or LG service/runtime logs may remain.
 
 This confirms root execution on this exact TV/firmware. It is **not** a
 persistent root installation, root SSH access, an HBC install, boot persistence,
-a Home takeover, or a verified installer rollback. Post-probe manual TV checks
-are pending. Privileged original-state backups remain the next preparation
-step before any persistent changes.
+a Home takeover, or a verified installer rollback. The owner confirmed
+Reframe, Settings, and Back work after the probe. Casting/playback have not
+been retested after it. Privileged original-state backups remain the next
+preparation step before any persistent changes.
 
 Raw evidence is saved in ignored `docs/fingerprint-root-identity-*.txt`;
 the original generated payloads and hashes are under ignored `.research/`.
