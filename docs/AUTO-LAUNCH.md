@@ -1,5 +1,14 @@
 # Auto-Launch & Home Takeover — Findings
 
+**Current result, 2026-10-21:** Root and Reframe automatic boot/wake launch have
+now been demonstrated on this TV. The root helper uses native foreground and
+TV power subscriptions, keeps LG Home/Back available, and yields to native
+apps/casting. Root/launcher also returned after removing LG Developer Mode.
+See [LAUNCH-PERSISTENCE.md](LAUNCH-PERSISTENCE.md) and [HANDOFF.md](HANDOFF.md)
+for exact checks and current status. The non-root investigation below is
+historical; it does not describe today's rooted configuration.
+
+
 **Follow-up, 2026-10-19:** Root research is reopened. Read
 [`ROOT-INVESTIGATION.md`](ROOT-INVESTIGATION.md). The probes below describe the
 prisoner's sandbox, not necessarily the host filesystem. They establish no

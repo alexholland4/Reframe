@@ -87,3 +87,15 @@ The same helper PID remained alive and recorded a new launch from LG Home.
 The initial standby failure is resolved for this tested path. This was tested
 before removing LG Developer Mode; the later session-independent configuration
 still needs its own restart/functional confirmation.
+
+
+## Final configuration accepted
+
+After explicitly approved LG Developer Mode removal, a controlled restart again
+returned root SSH and actual Reframe foreground automatically. The owner then
+confirmed all requested native/playback/iPhone features and a separate remote
+off/10s/on Reframe wake check. Boot/wake launch is verified in the final rooted
+configuration. Home/Back are still native: closing YouTube or Screen Mirroring
+returns to LG Home, and native startup is briefly visible before Reframe.
+The owner explicitly deferred both UX changes to next session; see
+[NEXT-SESSION.md](NEXT-SESSION.md). Leave the working TV alone tonight.

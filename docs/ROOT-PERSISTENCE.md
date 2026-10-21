@@ -1,5 +1,16 @@
 # Minimal root persistence and staged launcher integration
 
+**Current result, 2026-10-21:** Dedicated root SSH, HBC UID 0 and the optional
+Reframe helper returned automatically after a controlled restart with LG
+Developer Mode absent and the directory marker preserved. Actual foreground
+changed from HDMI 2 to Reframe. Boot/wake helper and undo results are in
+[LAUNCH-PERSISTENCE.md](LAUNCH-PERSISTENCE.md); session transition, explicit
+approval and restore limits are in [SESSION-INDEPENDENCE.md](SESSION-INDEPENDENCE.md).
+[HANDOFF.md](HANDOFF.md) has the latest owner-check status. The staged narrative
+below is historical. The developer-based callback test belongs to the earlier
+stage and cannot run after retiring developer SSH.
+
+
 The owner authorized persistent Reframe launch and then explicitly approved
 HBC's broad root-service permissions. HBC elevation and actual UID 0 command
 execution are verified. All five changed profiles match the reviewed plan;

@@ -1,7 +1,8 @@
 # Root persistence independent of the LG session
 
-Prepared 2026-10-21. Marker undo was demonstrated live; LG app removal is
-approval-blocked and has NOT run. HANDOFF.md records current status.
+Prepared 2026-10-21. Marker undo was demonstrated live; the owner explicitly
+approved LG app removal and it completed. Post-transition restart and owner native/casting/standby checks passed;
+HANDOFF.md records the working stop and deferred UX tasks.
 
 Authenticated root startup now survives a controlled restart with Developer
 Mode retained, and Reframe automatically follows the soundbar's startup screen.
@@ -90,3 +91,42 @@ Until that answer arrives, the verified launcher works but root remains subject
 to the retained LG session. Approved next steps are concrete: re-convert with the
 tested journal/undo, native remove-app, verify actual root/profile/marker state,
 then controlled restart and post-transition native/casting checks.
+
+
+## Exact removal explicitly approved and executed
+
+The owner replied "Approve removing LG Developer Mode", resolving the earlier
+auto-review rejection. The tested marker conversion was reapplied, and the
+native app-removal request succeeded. Actual LG app/startup absence and preserved
+root-owned directory marker were then checked. Root SSH/HBC exec returned actual
+UID 0, all five HBC profile contents matched the reviewed elevation plan, Reframe
+remained installed, and no dc counters existed. The transition journal and
+root-protected original marker remain for recovery evidence. A controlled
+restart with LG Developer Mode absent is now underway; its result must be
+verified separately before claiming session-independent boot persistence.
+
+
+## Session-independent restart verified
+
+The controlled restart completed with LG app/startup absent and the root-owned
+directory marker intact. Dedicated-key root SSH returned UID 0; uptime reset to
+about 45 seconds, daemon/helper PIDs changed, and a fresh root startup record
+reported the launcher enabled. HBC root check passed. The first foreground
+query returned HDMI 2, then the next returned `com.reframe.home` without an
+additional launch request. Final owner functionality and standby checks are
+pending. The earlier approval boundary is resolved by the explicit owner reply.
+
+Legacy developer deployment/inspector tools and the developer-based callback
+restart diagnostic no longer have their old fallback. Use dedicated root SSH
+and paired SSAP recovery for future rooted maintenance; do not run a test that
+requires developer SSH after its app has been removed.
+
+
+## Final owner acceptance and working stop
+
+After the session-independent restart, the owner confirmed Reframe visible,
+Settings/Back, YouTube sound, Screen Mirroring, AirPlay and YouTube iPhone Cast
+all working. Opening Reframe then remote off/10s/on again opened Reframe
+automatically. The owner deferred app/cast-exit return routing and startup
+screen-transition polish until next session and is going to bed. Preserve the
+working configuration; see NEXT-SESSION.md before resuming TV work.

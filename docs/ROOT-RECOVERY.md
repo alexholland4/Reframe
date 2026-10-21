@@ -1,5 +1,15 @@
 # Recovery independent of developer SSH
 
+**Current result, 2026-10-21:** The owner explicitly approved LG Developer Mode
+removal, which completed. Root SSH/HBC/Reframe returned after a controlled
+restart with LG app/startup absent and the directory marker intact. Final owner
+native/casting/standby checks passed. Root recovery previously succeeded via
+SSAP with root SSH deliberately stopped. Use that pairing and dedicated root
+SSH; developer SSH is retired. The dependency/preparation narrative below is
+historical. Read [HANDOFF.md](HANDOFF.md) and [NEXT-SESSION.md](NEXT-SESSION.md)
+for the working stop and deferred UX work.
+
+
 Root SSH/HBC survived the first controlled restart, with a fresh startup status,
 low kernel uptime, and a new SSH daemon PID. The TV remained functional and the
 owner confirmed its apparent power-off was a black HDMI 2 screen: Settings

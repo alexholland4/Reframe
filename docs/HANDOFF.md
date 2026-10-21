@@ -3,40 +3,52 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current checkpoint, 2026-10-21 - boot/wake works; exact LG app removal approval pending:**
-Reframe automatically launches after full restart (HDMI 2 then Reframe) and
-remote standby/10s/on (LG Home about one second then Reframe), owner-confirmed.
-Root SSH/HBC boot returned with new uptime/PIDs/status. Installed helper source
-is `8521bcf`, using actual native tvpower Suspend -> Active events. Launcher-only
-undo/reinstall and native Home escape passed. Owner confirms Settings/Back,
-YouTube sound and all three requested iPhone casting paths work. Isolated
-YouTube stayed open; a prior interruption came from overlapping recovery cleanup.
-See [`LAUNCH-PERSISTENCE.md`](LAUNCH-PERSISTENCE.md).
+**Working stop, 2026-10-21 - session-independent root and boot/wake launcher VERIFIED:**
+The owner is going to bed soon and explicitly deferred UX improvements to next
+session. Do not continue TV changes/foreground tests tonight. Save this baseline
+and resume from [`NEXT-SESSION.md`](NEXT-SESSION.md).
 
-Independent SSAP root recovery passed with root SSH deliberately stopped,
-actual UID/EUID 0, staging cleanup, Reframe restore and dedicated-key root return.
-Earlier transient SSAP failures are documented in [`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
+Dedicated key-only root SSH on 2222, HBC UID 0 and Reframe returned automatically
+after a controlled restart with LG Developer Mode app/startup absent and the
+root-owned directory marker preserved. Fresh uptime (~45s), changed daemon/helper
+PIDs, new root status and actual HDMI 2 -> Reframe foreground were verified.
+The owner then confirmed Settings/Back, YouTube playback with sound, iPhone
+Screen Mirroring, AirPlay and YouTube iPhone Cast all work. A final remote
+off/10s/on check again opened Reframe automatically. Native Home/Back remain
+available; all five HBC elevation profiles match the reviewed plan.
 
-Session transition source is checkpointed/pushed as `1f471e5`. Complete private
-LG app/service/package backup is verified (6,443,932 bytes, 113 entries).
-Marker convert/undo/reconvert passed live; independent verification confirmed
-exact original bytes, UID 5850/GID 5000/mode 0644, and developer SSH survived.
-**Automatic approval review rejected uninstalling LG Developer Mode before it
-executed**, because removal retires the proven fallback and the user had not
-explicitly approved that exact app removal. Do not bypass this rejection.
-The marker was immediately restored again: current marker is the original
-regular file, LG app/signed startup both remain, no transition journal or dc
-counters exist. Root SSH/launcher remain available. No additional reboot ran.
+Known UX intentionally deferred: closing YouTube or Screen Mirroring currently
+returns to native LG Home; power-on briefly displays LG Home or HDMI 2 before
+Reframe. The owner wants return-to-Reframe after app/cast exit and a smoother
+startup without the visible native-screen transition. Investigate narrowly scoped
+return/startup routing while preserving Settings, active app/cast/input sessions,
+native prompts, and a remote escape. No blanket foreground-forcing timer or
+signed firmware patch was added. Installed helper is `8521bcf`, using actual
+native tvpower Suspend -> Active events. See
+[`LAUNCH-PERSISTENCE.md`](LAUNCH-PERSISTENCE.md).
 
-The owner was asked explicitly to approve LG Developer Mode removal, explaining
-loss of developer SSH 9922, retained dedicated root SSH 2222/SSAP recovery, and
-reinstall/sign-in restoration limits. Approval is pending. Do not convert again
-or uninstall until an explicit reply authorizes that exact removal. After
-approval: convert using the tested controller, native remove-app, verify HBC/
-root/profiles/marker, then controlled restart and owner functional confirmation.
-See [`SESSION-INDEPENDENCE.md`](SESSION-INDEPENDENCE.md). 77 Node and seven
-Python tests pass. No firmware partition or signed startup patch was made.
-Earlier entries below are historical and superseded by this current status.
+The owner explicitly approved removing only LG Developer Mode after auto-review
+blocked it; that approval resolved the block and native removal completed.
+Developer SSH 9922 is retired. Use strict pinned root SSH and the paired SSAP
+recovery; independent recovery was tested with root SSH deliberately stopped,
+actual UID/EUID 0, owned staging cleanup, Reframe restore and root return.
+See [`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
+
+Private LG app/service/package backup is verified: 6,443,932 bytes, 113 entries.
+The original session credential is protected under the root transition journal
+and in ignored local backups. Marker undo was demonstrated live before LG
+removal; exact bytes/UID/GID/mode and then-working developer SSH were verified.
+Launcher-only undo/reinstall and native Home escape also passed. Reinstalling
+LG Developer Mode now needs a planned transition back, possibly sign-in; do not
+install it alongside this rooted setup. Full unroot/firmware rescue is unverified.
+See [`SESSION-INDEPENDENCE.md`](SESSION-INDEPENDENCE.md).
+
+77 Node and seven Python tests pass. Git excludes keys/pairing tokens, raw
+fingerprints, downloaded packages/research and private backups. Older developer
+Bash deployment/inspector and callback-test transports need migration before
+future use; root SSH intentionally disables TCP forwarding. No signed LG startup
+or firmware partition was patched. Historical checkpoints below are superseded
+where they describe current state.
 
 **First controlled restart: root startup VERIFIED with Developer Mode retained.**
 Root SSH, HBC UID 0 and a fresh startup record returned automatically; kernel

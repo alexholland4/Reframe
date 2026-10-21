@@ -5,6 +5,24 @@ normal system Settings, app launching, and casting. This is an acceptance
 condition for the project, alongside the risk/undo gates in
 [ROOT-ATTEMPT-PLAN.md](ROOT-ATTEMPT-PLAN.md).
 
+## Latest launcher checks, 2026-10-21
+
+With root SSH, elevated HBC and the boot/wake helper enabled, the owner confirmed
+Settings/Back, YouTube playback with sound, iPhone Screen Mirroring, AirPlay and
+YouTube iPhone Cast work. A recovery cleanup restored Reframe during an
+overlapping YouTube test; an isolated follow-up then stayed on YouTube. Keep
+functional checks separate from all app-launch/recovery/reboot operations.
+
+The owner confirmed automatic Reframe after controlled restart (initial HDMI 2
+soundbar screen) and standby/off-10s-on (LG Home about one second then Reframe).
+The corrected helper subscribes to native tvpower events, yielding to active
+native apps/casts/other inputs and retaining native Home/Back escape. After the
+explicitly approved LG Developer Mode removal, automatic root/launcher restart
+and actual Reframe foreground passed again. The owner then confirmed final post-transition Settings/Back, YouTube sound,
+Screen Mirroring, AirPlay and YouTube iPhone Cast all work, and a separate
+standby/off-10s-on test again opened Reframe automatically. Older sections below are historical
+and superseded where they describe current root/boot state.
+
 ## After approved HBC elevation
 
 The owner separately confirmed "All still work" after HBC root elevation for
@@ -178,3 +196,13 @@ checks is insufficient to declare the launcher compatible.
   includes bind mounts, telemetry suppression, and optional update blocking.
   Rooting is not literally a UI-only change; those effects belong in baseline
   comparisons. Broad ad/service blocking is not part of the launcher plan.
+
+
+## Deferred UX, owner request at working stop
+
+Closing Screen Mirroring or YouTube currently returns to native LG Home. This
+is intentional for the first integration because Home/Back were kept native.
+The owner wants these exits to return to Reframe in a future session. The owner
+also wants to remove the brief native Home/input screen before Reframe on wake.
+Record these as follow-up UX work, preserving native functionality and escape;
+do not change the working TV tonight. See [NEXT-SESSION.md](NEXT-SESSION.md).

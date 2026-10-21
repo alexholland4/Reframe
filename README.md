@@ -8,25 +8,30 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
-As of 2026-10-20, the app builds, packages, and has been installed and launched
-as a Developer Mode app. **A limited service-based root probe now confirms
-UID 0 execution on this exact TV.** HBC installation, persistent root, boot
-persistence, and Home-button takeover have not been performed. See the
-[root identity result](docs/ROOT-IDENTITY-PROBE.md).
+As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
+working on this exact TV**. HBC 0.7.3 executes as root. A controlled restart
+returned root SSH and the launcher with LG Developer Mode uninstalled and its
+session startup absent; the directory marker survived. Reframe followed the
+initial HDMI 2 screen automatically. The owner also confirmed final
+post-transition standby/wake and all requested native/playback/iPhone casting
+checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.1.1** uses the TV's native service bridge directly, without requiring
-webOSTV.js. Detected TVs never fall back to mock launches. Settings, YouTube,
-HDMI 1, and HDMI 2 tiles returned successful native launch replies on this TV;
-the owner also confirmed Settings/Back, YouTube playback with sound, and all
-three iPhone casting paths. HDMI signal, other services, and power transitions
-still need their applicable checks. The unavailable Spotify placeholder was replaced with
-Settings. Back now uses the platform's normal handling. Weather coordinates
-remain placeholders. See [bridge validation](docs/BRIDGE-VALIDATION.md).
+Version **0.1.1** uses the native TV bridge for Settings, apps and inputs. The
+owner confirmed Settings/Back, YouTube sound, iPhone Screen Mirroring, AirPlay
+and YouTube iPhone Cast after enabling the launcher. An isolated YouTube check
+stayed open. Home and Back retain native behavior: the helper makes one startup
+or wake decision, yields to native apps/casts/other inputs, and does not take
+over the Home button. App/cast exit currently returns to LG Home, and startup
+briefly shows a native screen before Reframe. These two UX improvements are
+explicitly deferred to the [next session](docs/NEXT-SESSION.md). HDMI 2 is the
+owner's soundbar.
 
-Settings, streaming-app playback, HDMI/Live TV, and the owner's iPhone Screen
-Mirroring, AirPlay playback, and YouTube Cast must remain usable throughout
-future work. Root acquisition is confirmed; persistence, protected-state
-backup/rollback, and post-installation compatibility remain unverified.
+Launcher-only undo/reinstall and session-marker undo were demonstrated live.
+Private original-state/LG package backups are hash-verified; complete unroot
+and firmware rescue are not established. No signed firmware partition or LG
+startup script was patched. See [launcher behavior and undo](docs/LAUNCH-PERSISTENCE.md),
+[session independence](docs/SESSION-INDEPENDENCE.md) and
+[recovery](docs/ROOT-RECOVERY.md). Weather coordinates remain placeholders.
 
 ## Develop
 
@@ -36,7 +41,7 @@ Requires Node.js/npm (Node 22+ for the manual inspector check). Run from the pro
 npm ci
 npm run dev        # http://localhost:5173; arrow keys / Enter simulate the remote
 npm run build      # TypeScript check and production build into dist/
-npm test           # native bridge regression tests; no TV access
+npm test           # bridge, root controls and launcher regression tests; no TV access
 ```
 
 The Vite development server listens on the LAN for TV previewing. Desktop app
@@ -44,6 +49,16 @@ launches are simulated; native requests are used on the TV. A missing bridge
 on a detected TV raises an error instead of simulating success.
 
 ## Package and deploy
+
+**This TV now uses dedicated root SSH on port 2222.** The Bash deployment and
+inspector commands below document the earlier developer transport (9922), which
+was retired by the explicitly approved LG Developer Mode removal. Local build
+and `ares-package` still work. These older deployment/inspector tools need a
+root-transport update before their next use on this TV; do not reinstall LG
+Developer Mode alongside the session-independent rooted setup. Current root
+and recovery controllers use the dedicated key and strict saved host pin.
+
+### Earlier developer transport
 
 Install LG's webOS CLI for the local `ares-package` command, and configure
 Developer Mode and SSH as described in [Phase 0](docs/PHASE-0-SETUP.md).
@@ -91,16 +106,16 @@ playback or casting. Logs go to ignored `docs/fingerprint-launches-*.txt`.
 - [Handoff](docs/HANDOFF.md): current state, hardware facts, known issues.
 - [Root investigation](docs/ROOT-INVESTIGATION.md): measured evidence and limits.
 - [Root attempt plan](docs/ROOT-ATTEMPT-PLAN.md): persistent effects, risks, and
-  preparation required before an attempt; nothing has been executed.
+  original risk review and staged preparation; read the current handoff first.
 - [System compatibility](docs/SYSTEM-COMPATIBILITY.md): native functionality and
   casting baseline, plus repeat checks required after later integration stages.
 
 `src/core/` contains configuration, remote focus, and TV service helpers;
 `src/widgets/` contains the clock, greeting, and weather; `src/launcher/`
 contains the tiles. Styling lives in `src/styles.css` and uses a 4K layout.
-`scripts/` contains deployment and diagnostic tools. Diagnostic scripts can
-create TV pairing relationships or temporarily launch apps; they are not root
-installers. Do not run them as part of an ordinary local build.
+`scripts/` contains app tools and explicitly selected root/persistence
+controllers. Mutations require `--execute`; some diagnostics pair with the TV
+or change foreground. Do not run TV controllers as part of a local build.
 
 ## Local-only files
 
