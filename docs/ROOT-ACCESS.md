@@ -54,3 +54,26 @@ Four new offline provisioning tests check exclusive journal-first writes,
 key-only launch flags, and refusal before mutation on hash/ownership/existence
 failures. Existing transport/probe/snapshot tests remain applicable. Live access
 and undo verification must be recorded below; preparation alone proves neither.
+
+
+## Completed live verification
+
+Source checkpoint `7ad2b36` was pushed before provisioning. Dedicated-key SSH
+returned actual UID 0. An unrelated key was rejected. The new LAN server's
+Ed25519 key was recorded on first use and later connections use strict pinning;
+this first-use trust is not an out-of-band host attestation.
+
+The access undo was validated and then executed live: it reported the matched
+daemon PID and one generated host key, removed its own state, and the root
+listener stopped accepting connections. Developer SSH still returned UID 6349.
+The same provisioning module then succeeded again from the required absent
+state. The regenerated host key was intentionally recorded anew; its old pin
+is retained privately. Dedicated-key root SSH again returned UID 0.
+
+The owner confirmed all requested native/casting checks still work. HBC 0.7.3
+was subsequently installed without launching its UI. Its elevation was rejected
+by automatic approval review and did not run. See
+[HBC-ELEVATION-REVIEW.md](HBC-ELEVATION-REVIEW.md) for the specific permission
+changes and pending approval. No boot persistence or Home integration exists.
+The access-only undo is not a complete uninstall of the separately installed
+HBC package; remove later HBC/integration state first when reverting everything.

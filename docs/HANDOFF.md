@@ -3,6 +3,27 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Current stage - root SSH established; HBC elevation awaiting explicit approval:**
+The owner authorized actual rooting and persistent Reframe launch. Dedicated
+key-only root SSH on port 2222 is verified, including rejection of an unrelated
+key. Its targeted undo was executed successfully live, Developer SSH survived,
+and the same root access was then reprovisioned. The owner confirmed Settings,
+Back, YouTube playback/sound, Screen Mirroring, AirPlay, and YouTube iPhone Cast
+still work. See [`ROOT-ACCESS.md`](ROOT-ACCESS.md).
+
+HBC 0.7.3 is installed and its package/script hashes match the pinned bytes.
+**Automatic approval review rejected HBC elevation before execution**, because
+it grants persistent broad Luna role/API permissions, including a root command
+endpoint. Do not bypass that rejection. The exact five-file changes were then
+simulated locally against captured originals; a targeted profile undo passed
+five offline tests. A private LG Developer Mode app/service archive was also
+saved. See [`HBC-ELEVATION-REVIEW.md`](HBC-ELEVATION-REVIEW.md) for concrete scope,
+recovery material, and the required approval. No HBC startup, boot activity,
+Developer Mode marker change/removal, launcher interception, or reboot occurred.
+Authenticated root is available now; persistence and Reframe auto-launch remain
+unfinished behind the elevation decision. All 44 Node and three Python tests pass.
+The following checkpoints are historical where they say HBC/access is absent.
+
 **Root execution CONFIRMED on the actual TV:** The owner-authorized single
 identity-only probe through adoverlayex reported UID 0/EUID 0, /proc UID/GID
 fields all zero, and CapEff `0000003fffffffff` on firmware 33.30.97 / SDK 10.3.0.

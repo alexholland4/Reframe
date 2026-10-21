@@ -6,7 +6,21 @@ reasonable, while prioritizing avoiding a bricked TV and understanding undo.
 **No root installer has been executed.** Conditional willingness does not make
 rollback proven; the preparation gates below still apply.
 
-## Latest result: acquisition succeeded
+## Current stage: authenticated access, elevation decision pending
+
+The owner explicitly approved moving forward with actual rooting and persistent
+Reframe launch. Key-only root SSH works and its access-only undo/reprovision
+cycle was demonstrated live. All required native/casting checks remain
+owner-confirmed working. HBC 0.7.3 is installed without startup activation.
+Automatic approval review rejected its elevation because of broad persistent
+Luna permissions; no elevation ran. Exact profiles were subsequently backed up
+and the five-file transformation simulated locally. The prepared elevation
+undo passes offline tests. See [ROOT-ACCESS.md](ROOT-ACCESS.md) and
+[HBC-ELEVATION-REVIEW.md](HBC-ELEVATION-REVIEW.md). Obtain the specific elevation
+approval before retrying it; do not bypass the rejection. No persistence,
+Developer Mode transition, Home interception, or reboot has occurred.
+
+## Earlier result: acquisition succeeded
 
 The owner-authorized identity-only probe through adoverlayex/jsserver reported
 UID 0/EUID 0 and corresponding /proc capabilities on this exact TV. Cleanup of

@@ -5,6 +5,15 @@ normal system Settings, app launching, and casting. This is an acceptance
 condition for the project, alongside the risk/undo gates in
 [ROOT-ATTEMPT-PLAN.md](ROOT-ATTEMPT-PLAN.md).
 
+## With authenticated root SSH
+
+After enabling key-only root SSH, the owner answered "All still work" for the
+combined check covering Settings/Back, YouTube playback with sound, iPhone
+Screen Mirroring, AirPlay playback, and YouTube iPhone Cast. The SSH-only undo
+was demonstrated and root access reprovisioned. No persistent root startup,
+Home interception, or reboot has occurred. HBC was installed afterwards but
+its root elevation/startup is not enabled; repeat checks at later gates.
+
 ## After limited root acquisition and protected capture
 
 The owner confirmed Reframe, Settings, and Back work after the identity-only

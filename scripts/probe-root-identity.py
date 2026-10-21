@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Prepare (default) or execute (--execute) a limited root identity probe.
+"""Prepare (default) or execute (--execute) a selected, bounded root operation.
 
 Execution temporarily opens an existing overlay app and invokes the pinned
-SlopBro service route with an identity-only or fixed-list read-only snapshot module. No installer, shell command,
-HBC/startup change, or reboot is included. Download history may remain even if
+SlopBro service route. Identity/snapshot/preflight modes are read-only.
+The separately selected provision-access operation writes dedicated key-only
+SSH state. No HBC elevation, startup change, or reboot is included. Download history may remain even if
 the module removes its own uniquely marked files. Raw results remain ignored.
 """
 import argparse
