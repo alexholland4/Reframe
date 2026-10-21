@@ -39,7 +39,9 @@ function rollback(fs, process, execute) {
     if (!/^[1-9][0-9]*$/.test(text)) throw new Error("Invalid daemon PID");
     pid = Number(text);
     const args = fs.readFileSync("/proc/" + pid + "/cmdline", "utf8").split("\0");
-    if (args[0] !== base + "/dropbear" || !args.includes("192.168.40.124:2222")) throw new Error("Unexpected daemon process");
+    if (args[0] !== base + "/dropbear" ||
+        !["192.168.40.124:2222", "0.0.0.0:2222"].includes(args[args.indexOf("-p") + 1]) ||
+        !["-s", "-j", "-k", "-G", "root"].every(flag => args.includes(flag))) throw new Error("Unexpected daemon process");
   } catch (error) { if (error.code !== "ENOENT") throw error; }
   const result = {execute: Boolean(execute), daemonPid: pid || null, keys: hostKeys.length};
   if (!execute) return result;

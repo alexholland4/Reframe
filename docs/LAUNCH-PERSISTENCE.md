@@ -76,3 +76,14 @@ status. The policy handles Active Standby and a retained Reframe surface before
 LG restores Home. Other native apps/casts still disarm the window; committing a
 launch still leaves subsequent Home/Back alone. Corrected standby behavior must
 be verified live before calling wake launch complete.
+
+
+## Standby correction verified
+
+The native-power helper from checkpoint `8521bcf` received actual Suspend and
+Active events. The owner repeated remote off, about 10 seconds wait, then on:
+LG Home appeared for about one second, then Reframe opened automatically.
+The same helper PID remained alive and recorded a new launch from LG Home.
+The initial standby failure is resolved for this tested path. This was tested
+before removing LG Developer Mode; the later session-independent configuration
+still needs its own restart/functional confirmation.
