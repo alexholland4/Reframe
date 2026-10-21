@@ -28,7 +28,7 @@ PIN = "21023d56ca424607bb03d2939609cc658c655fc7"
 APPS = {"adoverlayex": "interactiveUrl", "adoverlay": "interactiveUrl"}
 
 
-def render(run_id, base_url, app_id, snapshot=False):
+def render(run_id, base_url, app_id, snapshot=False, operation=None, public_key=None):
     if not re.fullmatch(r"[a-f0-9]{24}", run_id):
         raise ValueError("Invalid run identifier")
     if app_id not in {"com.webos.app." + name for name in APPS}:
@@ -40,6 +40,8 @@ def render(run_id, base_url, app_id, snapshot=False):
         raise ValueError("Callback URL must be scoped to this run")
     stage = "/media/internal/downloads/reframe-uid-" + run_id
     values = {
+        "__OPERATION_ENABLED__": bool(operation),
+        "__PUBLIC_KEY__": public_key,
         "__SNAPSHOT_ENABLED__": snapshot,
         "__SNAPSHOT_SPEC__": json.loads((TEMPLATES / "snapshot-paths.json").read_text(encoding="utf-8")) if snapshot else None,
         "__RUN_ID__": run_id,
@@ -53,6 +55,8 @@ def render(run_id, base_url, app_id, snapshot=False):
         source = (TEMPLATES / template).read_text(encoding="utf-8")
         source = source.replace("/* __SNAPSHOT_IMPLEMENTATION__ */",
             (TEMPLATES / "snapshot-state.js").read_text(encoding="utf-8") if snapshot else "")
+        source = source.replace("/* __OPERATION_IMPLEMENTATION__ */",
+            (TEMPLATES / (operation + ".js")).read_text(encoding="utf-8") if operation else "")
         for marker, value in values.items():
             source = source.replace(marker, json.dumps(value))
         if re.search(r"__[A-Z_]+__", source):
@@ -142,9 +146,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true", help="actually launch the limited service probe")
     parser.add_argument("--snapshot", action="store_true", help="capture the fixed protected-state allowlist, read-only")
+    parser.add_argument("--operation", choices=["access-preflight", "provision-access"])
+    parser.add_argument("--public-key", type=Path, help="public SSH key for provision-access only")
     parser.add_argument("--host", default="192.168.40.124")
     parser.add_argument("--app", choices=APPS, default="adoverlayex")
     args = parser.parse_args()
+    if args.snapshot and args.operation:
+        parser.error("snapshot and operation must be separate invocations")
+    public_key = args.public_key.read_text(encoding="utf-8").strip() if args.public_key else None
+    if args.operation == "provision-access" and (not public_key or not re.fullmatch(r"ssh-ed25519 [A-Za-z0-9+/=]+(?: [A-Za-z0-9@_.-]+)?", public_key)):
+        parser.error("provision-access requires a valid Ed25519 public key")
     address = ipaddress.ip_address(args.host)
     if address.version != 4 or not address.is_private or address.is_loopback:
         parser.error("host must be the TV's private LAN IPv4 address")
@@ -154,7 +165,7 @@ def main():
     folder = PROJECT / ".research" / ("root-identity-" + run_id)
     folder.mkdir()
     if not args.execute:
-        files, stage = render(run_id, "http://127.0.0.1:0/" + run_id + "/", app_id, args.snapshot)
+        files, stage = render(run_id, "http://127.0.0.1:0/" + run_id + "/", app_id, args.snapshot, args.operation, public_key)
         for name, data in files.items():
             (folder / name).write_bytes(data)
         print("Prepared inert review files in", folder.name)
@@ -211,7 +222,7 @@ def main():
                 if not isinstance(report, dict):
                     raise ValueError("Invalid result")
                 if name == "result":
-                    if (report.get("runId") != run_id or report.get("kind") != ("protected-snapshot" if args.snapshot else "identity-only") or
+                    if (report.get("runId") != run_id or report.get("kind") != ("root-operation" if args.operation else "protected-snapshot" if args.snapshot else "identity-only") or
                             type(report.get("uid")) is not int or type(report.get("euid")) is not int):
                         raise ValueError("Unexpected identity result")
                     if identity_received.is_set():
@@ -238,7 +249,7 @@ def main():
 
     server.get_request = bounded_request
     base_url = "http://%s:%s%s" % (local_ip, server.server_address[1], prefix)
-    files, stage = render(run_id, base_url, app_id, args.snapshot)
+    files, stage = render(run_id, base_url, app_id, args.snapshot, args.operation, public_key)
     for name, data in files.items():
         (folder / name).write_bytes(data)
     (folder / "manifest.json").write_text(json.dumps({
@@ -269,8 +280,8 @@ def main():
             raise RuntimeError("App launch was not confirmed: " + target)
 
     try:
-        print("Launching one " + ("read-only protected snapshot" if args.snapshot else "identity-only probe") + " via", app_id, flush=True)
-        print("No HBC, installer, startup change, kernel exploit, or reboot is included.", flush=True)
+        print("Launching one " + (args.operation if args.operation else "read-only protected snapshot" if args.snapshot else "identity-only probe") + " via", app_id, flush=True)
+        print("Operation scope: " + ("key-only root SSH provisioning; no boot change or reboot" if args.operation == "provision-access" else "read-only; no HBC, startup change, or reboot"), flush=True)
         launch(app_id, {APPS[args.app]: base_url + "probe.html"})
         deadline = time.monotonic() + 40
         while not identity_received.is_set() and time.monotonic() < deadline:
@@ -310,6 +321,11 @@ def main():
         print("Identity received, but process ownership/cleanup is incomplete; stop before further changes.")
         raise SystemExit(4)
 
+    if args.operation:
+        if identity.get("operationError") or "operation" not in identity:
+            print("Operation failed:", identity.get("operationError", "Missing result"), flush=True)
+            raise SystemExit(5)
+        print("Operation completed; details saved privately.", flush=True)
     if args.snapshot:
         target = save_snapshot(identity, run_id)
         print("Validated protected backup saved locally:", target.relative_to(PROJECT), flush=True)

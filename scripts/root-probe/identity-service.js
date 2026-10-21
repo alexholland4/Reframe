@@ -8,6 +8,8 @@ var runId = __RUN_ID__;
 var stageDir = __STAGE_DIR__;
 var reportUrl = __REPORT_URL__;
 var snapshotEnabled = __SNAPSHOT_ENABLED__;
+var operationEnabled = __OPERATION_ENABLED__;
+/* __OPERATION_IMPLEMENTATION__ */
 /* __SNAPSHOT_IMPLEMENTATION__ */
 
 function inspect(path) {
@@ -48,7 +50,7 @@ function run() {
     return arg === stageDir || arg === stageDir + "/main.js";
   });
   var report = {
-    schema: 1, kind: snapshotEnabled ? "protected-snapshot" : "identity-only", runId: runId,
+    schema: 1, kind: operationEnabled ? "root-operation" : snapshotEnabled ? "protected-snapshot" : "identity-only", runId: runId,
     uid: process.getuid(), euid: process.geteuid(), gid: process.getgid(),
     pid: process.pid, ppid: process.ppid, argv: process.argv, execPath: process.execPath,
     moduleDirectory: __dirname, ownsProcess: ownsProcess,
@@ -69,6 +71,12 @@ function run() {
       if (report.uid === 0 && report.euid === 0) report.snapshot = captureProtectedState(fs, __SNAPSHOT_SPEC__);
       else report.snapshotError = "Root identity required before protected capture";
     } catch (error) { report.snapshotError = error.code || String(error); }
+  }
+  if (operationEnabled) {
+    try {
+      if (report.uid !== 0 || report.euid !== 0 || !ownsProcess) throw new Error("Owned root process required");
+      report.operation = performOperation(fs, report);
+    } catch (error) { report.operationError = error.code || String(error); }
   }
   report.cleanup = cleanup();
   var body = JSON.stringify(report);
