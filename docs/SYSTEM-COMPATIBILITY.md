@@ -5,6 +5,13 @@ normal system Settings, app launching, and casting. This is an acceptance
 condition for the project, alongside the risk/undo gates in
 [ROOT-ATTEMPT-PLAN.md](ROOT-ATTEMPT-PLAN.md).
 
+## After approved HBC elevation
+
+The owner separately confirmed "All still work" after HBC root elevation for
+Settings/Back, YouTube playback/sound, Screen Mirroring, AirPlay playback, and
+YouTube iPhone Cast. Boot persistence and launcher redirection are not enabled
+at this checkpoint and still need separate acceptance checks.
+
 ## With authenticated root SSH
 
 After enabling key-only root SSH, the owner answered "All still work" for the

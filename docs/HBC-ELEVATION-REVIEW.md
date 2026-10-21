@@ -5,10 +5,15 @@ root SSH is established and its access-only undo was demonstrated live.
 The owner confirmed Settings/Back, YouTube playback with sound, iPhone Screen
 Mirroring, AirPlay playback, and YouTube Cast still work with root SSH enabled.
 
-HBC **0.7.3 is installed**, but its elevation was rejected by automatic approval
-review before the command ran. No HBC startup, persistent boot activity,
-Developer Mode transition, Home interception, or reboot has happened.
-Do not execute the rejected elevation indirectly or treat it as approved.
+**The owner explicitly approved the described broad HBC permissions.** The
+previous automatic approval rejection was resolved by that new approval;
+elevation then ran once. All five actual profile hashes match the reviewed
+simulation. HBC `checkRoot` returned true and its `exec` of `id -u` returned 0.
+The root-owned recovery plan was saved before the changes. The prepared undo
+validated all five live profiles in dry-run mode. No profile restoration was
+executed. The owner again confirmed all requested native/casting checks pass.
+No HBC startup, boot activity, Developer Mode transition, Home interception,
+or reboot has happened at this checkpoint.
 
 ## Exact proposed changes
 
@@ -40,8 +45,8 @@ See the pinned [HBC service source](https://github.com/webosbrew/webos-homebrew-
 
 Automatic approval review specifically rejected this persistent permission/role
 expansion because its broad security effects had not been specifically approved
-or fully characterized. Additional owner approval is required before retrying
-this step. Root acquisition and key-only SSH provisioning remain successful.
+or fully characterized. The owner then explicitly approved this scope, and the subsequent reviewed
+retry succeeded as recorded above. Root acquisition and key-only SSH provisioning remain successful.
 
 ## Recovery material and prepared undo
 
@@ -59,12 +64,11 @@ mutation; stops only matching HBC service runners; restores the three originals
 with original ownership/modes; removes only the two newly created profiles;
 and refreshes service definitions. It refuses unexpected paths/changed content
 and refuses if an HBC startup script exists (undo that later stage first).
-The plan is not yet installed on the TV; before approved elevation it must be
-written as root-owned 0600 `/var/lib/reframe/elevation-plan.json`.
+The plan is installed as root-owned 0600
+`/var/lib/reframe/elevation-plan.json`.
 Five offline tests cover dry-run, exact restoration/deletion, matching-service
 termination, and refusal on changed profiles, unexpected paths, or later startup
-state. This profile undo has **not** been executed live because elevation has
-not run. The earlier access-only undo has been demonstrated live.
+state. This profile undo has **not** been executed live because only its dry-run was exercised after elevation. The earlier access-only undo has been demonstrated live.
 
 ## Sequence after explicit elevation approval
 

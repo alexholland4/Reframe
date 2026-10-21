@@ -3,6 +3,18 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Latest - HBC elevation approved and VERIFIED:** The owner explicitly said
+"yes" to the broad persistent HBC permission expansion. The reviewed operation
+then ran once; all five actual profile hashes match the simulation, HBC's root
+check passed, and its command execution returned UID 0. Its prepared undo
+validates all five actual profiles in dry-run. The owner again confirmed all
+requested Settings/Back/playback/iPhone casting checks pass after elevation.
+The minimal root startup and removal tools are being checkpointed before live
+callback testing. Developer Mode remains installed with its original regular
+marker and signed script. No startup/boot activity/Home redirect/reboot has run.
+See [`ROOT-PERSISTENCE.md`](ROOT-PERSISTENCE.md). The former elevation approval
+block below is historical and was resolved by the explicit owner reply.
+
 **Current stage - root SSH established; HBC elevation awaiting explicit approval:**
 The owner authorized actual rooting and persistent Reframe launch. Dedicated
 key-only root SSH on port 2222 is verified, including rejection of an unrelated
