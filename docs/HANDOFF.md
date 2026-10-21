@@ -3,6 +3,17 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**First controlled restart: root startup VERIFIED with Developer Mode retained.**
+Root SSH, HBC UID 0 and a fresh startup record returned automatically; kernel
+uptime reset and SSH daemon PID changed. The TV reused its Linux boot ID, so
+the initial UUID-only verifier timed out despite root actually returning.
+The TV resumed HDMI 2; the owner confirmed the dark screen was an active TV
+with working Settings. Both Reframe/HBC and developer SSH survived. No launcher
+boot hook or Developer Mode transition yet. Normal Home/Power On preference is
+already Home/On per owner; it was not changed. A separately paired app-launch
+recovery path is prepared before removing developer SSH; see
+[`ROOT-RECOVERY.md`](ROOT-RECOVERY.md). It has not been paired or live-tested yet.
+
 **Minimal root callback and undo VERIFIED; first reboot prepared:** HBC's
 custom two-file startup restarted key-only root SSH through the independent
 developer route. Its persistent activity/startup undo was then exercised live,

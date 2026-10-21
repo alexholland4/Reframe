@@ -147,7 +147,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true", help="actually launch the limited service probe")
     parser.add_argument("--snapshot", action="store_true", help="capture the fixed protected-state allowlist, read-only")
-    parser.add_argument("--operation", choices=["access-preflight", "provision-access"])
+    parser.add_argument("--operation", choices=["access-preflight", "provision-access", "resume-access"])
+    parser.add_argument("--launch-transport", choices=["developer-ssh", "ssap"], default="developer-ssh")
     parser.add_argument("--public-key", type=Path, help="public SSH key for provision-access only")
     parser.add_argument("--host", default="192.168.40.124")
     parser.add_argument("--app", choices=APPS, default="adoverlayex")
@@ -267,6 +268,11 @@ def main():
            "-p", "9922", "prisoner@" + args.host]
 
     def launch(target, params=None):
+        if args.launch_transport == "ssap":
+            from tv_recovery import launch as recovery_launch
+            response = recovery_launch(target, params)
+            events.append({"event": "app-launch", "transport": "pinned-ssap", "id": target, "response": response})
+            return
         payload = {"id": target}
         if params:
             payload["params"] = params
@@ -282,7 +288,7 @@ def main():
 
     try:
         print("Launching one " + (args.operation if args.operation else "read-only protected snapshot" if args.snapshot else "identity-only probe") + " via", app_id, flush=True)
-        print("Operation scope: " + ("key-only root SSH provisioning; no boot change or reboot" if args.operation == "provision-access" else "read-only; no HBC, startup change, or reboot"), flush=True)
+        print("Operation scope: " + ("key-only root SSH provisioning; no boot change or reboot" if args.operation == "provision-access" else "resume existing key-only SSH; no boot-state change or reboot" if args.operation == "resume-access" else "read-only; no HBC, startup change, or reboot"), flush=True)
         launch(app_id, {APPS[args.app]: base_url + "probe.html"})
         deadline = time.monotonic() + 40
         while not identity_received.is_set() and time.monotonic() < deadline:
