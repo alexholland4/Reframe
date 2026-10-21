@@ -1,6 +1,7 @@
 # Root persistence independent of the LG session
 
-Prepared 2026-10-21. This stage has not run; HANDOFF.md records live status.
+Prepared 2026-10-21. Marker undo was demonstrated live; LG app removal is
+approval-blocked and has NOT run. HANDOFF.md records current status.
 
 Authenticated root startup now survives a controlled restart with Developer
 Mode retained, and Reframe automatically follows the soundbar's startup screen.
@@ -66,3 +67,26 @@ The separate launcher-only undo remains the quick route back to native LG Home
 while keeping recovery access. Complete unroot after this transition remains
 unverified. No firmware/bootloader partition, read-only rootfs, default password,
 telnet service, update block or casting component is changed by this stage.
+
+
+## Live preparation and approval boundary
+
+Checkpoint `1f471e5` was committed/pushed before marker changes. The complete
+three-directory private archive is 6,443,932 bytes with 113 entries. Conversion
+then succeeded; targeted undo restored the original regular marker. A separate
+read/hash/stat verified original bytes, UID 5850/GID 5000/mode 0644, and developer
+SSH still returned UID 6349. The marker was converted again for the next step.
+
+Automatic approval review rejected the proposed native LG Developer Mode app
+removal before execution, because it retires the proven developer fallback and
+the owner had not explicitly approved that exact app removal. Do not bypass the
+rejection. The exact original marker was restored again immediately. Current
+LG app/signed startup remain present, marker is a regular file, no transition
+journal remains, and no dc counters exist. No further reboot was requested.
+
+The owner has been asked for explicit approval of just that native app removal,
+including developer SSH loss, retained root SSH/SSAP recovery, and restore limits.
+Until that answer arrives, the verified launcher works but root remains subject
+to the retained LG session. Approved next steps are concrete: re-convert with the
+tested journal/undo, native remove-app, verify actual root/profile/marker state,
+then controlled restart and post-transition native/casting checks.

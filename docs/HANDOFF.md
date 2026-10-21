@@ -3,32 +3,40 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current checkpoint, 2026-10-21 - boot and standby launch verified; session transition prepared:**
-Root SSH/HBC startup and Reframe boot launch passed a controlled restart with
-Developer Mode retained. The owner saw HDMI 2, then Reframe automatically after
-a few seconds. The first standby test failed; switching the helper from boot
-reports to the actual native tvpower subscription fixed it. The owner then saw
-LG Home for about one second followed by automatic Reframe after off/10s/on.
-Actual helper events show Suspend -> Active and a fresh launch from LG Home.
-Installed helper source is checkpoint `8521bcf`; Home/Back remain native.
-Launcher-only undo/reinstall and native Home escape already passed.
+**Current checkpoint, 2026-10-21 - boot/wake works; exact LG app removal approval pending:**
+Reframe automatically launches after full restart (HDMI 2 then Reframe) and
+remote standby/10s/on (LG Home about one second then Reframe), owner-confirmed.
+Root SSH/HBC boot returned with new uptime/PIDs/status. Installed helper source
+is `8521bcf`, using actual native tvpower Suspend -> Active events. Launcher-only
+undo/reinstall and native Home escape passed. Owner confirms Settings/Back,
+YouTube sound and all three requested iPhone casting paths work. Isolated
+YouTube stayed open; a prior interruption came from overlapping recovery cleanup.
 See [`LAUNCH-PERSISTENCE.md`](LAUNCH-PERSISTENCE.md).
 
-Independent SSAP recovery passed with root SSH deliberately stopped; UID/EUID 0,
-staging cleanup, Reframe restore and dedicated-key SSH return all verified.
-Owner confirms required native/iPhone features work, and isolated YouTube
-playback stayed open after eliminating overlapping recovery cleanup requests.
-Earlier transient SSAP failures are recorded in [`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
+Independent SSAP root recovery passed with root SSH deliberately stopped,
+actual UID/EUID 0, staging cleanup, Reframe restore and dedicated-key root return.
+Earlier transient SSAP failures are documented in [`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
 
-Developer Mode/regular marker/signed script still unchanged. A complete private
-LG app/service/package backup was captured and verified: 6,443,932 bytes,
-113 archive entries under ignored backups/devmode-session-transition. The marker
-transition and exact-byte/metadata undo have six passing offline tests; 77 Node
-and seven Python tests pass overall. Next: checkpoint source, demonstrate marker
-convert/undo/reconvert live, then native LG Developer Mode removal and another
-controlled restart. See [`SESSION-INDEPENDENCE.md`](SESSION-INDEPENDENCE.md).
-No signed LG startup or firmware partition patch is planned. Earlier entries
-below are historical and superseded where they describe current state.
+Session transition source is checkpointed/pushed as `1f471e5`. Complete private
+LG app/service/package backup is verified (6,443,932 bytes, 113 entries).
+Marker convert/undo/reconvert passed live; independent verification confirmed
+exact original bytes, UID 5850/GID 5000/mode 0644, and developer SSH survived.
+**Automatic approval review rejected uninstalling LG Developer Mode before it
+executed**, because removal retires the proven fallback and the user had not
+explicitly approved that exact app removal. Do not bypass this rejection.
+The marker was immediately restored again: current marker is the original
+regular file, LG app/signed startup both remain, no transition journal or dc
+counters exist. Root SSH/launcher remain available. No additional reboot ran.
+
+The owner was asked explicitly to approve LG Developer Mode removal, explaining
+loss of developer SSH 9922, retained dedicated root SSH 2222/SSAP recovery, and
+reinstall/sign-in restoration limits. Approval is pending. Do not convert again
+or uninstall until an explicit reply authorizes that exact removal. After
+approval: convert using the tested controller, native remove-app, verify HBC/
+root/profiles/marker, then controlled restart and owner functional confirmation.
+See [`SESSION-INDEPENDENCE.md`](SESSION-INDEPENDENCE.md). 77 Node and seven
+Python tests pass. No firmware partition or signed startup patch was made.
+Earlier entries below are historical and superseded by this current status.
 
 **First controlled restart: root startup VERIFIED with Developer Mode retained.**
 Root SSH, HBC UID 0 and a fresh startup record returned automatically; kernel
