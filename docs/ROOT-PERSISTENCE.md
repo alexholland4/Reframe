@@ -68,3 +68,33 @@ identity, key-only daemon flags, duplicate-listener avoidance, and refusal of
 unsafe files, altered binaries, or a PID belonging to another process. These
 supplement the existing 44 Node and three Python checks. Live results will be
 recorded after execution; preparation is not proof of boot persistence.
+
+
+## Live callback and stage-undo verification
+
+The two files were installed from checkpoint `5f3b921`. HBC's callback ran as
+root through independent developer SSH, then restarted the deliberately stopped
+SSH listener; strict host-key/dedicated-key authentication returned UID 0 and
+the root-written status identified the current Linux boot. No stock HBC startup
+ran. Root SSH now listens on IPv4 port 2222 rather than a DHCP-specific address.
+
+The persistent activity was registered, cancelled, and verified absent; the
+startup files/manifest/status were then removed while SSH kept running. The
+same sources were reinstalled and the boot activity re-registered and verified.
+Its actual creator is HBC's service, persist/continuous are true, and the saved
+trigger/callback match HBC's core-boot-done definition. This is a demonstrated
+startup-stage undo/reinstall, separate from full unroot.
+
+A detailed list of all activities timed out once, before registration. Both SSH
+paths remained healthy. The controller now lists briefly and reads only the
+matching activity's saved definition. On this firmware `getDetails current:true`
+returns runtime callback serial/trigger output; `current:false` returns the
+method/params needed for validation. Three Python regressions cover this and
+cancel-before-removal behavior. No blind registration retry/replacement occurred.
+
+The owner explicitly approved the otherwise review-blocked LG session check.
+The same HTTPS endpoint used by the verified stock LG script confirmed the
+session valid with about 975 hours remaining. No token was printed or sent to
+another destination. Original marker/init/startup hashes still match the private
+backup and developer UID 6349 SSH works. The first reboot is now prepared with
+those originals and Developer Mode retained; it has not occurred at this checkpoint.

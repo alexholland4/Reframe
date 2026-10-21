@@ -18,8 +18,11 @@ def node(source):
 
 def activities():
     reply = luna("luna://com.palm.activitymanager/list", {
-        "details": True, "subscribers": True, "current": True, "internal": False})
-    return [item for item in reply["activities"] if item.get("name") == ACTIVITY]
+        "details": False, "subscribers": False, "current": False, "internal": False})
+    matches = [item for item in reply["activities"] if item.get("name") == ACTIVITY]
+    return [luna("luna://com.palm.activitymanager/getDetails", {
+        "activityId": item["activityId"], "current": False, "internal": False})["activity"]
+        for item in matches]
 
 
 def verify_files():

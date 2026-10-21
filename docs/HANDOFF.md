@@ -3,6 +3,18 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Minimal root callback and undo VERIFIED; first reboot prepared:** HBC's
+custom two-file startup restarted key-only root SSH through the independent
+developer route. Its persistent activity/startup undo was then exercised live,
+verified removed, and the same startup/activity reinstalled. The controller now
+queries the saved activity definition with `current:false`; runtime/current
+responses contain serials rather than the callback configuration. The owner
+explicitly approved sending the LG session token only to its normal LG HTTPS
+validation endpoint; the session is valid (~975h). Original signed startup,
+init, and marker hashes match backups and developer SSH works. No reboot or
+launcher interception yet. First boot test retains LG Developer Mode. See
+[`ROOT-PERSISTENCE.md`](ROOT-PERSISTENCE.md).
+
 **Latest - HBC elevation approved and VERIFIED:** The owner explicitly said
 "yes" to the broad persistent HBC permission expansion. The reviewed operation
 then ran once; all five actual profile hashes match the simulation, HBC's root
