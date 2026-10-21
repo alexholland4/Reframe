@@ -6,6 +6,17 @@ reasonable, while prioritizing avoiding a bricked TV and understanding undo.
 **No root installer has been executed.** Conditional willingness does not make
 rollback proven; the preparation gates below still apply.
 
+## Current resumed stage
+
+The owner explicitly resumed with the TV available and instructed proceeding.
+Read-only firmware/app/access checks passed unchanged. An ignored local
+source/package/evidence snapshot exists. The limited identity probe is now
+implemented and tested offline; see [ROOT-IDENTITY-PROBE.md](ROOT-IDENTITY-PROBE.md).
+It is the first intended live action and contains no installer or startup
+changes. It has not run at this checkpoint. Targeted privileged backups and
+reviewed rollback remain required before any persistent installer changes.
+The historical stop note below describes the prior session, not an active pause.
+
 ## Stop/resume instruction - 2026-10-20
 
 The owner requested stopping at the working Reframe 0.1.1 baseline tonight

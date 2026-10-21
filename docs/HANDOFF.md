@@ -3,6 +3,16 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Resumed with owner instruction to proceed:** The TV is on with Reframe
+open. Fresh read-only checks confirmed firmware 33.30.97, SDK 10.3.0, Reframe
+0.1.1, prisoner UID 6349, and Node v16.20.2. A local source/package/evidence
+snapshot was saved under ignored `backups/`. The acquisition-only identity
+probe is now implemented and passed offline checks (28 total tests). See
+[`ROOT-IDENTITY-PROBE.md`](ROOT-IDENTITY-PROBE.md). No live service exploit has
+run at this checkpoint; the next action is one limited identity probe, not HBC
+installation or persistence. The previous stop instruction is superseded by
+the owner's explicit resume. No reboot or Developer Mode removal is planned.
+
 **Stopping point, 2026-10-20:** The owner asked to finish at a working state
 and defer the root attempt until tomorrow/next session. Reframe 0.1.1 is
 installed; Settings/Back, YouTube playback with sound, and all three required

