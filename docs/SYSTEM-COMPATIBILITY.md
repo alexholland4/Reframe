@@ -5,6 +5,15 @@ normal system Settings, app launching, and casting. This is an acceptance
 condition for the project, alongside the risk/undo gates in
 [ROOT-ATTEMPT-PLAN.md](ROOT-ATTEMPT-PLAN.md).
 
+## After limited root acquisition and protected capture
+
+The owner confirmed Reframe, Settings, and Back work after the identity-only
+root probe, then separately confirmed them again after the read-only protected
+backup. Both invocations restored Reframe and cleaned their marked staging
+files. No HBC/startup, persistent root, Home interception, or reboot has occurred.
+Casting and media playback have not been retested after these invocations;
+the earlier full baseline below remains the evidence for those features.
+
 ## Owner-confirmed baseline - 2026-10-20
 
 On Reframe **0.1.1**, before root or Home/boot interception, the owner confirmed:

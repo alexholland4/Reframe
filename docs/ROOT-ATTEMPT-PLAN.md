@@ -15,9 +15,14 @@ ordinary developer SSH remains available, and HBC is confirmed absent. See
 [ROOT-IDENTITY-PROBE.md](ROOT-IDENTITY-PROBE.md). No installer, startup change,
 Developer Mode removal, or reboot has occurred.
 
-The next gate is targeted privileged original-state backups and rollback
-review, not repeating acquisition or invoking the stock installer. Root
-persistence, replacement root access, and Home integration are not established.
+The targeted protected-state backup is now captured and hash-verified. The
+saved LG startup script passes its signature check. Its actual boot/session
+logic can remove developer access/apps on invalid state. See
+[PROTECTED-STATE-BACKUP.md](PROTECTED-STATE-BACKUP.md) for capture evidence and
+rollback implications. This does not establish a tested rollback, mount
+persistence, replacement root access, or Home integration. The next gate is a
+minimal change journal/recovery design and authenticated replacement access,
+with no automatic stock installer, HBC startup, or reboot.
 Older preparatory sections below are historical where they describe the
 identity-only probe as not yet built or run.
 
@@ -30,6 +35,7 @@ implemented and tested offline; see [ROOT-IDENTITY-PROBE.md](ROOT-IDENTITY-PROBE
 It is the first intended live action and contains no installer or startup
 changes. It has not run at this checkpoint. Targeted privileged backups and
 reviewed rollback remain required before any persistent installer changes.
+This section is historical where it describes acquisition/backup as pending.
 The historical stop note below describes the prior session, not an active pause.
 
 ## Stop/resume instruction - 2026-10-20

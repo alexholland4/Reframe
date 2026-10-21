@@ -12,17 +12,24 @@ confirms HBC is absent. No installer, persistence hook, Home takeover, Developer
 Mode removal, firmware change, or reboot occurred. The source was checkpointed
 at `c7ef279` before execution. See [`ROOT-IDENTITY-PROBE.md`](ROOT-IDENTITY-PROBE.md)
 for evidence and limits. **Root acquisition is now proven; persistence and
-rollback are not.** Next: targeted privileged original-state backups and
-rollback review before any persistent installation. Do not run the stock
+rollback are not.** Targeted privileged original-state backups have since
+completed; rollback/replacement-access work remains before persistence. Do not run the stock
 all-in-one installer based only on this proof. The owner confirmed Reframe, Settings, and Back still work after the probe.
 Casting/playback have not been retested after it; the pre-probe baseline is recorded separately.
 
-**Protected backup preparation:** The controller now has a separately selected
-`--snapshot` mode for a fixed, bounded, read-only list of relevant host state.
-Its generated payload and offline capture/extraction checks pass (35 Node tests
-and 3 Python tests). This mode has not run at this checkpoint. It performs no
-installation, Developer Mode change, startup hook, or reboot. See
-[`PROTECTED-STATE-BACKUP.md`](PROTECTED-STATE-BACKUP.md).
+**Protected original-state backup COMPLETE:** One read-only privileged capture
+using checkpoint `40c7faf` saved 32 path records and five files (15,918 bytes)
+under ignored `backups/`; all copied-file hashes were independently verified.
+The captured LG startup script passes SHA-512 signature verification with the
+captured LG key/signature. Its originals show that signature/session failure
+can disable Developer Mode and remove developer apps at boot. No originals
+were changed. Staging cleanup and Reframe restoration succeeded; ordinary SSH
+still works and HBC remains absent. The owner confirmed Reframe, Settings, and Back still work after capture;
+casting/playback have not been retested after it.
+See [`PROTECTED-STATE-BACKUP.md`](PROTECTED-STATE-BACKUP.md) for scope, missing
+mount contents, and rollback limits. Before persistent changes, prepare a
+minimal change journal/recovery sequence and authenticated replacement access.
+Do not run HBC's broad startup or the stock installer as an automatic next step.
 
 Older notes below describe earlier stages and are superseded where they call
 root execution unverified. They do not establish present authorization to

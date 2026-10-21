@@ -39,8 +39,12 @@ This confirms root execution on this exact TV/firmware. It is **not** a
 persistent root installation, root SSH access, an HBC install, boot persistence,
 a Home takeover, or a verified installer rollback. The owner confirmed
 Reframe, Settings, and Back work after the probe. Casting/playback have not
-been retested after it. Privileged original-state backups remain the next
+been retested after it. Privileged original-state backup was the next
 preparation step before any persistent changes.
+
+That subsequent fixed-list backup has now completed; see
+[PROTECTED-STATE-BACKUP.md](PROTECTED-STATE-BACKUP.md) for its separate results
+and remaining rollback/access gates.
 
 Raw evidence is saved in ignored `docs/fingerprint-root-identity-*.txt`;
 the original generated payloads and hashes are under ignored `.research/`.
