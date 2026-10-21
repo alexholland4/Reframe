@@ -5,6 +5,45 @@ TV on and Reframe open. The live preflight still reports firmware 33.30.97,
 webOS TV Lite SDK 10.3.0, Reframe 0.1.1, and prisoner UID 6349. The installed
 Node runtime is v16.20.2. No root installer has run.
 
+## Live result: root execution confirmed
+
+The owner-authorized single probe completed with exit code 0 through
+`com.webos.app.adoverlayex`. Its report contains:
+
+| Check | Observed result |
+| --- | --- |
+| UID / effective UID | **0 / 0** |
+| /proc/self/status Uid and Gid | All four fields zero in each line |
+| Effective capabilities | `0000003fffffffff` |
+| NoNewPrivs | 0 |
+| Module directory and argv | Match this uniquely staged probe process |
+| Own downloaded files/folder | Both files and the empty directory reported removed |
+| Developer Mode marker | Still a regular file, mode 0644, owner UID 5850/GID 5000 |
+| Host devmode init | `/etc/init/devmode.conf` visible; systemd alternative absent |
+| HBC state directory | `/var/lib/webosbrew` absent |
+
+The page reported both downloads complete and one successful service reply.
+The module supplied its own UID/EUID and /proc identity; those values, rather
+than the page/service reply, are the evidence for root execution. The prepared
+source was checkpointed at GitHub commit `c7ef279` before this one live attempt.
+No kernel exploit was used.
+
+Reframe's restore launch returned true, the local server stopped, and ordinary
+prisoner UID 6349 SSH still works. A read-only follow-up reported HBC
+`exist: false`. The probe PID was no longer visible from the developer shell;
+that visibility check alone is not treated as authoritative host-wide process
+absence. The module's guarded exit ran after sending its report. Download
+history or LG service/runtime logs may remain.
+
+This confirms root execution on this exact TV/firmware. It is **not** a
+persistent root installation, root SSH access, an HBC install, boot persistence,
+a Home takeover, or a verified installer rollback. Post-probe manual TV checks
+are pending. Privileged original-state backups remain the next preparation
+step before any persistent changes.
+
+Raw evidence is saved in ignored `docs/fingerprint-root-identity-*.txt`;
+the original generated payloads and hashes are under ignored `.research/`.
+
 ## Scope
 
 The first root action is a single jsserver invocation through a previously
@@ -62,6 +101,6 @@ need capture before any persistent root installation changes.
 - `scripts/root-probe/probe.html`: bounded download/service/close page template.
 - `tests/root-probe.test.mjs`: offline simulated safety checks.
 
-Live execution results must be added after the attempt. Success would establish
-only root execution in the reported context; persistence, protected-state
-backup/rollback, replacement access, and Home integration remain separate gates.
+The live result above establishes root execution in the reported context.
+Persistence, protected-state backup/rollback, replacement access, and Home
+integration remain separate gates.

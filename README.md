@@ -9,8 +9,10 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 ## Current status
 
 As of 2026-10-20, the app builds, packages, and has been installed and launched
-as a Developer Mode app. **Rooting, boot persistence, and Home-button takeover
-have not been performed.**
+as a Developer Mode app. **A limited service-based root probe now confirms
+UID 0 execution on this exact TV.** HBC installation, persistent root, boot
+persistence, and Home-button takeover have not been performed. See the
+[root identity result](docs/ROOT-IDENTITY-PROBE.md).
 
 Version **0.1.1** uses the TV's native service bridge directly, without requiring
 webOSTV.js. Detected TVs never fall back to mock launches. Settings, YouTube,
@@ -23,8 +25,8 @@ remain placeholders. See [bridge validation](docs/BRIDGE-VALIDATION.md).
 
 Settings, streaming-app playback, HDMI/Live TV, and the owner's iPhone Screen
 Mirroring, AirPlay playback, and YouTube Cast must remain usable throughout
-future work. Root research is promising but compatibility and rollback on this
-exact TV are unverified.
+future work. Root acquisition is confirmed; persistence, protected-state
+backup/rollback, and post-installation compatibility remain unverified.
 
 ## Develop
 

@@ -3,6 +3,24 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Root execution CONFIRMED on the actual TV:** The owner-authorized single
+identity-only probe through adoverlayex reported UID 0/EUID 0, /proc UID/GID
+fields all zero, and CapEff `0000003fffffffff` on firmware 33.30.97 / SDK 10.3.0.
+Its two marked download files and staging directory were reported removed.
+Reframe was restored, ordinary prisoner SSH still works, and a read query
+confirms HBC is absent. No installer, persistence hook, Home takeover, Developer
+Mode removal, firmware change, or reboot occurred. The source was checkpointed
+at `c7ef279` before execution. See [`ROOT-IDENTITY-PROBE.md`](ROOT-IDENTITY-PROBE.md)
+for evidence and limits. **Root acquisition is now proven; persistence and
+rollback are not.** Next: targeted privileged original-state backups and
+rollback review before any persistent installation. Do not run the stock
+all-in-one installer based only on this proof. Post-probe manual health checks
+are pending; the pre-probe owner-confirmed baseline remains recorded separately.
+
+Older notes below describe earlier stages and are superseded where they call
+root execution unverified. They do not establish present authorization to
+remove Developer Mode or reboot without completing the preparation gates.
+
 **Resumed with owner instruction to proceed:** The TV is on with Reframe
 open. Fresh read-only checks confirmed firmware 33.30.97, SDK 10.3.0, Reframe
 0.1.1, prisoner UID 6349, and Node v16.20.2. A local source/package/evidence

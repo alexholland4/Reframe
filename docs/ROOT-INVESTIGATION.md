@@ -6,10 +6,18 @@ root/persistence conclusions in the handoff and fingerprint analysis.
 
 ## Finding
 
-**Root is plausible and worth investigating. Compatibility and persistence on
-this exact unit remain unverified.** Investigate SlopBro's service-based route
-first; retain Chronomaly as a kernel-based candidate. That ordering is an
-engineering judgment, not a guarantee that either works.
+**Root execution is now confirmed on this exact unit.** A single custom
+identity-only probe through SlopBro's adoverlayex/jsserver service route reported
+UID 0/EUID 0 with corresponding /proc status and effective capabilities. It
+removed its two marked files/staging directory and returned to Reframe. No HBC,
+startup change, Developer Mode removal, or reboot was performed. See
+[the live evidence](ROOT-IDENTITY-PROBE.md).
+
+Persistent root, original-state backup/rollback, replacement access, and Home
+integration remain unverified. Chronomaly is not needed for the working
+acquisition route; do not switch to a kernel exploit. Earlier research below
+is retained as the path to this finding and is superseded where it calls
+actual root execution unverified.
 
 The owner reopened research. The initial pass was public-source review and
 read-only SSH inspection. The follow-up paired remote clients, read app
@@ -233,14 +241,10 @@ remap. Cold boot and Quick Start+/standby wake need separate tests.
 
 ## Next step
 
-The inventory, page-delivery, bridge, and source-pinning work is complete.
-The owner is conditionally willing to proceed at reasonable risk, with normal
-TV functionality preserved. First finish the source checkpoint, native/casting
-baseline, and staged backup/rollback preparation in
-[`ROOT-ATTEMPT-PLAN.md`](ROOT-ATTEMPT-PLAN.md). That attempt was not performed
-during this research. If the service route
-fails, matching LG source/configuration is still needed for Chronomaly's
-patch/layout comparison; do not automatically switch to the kernel exploit.
+Root acquisition has succeeded. Preserve the confirmed functional baseline,
+capture targeted privileged original-state backups, and finish rollback and
+replacement-access planning before persistent root installation. See
+[ROOT-ATTEMPT-PLAN.md](ROOT-ATTEMPT-PLAN.md). There is no reason to invoke the
+kernel candidate to establish acquisition on this firmware.
 
-There is currently no basis for either "root is impossible" or "root is
-confirmed on our TV."
+Root execution is confirmed; root persistence and Home/boot integration are not.

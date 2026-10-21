@@ -1,10 +1,25 @@
-# Proposed root attempt — not executed
+# Staged root attempt - identity confirmed, installation pending
 
 Prepared 2026-10-20, America/Chicago. The owner has authorized investigation and
 diagnostics. The owner is also willing to proceed if the assessed risk is
 reasonable, while prioritizing avoiding a bricked TV and understanding undo.
 **No root installer has been executed.** Conditional willingness does not make
 rollback proven; the preparation gates below still apply.
+
+## Latest result: acquisition succeeded
+
+The owner-authorized identity-only probe through adoverlayex/jsserver reported
+UID 0/EUID 0 and corresponding /proc capabilities on this exact TV. Cleanup of
+its two marked files/folder was reported successful, Reframe was restored,
+ordinary developer SSH remains available, and HBC is confirmed absent. See
+[ROOT-IDENTITY-PROBE.md](ROOT-IDENTITY-PROBE.md). No installer, startup change,
+Developer Mode removal, or reboot has occurred.
+
+The next gate is targeted privileged original-state backups and rollback
+review, not repeating acquisition or invoking the stock installer. Root
+persistence, replacement root access, and Home integration are not established.
+Older preparatory sections below are historical where they describe the
+identity-only probe as not yet built or run.
 
 ## Current resumed stage
 
@@ -51,7 +66,8 @@ Home. Stop integration if a stage causes a regression.
 ## Evidence and version
 
 All five SlopBro entry apps load a diagnostic page and provide native bridge
-access on our actual TV. Root and persistence remain unverified. See
+access on our actual TV. Root execution is now confirmed through adoverlayex;
+persistence remains unverified. See
 [`ROOT-INVESTIGATION.md`](ROOT-INVESTIGATION.md) for results and limits.
 
 Candidate: [SlopBro commit 21023d56ca424607bb03d2939609cc658c655fc7](https://github.com/throwaway96/slopbro/tree/21023d56ca424607bb03d2939609cc658c655fc7).
