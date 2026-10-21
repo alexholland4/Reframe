@@ -1,23 +1,25 @@
 # Reframe — Project Handoff
 
-_Last updated: 2026-10-20. Written so a new coding agent can pick up the work
+_Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current runtime checkpoint - corrected callback needs reinstall/register:**
-The separate LAUNCH-only pairing is accepted and saved privately. SSAP entry
-through adoverlayex recovered actual root and key-only SSH without developer
-SSH transport. Final Reframe restore hit a TLS handshake timeout; root SSH was
-recovered and restored Reframe afterwards. Source now falls back to recovered
-root SSH only for that final foreground cleanup, not the entry.
-A high load number prompted inspection: blocked Realtek driver tasks account
-for much of it, memory is healthy, and sampled CPU was 26.5% busy; no startup
-storm was demonstrated. HBC's missing once-per-boot runtime guard was still a
-real omission. Our boot activity was cancelled, the runtime guard created,
-and source/tests corrected. **Do not reboot until corrected startup is installed,
-callback-tested and registered again.** Developer Mode remains unchanged.
-HDMI 2 is a soundbar per owner; Home auto-launch was already On. No Reframe
-boot/wake launcher or permanent Developer Mode transition exists yet. See
-[`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
+**Current checkpoint, 2026-10-21 - guarded root callback restored; launcher prepared:**
+The corrected once-per-boot startup was installed, tested by deliberately
+restarting only its SSH listener, and registered again (activity 109 at this
+checkpoint; always query the current ID). Root SSH and developer SSH work.
+The new optional boot/wake launcher is locally prepared and tested, but NOT yet
+installed. It allows one launch from LG Home or owner-confirmed soundbar HDMI 2,
+yields to native apps/casting/other inputs, and leaves Home/Back available.
+See [`LAUNCH-PERSISTENCE.md`](LAUNCH-PERSISTENCE.md) for behavior and undo.
+The updated startup hook still needs deployment before enabling the helper.
+
+LAUNCH-only recovery pairing is accepted and private. SSAP-only entry recovered
+actual root/key-only SSH; its final foreground cleanup timed out, so a complete
+rerun with the corrected cleanup fallback remains required. High load was
+mostly blocked native driver tasks; CPU sampled 26.5% busy and no startup storm
+was demonstrated. Developer Mode/regular marker/signed script remain unchanged;
+long-term independence from its ~975h session is not established. Earlier
+checkpoints below are historical and superseded by this current status.
 
 **First controlled restart: root startup VERIFIED with Developer Mode retained.**
 Root SSH, HBC UID 0 and a fresh startup record returned automatically; kernel

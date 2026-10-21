@@ -97,6 +97,7 @@ def register():
 
 def remove():
     plan = verify_files()
+    node("const fs=require('fs');if(fs.existsSync('/var/lib/reframe/launcher-plan.json'))throw Error('Remove the managed launcher before removing root startup');console.log(JSON.stringify({launcherAbsent:true}));")
     for item in activities():
         if item.get("callback", {}).get("method") != "luna://org.webosbrew.hbchannel.service/autostart":
             raise RuntimeError("Unexpected activity callback; preserving it")

@@ -77,7 +77,9 @@ and may execute with the marker already present. The callback test explicitly
 removes only our validated guard before its deliberate listener restart. Six
 startup tests include guard creation, rejection before side effects, and direct
 recovery with an existing guard. Reinstall/register the corrected callback
-before any further reboot; at this checkpoint it is temporarily cancelled.
+before any further reboot. This correction was subsequently installed,
+callback-tested by restarting only root SSH, and registered again (activity
+109 at that checkpoint). Root and developer SSH were both available afterwards.
 
 The owner confirmed HDMI 2 is a soundbar. It reports a signal despite its blank
 screen; connection/signal flags alone cannot classify it as a video source.

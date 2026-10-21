@@ -34,8 +34,37 @@ function startup(fs, cp, process) {
       "-p", "0.0.0.0:2222", "-P", "/var/run/reframe-sshd.pid", "-I", "600", "-K", "30", "-m"],
       {timeout:5000, stdio:"ignore", env:{PATH:"/usr/sbin:/usr/bin:/sbin:/bin", HOME:"/home/root", LD_PRELOAD:""}});
   }
+  let launcher = {enabled:false};
+  try {
+    const flag = fs.lstatSync(base + "/launcher-enabled");
+    if (!flag.isFile() || flag.isSymbolicLink() || flag.uid !== 0 || (flag.mode & 18)) throw new Error("Unsafe launcher flag");
+    const plan = JSON.parse(file(base + "/launcher-plan.json"));
+    const names = new Set([base + "/boot-launcher.cjs", base + "/launch-policy.cjs", base + "/luna-stream.cjs"]);
+    if (plan.schema !== 1 || plan.purpose !== "reframe-boot-wake" || plan.files.length !== 3) throw new Error("Unknown launcher plan");
+    for (const entry of plan.files) {
+      if (!names.delete(entry.path) || crypto.createHash("sha256").update(file(entry.path)).digest("hex") !== entry.sha256) {
+        throw new Error("Launcher source changed");
+      }
+    }
+    let alive = false;
+    try {
+      const pid = file("/var/run/reframe-launch.pid").toString().trim();
+      if (!/^[1-9][0-9]*$/.test(pid)) throw new Error("Invalid launcher PID");
+      alive = fs.readFileSync("/proc/" + pid + "/cmdline", "utf8").split("\0").includes(base + "/boot-launcher.cjs");
+      if (!alive) throw new Error("Unexpected launcher process");
+    } catch (e) { if (e.code !== "ENOENT") throw e; }
+    if (!alive) {
+      const child = cp.spawn("/usr/bin/node", [base + "/boot-launcher.cjs"], {detached:true, stdio:"ignore",
+        env:{PATH:"/usr/sbin:/usr/bin:/sbin:/bin", HOME:"/home/root", LD_PRELOAD:""}});
+      child.unref();
+    }
+    launcher = {enabled:true};
+  } catch (e) {
+    // Launcher failure must never prevent key-only SSH access or normal TV use.
+    if (e.code !== "ENOENT") launcher = {enabled:false, error:String(e)};
+  }
   const status = {schema:1, uid:process.getuid(), bootId:fs.readFileSync("/proc/sys/kernel/random/boot_id", "utf8").trim(),
-    at:new Date().toISOString(), ssh:true, passwordAuthentication:false};
+    at:new Date().toISOString(), ssh:true, passwordAuthentication:false, launcher};
   const temp = base + "/boot-status." + process.pid + ".tmp";
   const fd = fs.openSync(temp, "wx", 384);
   try { fs.writeFileSync(fd, JSON.stringify(status)); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }

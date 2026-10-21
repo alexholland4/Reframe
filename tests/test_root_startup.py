@@ -30,9 +30,9 @@ class ActivityTests(unittest.TestCase):
         with patch.object(manager, "verify_files", return_value={"files": []}), \
              patch.object(manager, "activities", side_effect=[[item], []]), \
              patch.object(manager, "luna", side_effect=lambda *args: events.append("cancel")), \
-             patch.object(manager, "node", side_effect=lambda *args: events.append("remove")):
+             patch.object(manager, "node", side_effect=lambda source: events.append("remove" if "unlinkSync" in source else "check-launcher")):
             manager.remove()
-        self.assertEqual(events, ["cancel", "remove"])
+        self.assertEqual(events, ["check-launcher", "cancel", "remove"])
 
     def test_remove_preserves_startup_if_cancel_does_not_remove_activity(self):
         item = {"activityId": 212, "callback": {"method": "luna://org.webosbrew.hbchannel.service/autostart"}}
@@ -40,7 +40,15 @@ class ActivityTests(unittest.TestCase):
              patch.object(manager, "activities", side_effect=[[item], [item]]), \
              patch.object(manager, "luna"), patch.object(manager, "node") as node:
             with self.assertRaises(RuntimeError): manager.remove()
-            node.assert_not_called()
+            node.assert_called_once()
+            self.assertNotIn("unlinkSync", node.call_args.args[0])
+
+    def test_remove_refuses_installed_launcher_before_cancelling_callback(self):
+        with patch.object(manager, "verify_files", return_value={"files": []}), \
+             patch.object(manager, "node", side_effect=RuntimeError("Remove launcher first")), \
+             patch.object(manager, "activities") as activities:
+            with self.assertRaises(RuntimeError): manager.remove()
+            activities.assert_not_called()
 
 
 if __name__ == "__main__":
