@@ -29,7 +29,8 @@ def connect(pair=False):
         while True:
             reply = tv.receive_json(deadline)
             if reply.get("type") == "error":
-                raise RuntimeError("TV rejected recovery registration")
+                (PROJECT / "docs/fingerprint-recovery-pairing-error.txt").write_text(json.dumps({"type": reply.get("type"), "error": reply.get("error")}, indent=2), encoding="utf-8")
+                raise RuntimeError("TV rejected recovery registration: " + str(reply.get("error", "unspecified")))
             if reply.get("type") == "registered":
                 key = reply.get("payload", {}).get("client-key") or saved.get("client_key")
                 if not key:

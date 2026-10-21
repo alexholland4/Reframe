@@ -46,3 +46,41 @@ ownership refusal before execution, and rejection of unprivileged output.
 The recovery payload parses as JavaScript; pairing defaults to no connection
 without `--execute`. This is a userspace recovery route, not firmware or
 bootloader rescue, and depends on normal TV app/control services still working.
+
+
+## Live pairing and recovery result
+
+The owner accepted the LAUNCH-only pairing after the first prompt was missed.
+The initial immediate post-pair launch was rejected; a fresh pinned connection
+later returned native launch success. No extra permission scope was added.
+The independent test stopped only our SSH daemon, launched adoverlayex via
+SSAP, received actual UID/EUID 0 from the proven route, and invoked the existing
+minimal startup. Its staging files/folder were removed and root SSH returned.
+The controller's final SSAP Reframe restore hit a TLS-handshake timeout, so the
+whole test reported failure even though its core access recovery succeeded.
+Reframe was then restored through authenticated root SSH. The controller now
+permits that recovered-root transport solely for final Reframe restoration;
+the recovery entry itself remains SSAP-only. A complete rerun is still required.
+
+Runtime inspection showed load average around 34, but 33 blocked tasks were
+mostly native Realtek hardware/driver threads and available memory was about
+470 MiB. Direct CPU sampling measured 26.5% busy, and no managed startup process
+was running at that snapshot. A startup storm was not demonstrated. The initial
+load concern must not be recorded as proof of one. Nevertheless the minimal
+startup omitted HBC's `/tmp/webosbrew_startup` once-per-boot guard. A guarded
+runtime marker was created and only the managed boot activity was cancelled
+while correcting that omission; SSH and TV operation remained available.
+
+The source now creates that runtime marker after validating the core access
+state, so HBC avoids repeated payload spawns. Direct recovery stays idempotent
+and may execute with the marker already present. The callback test explicitly
+removes only our validated guard before its deliberate listener restart. Six
+startup tests include guard creation, rejection before side effects, and direct
+recovery with an existing guard. Reinstall/register the corrected callback
+before any further reboot; at this checkpoint it is temporarily cancelled.
+
+The owner confirmed HDMI 2 is a soundbar. It reports a signal despite its blank
+screen; connection/signal flags alone cannot classify it as a video source.
+Home Auto Launch/Power On Screen was already Home/On and was not changed.
+A later boot/wake launcher may treat that specific audio-only input as a startup
+fallback, while yielding to actual video apps/casting/other HDMI inputs.

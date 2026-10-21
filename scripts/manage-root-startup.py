@@ -70,7 +70,9 @@ def verify_callback():
     print(luna("luna://org.webosbrew.hbchannel.service/autostart", {"reason": "activity"}, root=False))
     print(node("""const fs=require('fs');const text=fs.readFileSync('/var/run/reframe-sshd.pid','utf8').trim();
 if(!/^[1-9][0-9]*$/.test(text))throw Error('Invalid PID');const args=fs.readFileSync('/proc/'+text+'/cmdline','utf8').split('\\0');
-if(args[0]!=='/var/lib/reframe/dropbear')throw Error('Unexpected daemon');process.kill(Number(text),'SIGTERM');console.log(JSON.stringify({stoppedOwnListener:true}));"""))
+if(args[0]!=='/var/lib/reframe/dropbear')throw Error('Unexpected daemon');
+try{const p='/tmp/webosbrew_startup',s=fs.lstatSync(p);if(!s.isFile()||s.isSymbolicLink()||s.uid!==0||!/^reframe-minimal/.test(fs.readFileSync(p,'utf8')))throw Error('Unexpected runtime guard');fs.unlinkSync(p);}catch(e){if(e.code!=='ENOENT')throw e;}
+process.kill(Number(text),'SIGTERM');console.log(JSON.stringify({stoppedOwnListener:true}));"""))
     print(luna("luna://org.webosbrew.hbchannel.service/autostart", {"reason": "activity"}, root=False))
     status = node("console.log(require('fs').readFileSync('/var/lib/reframe/boot-status.json','utf8'));")
     if status.get("uid") != 0 or status.get("ssh") is not True:

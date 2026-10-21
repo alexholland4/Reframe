@@ -3,6 +3,22 @@
 _Last updated: 2026-10-20. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Current runtime checkpoint - corrected callback needs reinstall/register:**
+The separate LAUNCH-only pairing is accepted and saved privately. SSAP entry
+through adoverlayex recovered actual root and key-only SSH without developer
+SSH transport. Final Reframe restore hit a TLS handshake timeout; root SSH was
+recovered and restored Reframe afterwards. Source now falls back to recovered
+root SSH only for that final foreground cleanup, not the entry.
+A high load number prompted inspection: blocked Realtek driver tasks account
+for much of it, memory is healthy, and sampled CPU was 26.5% busy; no startup
+storm was demonstrated. HBC's missing once-per-boot runtime guard was still a
+real omission. Our boot activity was cancelled, the runtime guard created,
+and source/tests corrected. **Do not reboot until corrected startup is installed,
+callback-tested and registered again.** Developer Mode remains unchanged.
+HDMI 2 is a soundbar per owner; Home auto-launch was already On. No Reframe
+boot/wake launcher or permanent Developer Mode transition exists yet. See
+[`ROOT-RECOVERY.md`](ROOT-RECOVERY.md).
+
 **First controlled restart: root startup VERIFIED with Developer Mode retained.**
 Root SSH, HBC UID 0 and a fresh startup record returned automatically; kernel
 uptime reset and SSH daemon PID changed. The TV reused its Linux boot ID, so

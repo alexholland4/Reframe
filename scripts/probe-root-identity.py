@@ -270,7 +270,17 @@ def main():
     def launch(target, params=None):
         if args.launch_transport == "ssap":
             from tv_recovery import launch as recovery_launch
-            response = recovery_launch(target, params)
+            try:
+                response = recovery_launch(target, params)
+            except (OSError, RuntimeError):
+                if target != "com.reframe.home" or identity.get("uid") != 0 or identity.get("euid") != 0:
+                    raise
+                # Recovery entry remains SSAP-only. Foreground cleanup may use
+                # the authenticated root connection that was just recovered.
+                from tv_connection import luna as root_luna
+                response = root_luna("luna://com.webos.applicationManager/launch", {"id": target})
+                events.append({"event": "app-launch", "transport": "recovered-root-ssh", "id": target, "response": response})
+                return
             events.append({"event": "app-launch", "transport": "pinned-ssap", "id": target, "response": response})
             return
         payload = {"id": target}

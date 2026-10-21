@@ -20,6 +20,15 @@ function startup(fs, cp, process) {
     running = args[0] === base + "/dropbear" && args.includes("-s") && args.includes("-G") && args.includes("root");
     if (!running) throw new Error("SSH PID belongs to another process");
   } catch (e) { if (e.code !== "ENOENT") throw e; }
+  // HBC checks this runtime marker before spawning its boot payload again.
+  // Direct recovery may still execute this idempotent function when it exists.
+  const once = "/tmp/webosbrew_startup";
+  try { fs.writeFileSync(once, "reframe-minimal\n", {flag:"wx", mode:384}); }
+  catch (e) {
+    if (e.code !== "EEXIST") throw e;
+    const st = fs.lstatSync(once);
+    if (!st.isFile() || st.isSymbolicLink() || st.uid !== 0) throw new Error("Unsafe runtime startup guard");
+  }
   if (!running) {
     cp.execFileSync(base + "/dropbear", ["-R", "-s", "-j", "-k", "-G", "root",
       "-p", "0.0.0.0:2222", "-P", "/var/run/reframe-sshd.pid", "-I", "600", "-K", "30", "-m"],
