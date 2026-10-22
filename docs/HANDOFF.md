@@ -3,29 +3,37 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - Reframe 0.3.0 collection/scenic refresh ready for deployment:**
-The owner found 0.2.0 too flat, limited and unpleasant to navigate, and requested
-more installed apps before choosing Home favorites versus More Apps. The new
-build exposes 32 current visible installed apps across Watch (14), Listen & Play
-(5), Explore (13), plus four TV/input controls. No Home/More Apps choices were
-made for the owner. See [LIBRARY-REFRESH.md](LIBRARY-REFRESH.md) for the full list
-and desktop previews. Hidden internal apps/overlays and a promotion are omitted.
+**Current - Reframe 0.3.0 installed/foreground; owner app choices pending:**
+Source checkpoint `d4407fb` is pushed. The owner requested a richer, smoother
+launcher with many more apps before choosing Home favorites versus More Apps.
+The TV now has Reframe 0.3.0 installed and foreground. All 40 installed app-file
+hashes matched the package, native install/launch passed, and the exact owned
+upload stage was removed. The previous local 0.2.0 package was saved privately.
+The boot/wake helper remains enabled/running with the same PID 3767; no root,
+boot/wake or app-exit/startup routing changes were made in this iteration.
 
-A built-in-imagegen coastal landscape is bundled at public/backgrounds/
-coast-blue-hour.png; full prompt and generation details are in LIBRARY-REFRESH.
-The focus manager now uses real roving button focus, ordered shelves, remembered
-row selections, genuine pointer movement, independent cancellable 220 ms scroll
-reveal, rapid direction-reversal handling and nonrepeating OK. Native Back,
-root/boot/wake code and launch bridge are unchanged. Added public app icons were
-copied from installed packages; all artwork works offline.
+The collection exposes 32 installed apps across Watch (14), Listen & Play (5)
+and Explore (13), plus four TV/input controls. No extra third-party app was
+installed and no Home/More Apps choice was made for the owner. Hidden internal
+apps, Reframe itself and a temporary promotion are omitted. Full app list and
+previews: [LIBRARY-REFRESH.md](LIBRARY-REFRESH.md). Owner should browse the shelves
+and tell us which apps stay on Home; the remainder can then move to More Apps.
+Actual owner feedback on 0.3.0 motion/appearance and curation is still pending.
 
-Production build, 77 Node/12 Python tests and the reusable local browser check
-pass. scripts/check-ui.mjs verifies 36 buttons/33 images, 1080p/4K layout, row
-memory, held OK, pointer/remote synchronization, horizontal/vertical reveal and
-rapid reversal. Hidden-browser background throttling is disabled explicitly
-for meaningful animation checks. Source/package are ready; live deployment is
-next and owner feel/favorite selection is pending. Supersedes the earlier stop
-for this explicitly requested UI iteration.
+A generated blue-hour coastal scene replaces the flat background; artwork is
+bundled at public/backgrounds/coast-blue-hour.png. Built-in imagegen tool and
+exact prompt/resolution are documented in LIBRARY-REFRESH.md. Focus now follows
+ordered shelves with real button focus, row memory, genuine pointer movement,
+independent cancellable 220 ms scroll reveals and safe rapid reversal. Held OK
+is ignored after the initial press. Native Back and launch bridge are retained.
+
+Production build/package, 77 Node/12 Python tests and the reusable local browser
+check passed. scripts/check-ui.mjs checks 36 buttons/33 images, 1080p/4K layout,
+row memory, held OK, pointer/remote synchronization, scroll reveal and direction
+reversal. Hidden-browser throttling is disabled for meaningful frame checks.
+These are browser/installation checks, not a new physical-remote/casting/playback
+acceptance result for 0.3.0. Keep app/cast exit and native startup-flash work
+separate as already deferred in NEXT-SESSION.md. Current requested build is done.
 
 **Latest - Reframe 0.2.0 UI refresh deployed, 2026-10-21:**
 The owner superseded the earlier stop for a visual refresh and then explicitly

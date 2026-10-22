@@ -65,3 +65,9 @@ LIBRARY-REFRESH.md for the full candidate list. Home versus More Apps curation
 is deliberately pending the owner's choices after trying this collection.
 Preserve their eventual selection; do not preselect a small favorite list.
 The earlier app/cast return and startup-flash tasks remain separate.
+
+
+Version 0.3.0 is now actually installed and foreground, with all 40 app-file
+hashes verified. Boot/wake helper stayed enabled with the same PID. The owner's
+next choice is the Home lineup versus More Apps, after trying the shelves and
+commenting on actual remote motion. No 0.3.0 owner acceptance has been invented.

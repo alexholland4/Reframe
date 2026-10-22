@@ -64,3 +64,17 @@ tool's generated-image directory; the project has its own bundled copy.
 Final prompt:
 
 > Use case: photorealistic-natural. Asset type: wide 16:9 4K background photograph for a premium smart-TV home screen. Create a cinematic high-altitude aerial view of a quiet mountainous coastline at blue hour: deep cobalt ocean in the foreground, a sculptural dark coastal ridge sweeping diagonally from lower right toward the middle, distant indigo mountains dissolving into atmospheric haze, soft pale blue sky with a slender band of warm peach at the horizon. Serene, luminous, immersive, refined natural photography, realistic terrain and water, subtle fine detail, gentle tonal separation. Wide composition with generous calm sky and open ocean; the upper left must stay uncluttered for white greeting text, lower half dark enough behind TV app cards. Sophisticated midnight blue, slate, sea teal and a restrained apricot horizon, no gray wash and no neon. Keep the landscape beautiful as a real full-screen wallpaper, not an interface mockup. No text, no logos, no icons, no borders, no buildings, no people. Output landscape 3840x2160 if possible.
+
+
+## Live install
+
+Source `d4407fb` was pushed before deployment. The normal pinned-root deployment
+controller saved the previous 0.2.0 package privately, uploaded and verified the
+new IPK, received native install success, checked all 40 installed app-file
+hashes, and launched Reframe. Actual foreground was `com.reframe.home`; its own
+unique upload stage was removed. A read-only status check confirmed the existing
+boot/wake helper still enabled/running with the same PID 3767.
+
+The screenshots above are browser previews. No new owner physical-remote feel,
+casting or playback acceptance has been received for 0.3.0 yet. The next input is
+which apps to keep on Home and which to place in a future More Apps view.
