@@ -3,7 +3,7 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - owner curated Home; Reframe 0.3.1 prepared for deployment:**
+**Current - owner curated Home; Reframe 0.3.1 installed/foreground:**
 The owner liked the scenic photo but rejected the clutter of the 32-app view.
 Their exact selection is Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music, in one horizontal row of larger cards.
@@ -13,7 +13,11 @@ is retained; other native apps remain installed. This resolves the pending
 Home app choices described below. See [CURATED-HOME.md](CURATED-HOME.md).
 Production build and browser checks passed for the ten-card single row,
 actual store dispatch target, focus/reveal behavior and 1080p/4K layout.
-Deployment is pending; root/boot/wake and native Home/Back routing are unchanged.
+Source checkpoint `b52b266` is pushed. The native install and launch succeeded;
+all 41 installed file hashes matched the package, actual foreground was
+com.reframe.home, and the owned upload stage was removed. The previous 0.3.0
+local package was preserved privately. Root/boot/wake and native Home/Back
+routing are unchanged. Owner visual/remote acceptance of 0.3.1 is pending.
 All entries below describe earlier checkpoints and are superseded where relevant.
 
 **Current - Reframe 0.3.0 installed/foreground; owner app choices pending:**

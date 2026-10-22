@@ -23,6 +23,10 @@ More Apps dispatching the native store ID, and 4K layout without page overflow.
 Browser-check profiles are excluded from Vite's watcher to prevent extension
 HTML from reloading the preview during navigation tests.
 
-Deployment verification is pending. App/cast return routing and startup screen
-transitions remain separate deferred tasks. No new owner playback/casting
-acceptance result is claimed by these browser checks.
+Reframe 0.3.1 is installed and foreground on the TV. Native install/launch
+succeeded, all 41 installed file hashes matched the package, and the owned
+upload stage was removed. The previous local 0.3.0 IPK was preserved privately.
+Source checkpoint: `b52b266` (pushed). Owner visual/remote acceptance is pending.
+App/cast return routing and startup screen transitions remain separate deferred
+tasks. No new owner playback/casting acceptance result is claimed by these
+browser and installation checks.
