@@ -26,5 +26,7 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    // Browser-check profiles contain extension HTML; they must not reload the app mid-test.
+    watch: { ignored: ["**/.research/**", "**/backups/**", "**/docs/images/**"] },
   },
 });

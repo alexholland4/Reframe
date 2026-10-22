@@ -1,7 +1,7 @@
 # Reframe
 
 A lightweight, personalized, ad-free launcher for an LG smart TV, with a clock,
-greeting, weather, and an app/input grid controlled by the remote's D-pad.
+greeting, weather, and one spacious app row controlled by the remote's D-pad.
 Built with TypeScript and Vite, without a UI framework.
 
 Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
@@ -16,15 +16,15 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.0** adds a scenic blue-hour coastal background and 32 installed
-apps across Watch, Listen & Play and Explore shelves, plus TV/input controls.
-Navigation uses real button focus, remembered shelf positions and bounded
-scroll easing. All artwork is bundled for offline use. See the
-[collection, interaction checks and preview](docs/LIBRARY-REFRESH.md).
+Version **0.3.1** keeps the scenic coastal background and simplifies Home to
+nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
+Hulu, Apple TV, Disney+ and Apple Music. A matching **More Apps** tile ends the
+single row and opens the native LG App Store. Settings and input rows are gone.
+Large cards use smooth horizontal reveals and synchronized pointer/remote focus.
+See the [curated Home preview and checks](docs/CURATED-HOME.md).
 
-The owner will choose which of these apps stay on Home versus a future More
-Apps view after trying the full collection. The native launch bridge and
-root/boot/wake setup are unchanged. App/cast exit still returns to native LG Home,
+The native launch bridge and root/boot/wake setup are unchanged.
+App/cast exit still returns to native LG Home,
 and startup briefly shows a native screen before Reframe; these separate UX
 changes remain in [next-session notes](docs/NEXT-SESSION.md).
 
@@ -58,8 +58,8 @@ then use the validated root deployment controller:
 ```bash
 npm run build
 ares-package dist -o .
-python scripts/deploy-root.py com.reframe.home_0.3.0_all.ipk       # local validation
-python scripts/deploy-root.py com.reframe.home_0.3.0_all.ipk --execute
+python scripts/deploy-root.py com.reframe.home_0.3.1_all.ipk       # local validation
+python scripts/deploy-root.py com.reframe.home_0.3.1_all.ipk --execute
 ```
 
 It uses the existing external root key and strict host pin, validates the

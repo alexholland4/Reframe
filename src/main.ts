@@ -4,7 +4,6 @@ import { mountClock } from "./widgets/clock.js";
 import { mountGreeting } from "./widgets/greeting.js";
 import { mountWeather } from "./widgets/weather.js";
 import { mountLauncher } from "./launcher/apps.js";
-import { config } from "./core/config.js";
 
 function render(): void {
   const app = document.getElementById("app")!;
@@ -25,15 +24,15 @@ function render(): void {
       </div>
     </header>
     <section class="hero" aria-label="Selected app">
-      <p class="hero-section" id="current-section">Watch</p>
+      <p class="hero-section" id="current-section">Your apps</p>
       <h2 class="hero-title" id="current-title">Netflix</h2>
       <p class="hero-detail" id="current-detail">Movies, series & live streaming</p>
     </section>
     <main class="stage" data-focus-scroll>
-      <section class="launcher" aria-label="Apps and inputs"></section>
+      <section class="launcher" aria-label="Your apps"></section>
     </main>
     <footer class="hint">
-      <span class="library-size">${config.tiles.filter(tile => tile.kind === "app").length} apps in your collection</span>
+      <span class="library-size">Home</span>
       <div class="hint-controls">
         <span class="selection-position" id="selection-position"></span>
         <span class="navigation-hint"><span class="direction-key" aria-hidden="true">✣</span> Browse</span>

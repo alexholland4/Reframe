@@ -1,5 +1,8 @@
 # Reframe 0.3.0: scenic home and full app collection
 
+Historical candidate view, superseded by the owner-selected single row in
+[CURATED-HOME.md](CURATED-HOME.md). The scenic background below remains in use.
+
 The owner requested a richer Apple TV-like feel, smoother movement between
 apps, and many more apps before deciding which belong on Home versus More Apps.
 This version exposes 32 installed apps across horizontal shelves. No Home/More

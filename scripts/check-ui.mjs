@@ -26,34 +26,36 @@ try{
  const evaluate=async expression=>{const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
  await call('Runtime.enable');
  await call('Emulation.setDeviceMetricsOverride',{width:1920,height:1080,deviceScaleFactor:1,mobile:false});
- const ready=async()=>{for(let n=0;n<140;n++){if(await evaluate(`document.querySelectorAll('.tile').length===36&&[...document.images].every(i=>i.complete&&i.naturalWidth>0)`))return;await pause(100);}throw Error('UI or artwork failed to load');};
+ const ready=async()=>{for(let n=0;n<140;n++){if(await evaluate(`document.querySelectorAll('.tile').length===10&&[...document.images].every(i=>i.complete&&i.naturalWidth>0)`))return;await pause(100);}throw Error('UI or artwork failed to load');};
  await ready();
  const selected=()=>evaluate(`document.querySelector('.tile.focused')?.getAttribute('aria-label')`);
  const expect=async name=>{const got=await selected();if(got!==name)throw Error('Expected focus '+name+', got '+got);};
  const key=async(k,code,repeat=false)=>{await call('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code,autoRepeat:repeat});await call('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code});};
+ const expected=['Netflix','Prime Video','HBO Max','Peacock','Paramount+','Hulu','Apple TV','Disney+','Apple Music','More Apps'];
+ const labels=await evaluate(`[...document.querySelectorAll('.tile')].map(e=>e.getAttribute('aria-label'))`);
+ if(JSON.stringify(labels)!==JSON.stringify(expected))throw Error('Home order differs: '+JSON.stringify(labels));
+ if(await evaluate(`document.querySelector('.tile').getBoundingClientRect().width`)<380)throw Error('Home tiles should be large');
  await expect('Netflix');
- await key('ArrowRight',39);await expect('YouTube');
- await key('ArrowDown',40);await expect('Radio+');
- await key('ArrowUp',38);await expect('YouTube');
+ await key('ArrowLeft',37);await expect('Netflix');
+ await key('ArrowRight',39);await expect('Prime Video');
+ await key('ArrowDown',40);await expect('Prime Video');
+ await key('ArrowUp',38);await expect('Prime Video');
  await key('ArrowLeft',37);await expect('Netflix');
  await evaluate(`window.__selectCount=0;document.addEventListener('reframe:select',()=>window.__selectCount++)`);
  await key('Enter',13);await key('Enter',13,true);await key('Enter',13,true);
  if(await evaluate('window.__selectCount')!==1)throw Error('Held OK launched repeatedly');
  await pause(700);
- const target=await evaluate(`(()=>{const r=document.querySelector('[data-app-id="amazon"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
- await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:target.x,y:target.y});await expect('Prime Video');
- await key('ArrowRight',39);await expect('Disney+');
+ const target=await evaluate(`(()=>{const r=document.querySelector('[data-app-id="com.wbd.stream"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:target.x,y:target.y});await expect('HBO Max');
+ await key('ArrowRight',39);await expect('Peacock');
  await evaluate(`window.__edgeStart=performance.now();window.__frames=0;requestAnimationFrame(function tick(){window.__frames++;requestAnimationFrame(tick)})`);for(let n=0;n<20;n++)await key('ArrowRight',39);
- await expect('Movies & TV');await pause(650);
+ await expect('More Apps');await pause(650);
  const edge=await evaluate(`(()=>{const e=document.querySelector('.tile.focused'),r=e.getBoundingClientRect(),g=e.closest('[data-focus-group]');return {left:r.left,right:r.right,width:innerWidth,scroll:g.scrollLeft,active:document.activeElement===e,visibility:document.visibilityState,elapsed:performance.now()-window.__edgeStart,frames:window.__frames}})()`);
  if(!edge.active||edge.left<0||edge.right>edge.width||edge.scroll<=0)throw Error('Shelf reveal/focus failed: '+JSON.stringify(edge));
- await key('ArrowDown',40);await expect('Radio+');
- await key('ArrowDown',40);await key('ArrowDown',40);await pause(650);
- const lower=await evaluate(`(()=>{const e=document.querySelector('.tile.focused'),r=e.getBoundingClientRect(),s=document.querySelector('.stage'),v=s.getBoundingClientRect();return {label:e.getAttribute('aria-label'),top:r.top,bottom:r.bottom,viewportTop:v.top,viewportBottom:v.bottom,scroll:s.scrollTop}})()`);
- if(lower.scroll<=0||lower.top<lower.viewportTop||lower.bottom>lower.viewportBottom)throw Error('Vertical reveal failed '+JSON.stringify(lower));
- await key('ArrowUp',38);await key('ArrowUp',38);await expect('Radio+');
- await key('ArrowUp',38);await expect('Movies & TV');
- // Return to the first card and preserve a clean screenshot of the first two shelves.
+ if(await evaluate(`document.querySelector('.tile.focused').dataset.appId`)!=='com.webos.app.discovery')throw Error('More Apps must target the LG App Store');
+ await key('Enter',13);await pause(100);
+ if(!await evaluate(`document.querySelector('.toast')?.textContent.includes('com.webos.app.discovery')`))throw Error('More Apps did not launch the native app-store target');
+ // Return to the first card, then reverse before a pending animation settles.
  for(let n=0;n<20;n++)await key('ArrowLeft',37);
  await expect('Netflix');await pause(500);
  // Reverse before the pending animation settles; old scroll goals must not hide focus.
@@ -64,11 +66,9 @@ try{
  if(reversed.left<45||reversed.right>1920)throw Error('Rapid reversal lost the shelf gutter/focus');
  await evaluate(`document.querySelector('.toast')?.remove()`);
  mkdirSync(imageDir,{recursive:true});
- const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.0.png',Buffer.from(shot.data,'base64'));
- await key('ArrowDown',40);await key('ArrowDown',40);await key('ArrowDown',40);await pause(650);
- const lowerShot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.0-library.png',Buffer.from(lowerShot.data,'base64'));
+ const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.1.png',Buffer.from(shot.data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:3840,height:2160,deviceScaleFactor:1,mobile:false});await pause(500);
  const metrics=await evaluate(`JSON.stringify({width:innerWidth,height:innerHeight,pageOverflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,tiles:document.querySelectorAll('.tile').length,loadedImages:[...document.images].filter(i=>i.complete&&i.naturalWidth>0).length,shelves:[...document.querySelectorAll('[data-focus-group]')].map(r=>({name:r.dataset.focusGroup,apps:r.querySelectorAll('.tile').length}))})`);
- const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==36||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
- console.log(JSON.stringify({checks:['32 apps + 4 controls','all artwork loaded','shelf left/right boundaries','up/down row memory','pointer/remote focus synchronization','held OK activates once','horizontal reveal','rapid reversal preserves focus','vertical reveal','4K no page overflow'],metrics:parsed},null,2));
+ const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==10||parsed.shelves.length!==1||parsed.loadedImages!==11||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
+ console.log(JSON.stringify({checks:['exact nine apps plus More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow'],metrics:parsed},null,2));
 }finally{try{await call?.('Browser.close');}catch{}socket?.close();browser.kill();}

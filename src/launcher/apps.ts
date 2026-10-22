@@ -3,20 +3,17 @@ import { launchApp } from "../core/tv.js";
 import { isOnTV } from "../core/luna.js";
 
 export function mountLauncher(host: HTMLElement): void {
-  for (const shelf of ["watch", "play", "explore", "tv"] as const) {
+  for (const shelf of ["home"] as const) {
     const tiles = config.tiles.filter(tile => tile.section === shelf);
     const section = document.createElement("section");
     section.className = "launcher-section " + shelf + "-section";
     section.setAttribute("aria-label", shelfLabels[shelf]);
-    const heading = document.createElement("h2");
-    heading.className = "section-title";
-    heading.innerHTML = `<span>${shelfLabels[shelf]}</span><span class="section-count">${tiles.length}</span>`;
     const grid = document.createElement("div");
     grid.className = "tile-row";
     grid.dataset.focusGroup = shelf;
     grid.setAttribute("aria-label", shelfLabels[shelf]);
     for (const tile of tiles) grid.appendChild(createTile(tile));
-    section.append(heading, grid);
+    section.appendChild(grid);
     host.appendChild(section);
   }
   host.addEventListener("reframe:focus", event => {
@@ -32,7 +29,7 @@ export function mountLauncher(host: HTMLElement): void {
   });
 }
 
-const shelfLabels: Record<Shelf,string> = {watch:"Watch", play:"Listen & play", explore:"Explore", tv:"TV & inputs"};
+const shelfLabels: Record<Shelf,string> = {home:"Your apps"};
 
 const utilityIcons: Record<string, string> = {
   settings: '<path d="m15 3 1 3 3 1 3-1 2 3-2 3v3l2 3-2 3-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-3 2-3v-3L2 9l2-3 3 1 3-1 1-3Z"/><circle cx="13" cy="13.5" r="4"/>',

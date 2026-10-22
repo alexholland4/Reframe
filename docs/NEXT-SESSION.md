@@ -56,18 +56,13 @@ still historical. The two requested return/startup UX tasks above remain open.
 Current automated baseline: 77 Node tests and 12 Python tests passing.
 
 
-## Owner review of the expanded 0.3.0 collection
+## Owner selected Home apps (0.3.1)
 
-The owner requested more apps and smoother, more premium presentation after
-trying 0.2.0. Version 0.3.0 exposes 32 installed apps across three shelves, with
-a generated scenic background and rewritten focus/scroll handling. Read
-LIBRARY-REFRESH.md for the full candidate list. Home versus More Apps curation
-is deliberately pending the owner's choices after trying this collection.
-Preserve their eventual selection; do not preselect a small favorite list.
-The earlier app/cast return and startup-flash tasks remain separate.
-
-
-Version 0.3.0 is now actually installed and foreground, with all 40 app-file
-hashes verified. Boot/wake helper stayed enabled with the same PID. The owner's
-next choice is the Home lineup versus More Apps, after trying the shelves and
-commenting on actual remote motion. No 0.3.0 owner acceptance has been invented.
+The expanded 0.3.0 view was a candidate collection. The owner liked its scenic
+background but asked to remove the clutter. Home now contains only Netflix,
+Prime Video, HBO Max, Peacock, Paramount+, Hulu, Apple TV, Disney+ and Apple Music,
+in that order, in one large horizontal row. More Apps ends the row and opens
+the LG App Store. Settings/input rows are removed; existing native apps remain
+installed. Curation is resolved; do not restore the multi-shelf collection.
+Read CURATED-HOME.md and the current HANDOFF.md for deployment status.
+The app/cast return and startup transition requests above remain deferred.
