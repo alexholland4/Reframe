@@ -16,12 +16,7 @@ export function mountLauncher(host: HTMLElement): void {
     section.appendChild(grid);
     host.appendChild(section);
   }
-  host.addEventListener("reframe:focus", event => {
-    const button = (event as CustomEvent<HTMLElement>).detail;
-    const tile = config.tiles.find(tile => tile.appId === button.dataset.appId);
-    if (!tile) return;
-    document.documentElement.style.setProperty("--focus-color", tile.focusColor ?? "#7d9bc7");
-  });
+
 }
 
 const shelfLabels: Record<Shelf,string> = {home:"Your apps"};

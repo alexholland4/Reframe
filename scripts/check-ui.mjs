@@ -50,6 +50,7 @@ try{
  await key('Enter',13);await key('Enter',13,true);await key('Enter',13,true);
  if(await evaluate('window.__selectCount')!==1)throw Error('Held OK launched repeatedly');
  await pause(700);
+ await pause(270);
  const target=await evaluate(`(()=>{const r=document.querySelector('[data-app-id="com.wbd.stream"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:target.x,y:target.y});await expect('HBO Max');
  await key('ArrowRight',39);await expect('Peacock');
@@ -70,6 +71,28 @@ try{
  const reversed=await evaluate(`(()=>{const r=document.querySelector('.tile.focused').getBoundingClientRect();return {left:r.left,right:r.right}})()`);
  if(reversed.left<45||reversed.right>1920)throw Error('Rapid reversal lost the shelf gutter/focus');
  await evaluate(`document.querySelector('.toast')?.remove()`);
+ // Real keydown bursts: no keyup, and a remote that omits the repeat flag.
+ const press=async(k,code,repeat=false)=>call('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code,autoRepeat:repeat});
+ const release=async(k,code)=>call('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code});
+ await press('ArrowRight',39);await expect('Prime Video');
+ for(let n=0;n<5;n++)await press('ArrowRight',39);
+ await expect('Prime Video');
+ await pause(200);await press('ArrowRight',39,true);await expect('Prime Video');
+ await pause(190);await press('ArrowRight',39);await expect('HBO Max');
+ for(let n=0;n<4;n++)await press('ArrowRight',39,true);
+ await expect('HBO Max');
+ await pause(190);await press('ArrowRight',39,true);await expect('Peacock');
+ await release('ArrowRight',39);await key('ArrowLeft',37);await expect('HBO Max');
+ await key('ArrowRight',39);await expect('Peacock');
+ // A small pointer movement immediately after D-pad use must not steal focus.
+ const jitter=await evaluate(`(()=>{const r=document.querySelector('[data-app-id="netflix"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:jitter.x,y:jitter.y});await expect('Peacock');
+ await press('Enter',13);const count=await evaluate('window.__selectCount');
+ for(let n=0;n<4;n++)await press('Enter',13);
+ if(await evaluate('window.__selectCount')!==count)throw Error('Unmarked held OK launched repeatedly');
+ await release('Enter',13);
+ for(let n=0;n<12;n++)await key('ArrowLeft',37);
+ await expect('Netflix');await pause(500);await evaluate(`document.querySelector('.toast')?.remove()`);
  // Exercise weather failures and retry independently, without changing the live widget.
  const weatherRecovery=await evaluate(`(async()=>{
    const {mountWeather}=await import('/src/widgets/weather.ts');
@@ -93,11 +116,11 @@ try{
    }finally{dispose();window.fetch=originalFetch;window.setInterval=originalInterval}
  })()`);
  mkdirSync(imageDir,{recursive:true});
- const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.2.png',Buffer.from(shot.data,'base64'));
+ const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.3.png',Buffer.from(shot.data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:3840,height:2160,deviceScaleFactor:1,mobile:false});await pause(500);
  const metrics=await evaluate(`JSON.stringify({width:innerWidth,height:innerHeight,pageOverflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,tiles:document.querySelectorAll('.tile').length,loadedImages:[...document.images].filter(i=>i.complete&&i.naturalWidth>0).length,shelves:[...document.querySelectorAll('[data-focus-group]')].map(r=>({name:r.dataset.focusGroup,apps:r.querySelectorAll('.tile').length}))})`);
  const layout=await evaluate(`(()=>{const l=document.querySelector('.top-left').getBoundingClientRect(),r=document.querySelector('.top-right').getBoundingClientRect(),t=document.querySelector('.tile.focused').getBoundingClientRect(),style=e=>parseFloat(getComputedStyle(document.querySelector(e)).fontSize);return {overlap:l.right>=r.left,top:t.top,bottom:t.bottom,height:innerHeight,time:style('.clock-time'),date:style('.clock-date'),greeting:style('.greeting')}})()`);
  if(layout.overlap||layout.top<0||layout.bottom>layout.height||layout.time<120||layout.date<38||layout.greeting<78)throw Error('Header/card layout failed '+JSON.stringify(layout));
  const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==10||parsed.shelves.length!==1||parsed.loadedImages!==11||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
- console.log(JSON.stringify({checks:['exact nine apps plus More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow','removed heading, branding and hints','larger greeting, time and date','live Sheboygan weather','weather invalid data, offline and reconnect'],weather,weatherRecovery,metrics:parsed},null,2));
-}finally{try{await call?.('Browser.close');}catch{}socket?.close();browser.kill();}
+ console.log(JSON.stringify({checks:['exact nine apps plus More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow','removed heading, branding and hints','larger greeting, time and date','unmarked repeat burst advances once','hold delay and controlled repeat','release and reversal respond immediately','pointer jitter after D-pad ignored','unmarked held OK activates once','live Sheboygan weather','weather invalid data, offline and reconnect'],weather,weatherRecovery,metrics:parsed},null,2));
+}finally{try{await Promise.race([call?.('Browser.close'),pause(1000)]);}catch{}socket?.close();browser.kill();}

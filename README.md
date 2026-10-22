@@ -16,11 +16,12 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.2** keeps the scenic coastal background and simplifies Home to
+Version **0.3.3** keeps the scenic coastal background and simplifies Home to
 nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music. A matching **More Apps** tile ends the
 single row and opens the native LG App Store. Settings and input rows are gone.
-Large cards use smooth horizontal reveals and synchronized pointer/remote focus.
+Large cards use lighter 160 ms focus/scroll motion and explicit press/release
+tracking, with a deliberate hold delay to reduce accidental multi-tile skips.
 The screen shows a larger greeting, time and date with live Sheboygan, Wisconsin
 weather in Fahrenheit. Branding, selected-app headings and footer hints are removed.
 See the [curated Home preview and checks](docs/CURATED-HOME.md).
@@ -36,6 +37,9 @@ and firmware rescue are not established. No signed firmware partition or LG
 startup script was patched. See [launcher behavior and undo](docs/LAUNCH-PERSISTENCE.md),
 [session independence](docs/SESSION-INDEPENDENCE.md) and
 [recovery](docs/ROOT-RECOVERY.md). Weather uses Sheboygan city coordinates and refreshes every 15 minutes while visible.
+
+IPTV channel-list playback is feasible; see the [investigation and proposed
+player trial](docs/IPTV-FEASIBILITY.md). No IPTV app has been installed.
 
 ## Develop
 
@@ -60,8 +64,8 @@ then use the validated root deployment controller:
 ```bash
 npm run build
 ares-package dist -o .
-python scripts/deploy-root.py com.reframe.home_0.3.2_all.ipk       # local validation
-python scripts/deploy-root.py com.reframe.home_0.3.2_all.ipk --execute
+python scripts/deploy-root.py com.reframe.home_0.3.3_all.ipk       # local validation
+python scripts/deploy-root.py com.reframe.home_0.3.3_all.ipk --execute
 ```
 
 It uses the existing external root key and strict host pin, validates the

@@ -74,3 +74,12 @@ heading, Reframe branding and footer text. Greeting/time/date are enlarged;
 Sheboygan weather in Fahrenheit is restored with refresh/reconnect handling.
 See current HANDOFF.md and CURATED-HOME.md for deployment and validation.
 The two native return/startup UX tasks above remain deferred.
+
+## Navigation and IPTV follow-up (0.3.3)
+
+The owner likes the 0.3.2 appearance. Navigation tuning addresses lag/skipping;
+read REMOTE-NAVIGATION.md and current HANDOFF.md for deployment status.
+IPTV feasibility is documented in IPTV-FEASIBILITY.md. No player/tile installed.
+Next proof would evaluate a dedicated webOS player's package, then test a small
+playlist with real picture/sound before adding one Live TV tile. This does not
+replace the two separately deferred native return/startup UX tasks.

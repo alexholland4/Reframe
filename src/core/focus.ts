@@ -3,7 +3,8 @@ type Dir = "left" | "up" | "right" | "down";
 export class FocusManager {
   private current: HTMLElement | null = null;
   private remembered = new Map<HTMLElement, HTMLElement>();
-  private lastMove = 0;
+  private heldKey: {code:number; started:number; lastEvent:number; lastStep:number} | null = null;
+  private pointerBlockedUntil = 0;
   private scrollFrames = new Map<HTMLElement, {frame:number; target:number}>();
   private lastPointer: {x:number; y:number} | null = null;
   private reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -11,9 +12,11 @@ export class FocusManager {
   constructor(private root: HTMLElement = document.body) {
     for (const item of this.items) item.tabIndex = -1;
     window.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("keyup", this.onKeyUp);
+    window.addEventListener("blur", this.releaseKeys);
     this.root.addEventListener("pointermove", this.onPointerMove);
     this.root.addEventListener("focusin", this.onFocusIn);
-    document.addEventListener("visibilitychange", this.saveFocus);
+    document.addEventListener("visibilitychange", this.onVisibilityChange);
     window.addEventListener("pagehide", this.saveFocus);
   }
   private get items(): HTMLElement[] {
@@ -72,7 +75,7 @@ export class FocusManager {
     }
     const started = performance.now(), animation = {frame:0,target};
     const step = (now: number): void => {
-      const progress = Math.min(1,(now-started)/220);
+      const progress = Math.min(1,(now-started)/160);
       element[axis] = from+(target-from)*(1-Math.pow(1-progress,3));
       if (progress<1) animation.frame = requestAnimationFrame(step);
       else this.scrollFrames.delete(element);
@@ -83,6 +86,8 @@ export class FocusManager {
   private onPointerMove = (event: PointerEvent): void => {
     if (this.lastPointer?.x === event.clientX && this.lastPointer.y === event.clientY) return;
     this.lastPointer = {x:event.clientX, y:event.clientY};
+    // Ignore pointer jitter briefly after a D-pad press (common on motion remotes).
+    if (performance.now() < this.pointerBlockedUntil) return;
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-focusable]") : null;
     if (target && this.root.contains(target)) this.setFocus(target, false);
   };
@@ -94,18 +99,40 @@ export class FocusManager {
       try { sessionStorage.setItem("reframe.focus", this.current.dataset.appId); } catch { /* Optional restoration. */ }
     }
   };
+  private releaseKeys = (): void => { this.heldKey = null; };
+  private onKeyUp = (event: KeyboardEvent): void => {
+    if (this.heldKey?.code === event.keyCode) this.releaseKeys();
+  };
+  private onVisibilityChange = (): void => {
+    this.saveFocus();
+    this.releaseKeys();
+  };
+  private acceptPress(event: KeyboardEvent): boolean {
+    const now = performance.now(), code = event.keyCode;
+    const held = this.heldKey;
+    // Do not depend on event.repeat: TV remotes can emit unmarked repeats.
+    // An idle gap recovers from a release lost when an app/dialog takes focus.
+    if (!held || held.code !== code || now-held.lastEvent > 650) {
+      if (event.repeat) return false;
+      this.heldKey = {code, started:now, lastEvent:now, lastStep:now};
+      return true;
+    }
+    held.lastEvent = now;
+    if (code === 13 || now-held.started < 360 || now-held.lastStep < 180) return false;
+    held.lastStep = now;
+    return true;
+  }
   private onKeyDown = (event: KeyboardEvent): void => {
     const directions: Record<number,Dir> = {37:"left",38:"up",39:"right",40:"down"};
     const direction = directions[event.keyCode];
     if (direction) {
       event.preventDefault();
-      const now = performance.now();
-      if (event.repeat && now-this.lastMove < 90) return;
-      this.lastMove = now;
+      this.pointerBlockedUntil = performance.now()+250;
+      if (!this.acceptPress(event)) return;
       this.move(direction);
     } else if (event.keyCode === 13) {
       event.preventDefault();
-      if (event.repeat || !this.current) return;
+      if (!this.acceptPress(event) || !this.current) return;
       this.saveFocus();
       this.current.dispatchEvent(new CustomEvent("reframe:select", {bubbles:true}));
       this.current.click();
@@ -141,9 +168,11 @@ export class FocusManager {
     for (const animation of this.scrollFrames.values()) cancelAnimationFrame(animation.frame);
     this.scrollFrames.clear();
     window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("keyup", this.onKeyUp);
+    window.removeEventListener("blur", this.releaseKeys);
     this.root.removeEventListener("pointermove", this.onPointerMove);
     this.root.removeEventListener("focusin", this.onFocusIn);
-    document.removeEventListener("visibilitychange", this.saveFocus);
+    document.removeEventListener("visibilitychange", this.onVisibilityChange);
     window.removeEventListener("pagehide", this.saveFocus);
   }
 }
