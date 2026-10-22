@@ -3,6 +3,17 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Current - owner authorized IPTV installation/configuration/testing:**
+The owner wants us to do setup and as much automated native-TV testing as
+possible, then they can confirm picture/sound. A small trial channel selection
+will precede their final favorites. webOS IPTV Player 1.17.0 and tagged source
+were reviewed; release hashes match and package paths are app/service-only.
+The exact-release installer and six boundary tests are prepared. Existing
+loopback inspector works through SSH command execution without TCP forwarding
+or Developer Mode changes. Read-only Reframe DOM/weather verified on TV.
+Install/setup/playback pending. See [IPTV-TRIAL.md](IPTV-TRIAL.md).
+Root/boot/wake baseline and Reframe 0.3.3 stay intact.
+
 **Current - Reframe 0.3.3 navigation tuning installed/foreground; IPTV assessed:**
 The owner said 0.3.2 looks great, but reported left/right lag and multi-tile
 skips. Explicit press/release tracking now handles unmarked repeat bursts:
