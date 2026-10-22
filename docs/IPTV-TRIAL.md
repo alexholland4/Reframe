@@ -57,8 +57,9 @@ foreground was Reframe and the owned stage was removed. Source checkpoint
 the IPTV app into its saved ten-channel guide. While backgrounded, IPTV was
 hidden, its video was paused and its old setup port was closed.
 FS1 was then selected and verified playing at 1280x720 with no media error.
-The owner was asked to confirm picture/sound and Back-to-guide; all automated
-TV actions are stopped while that check is pending.
+The owner confirmed normal picture, audible sound and Back returning to the
+ten-channel guide. The native trial is complete. No TV commands ran during or
+after the owner check; leave playback/user control alone until a new request.
 
 ## Repeat the setup or change the shortlist
 

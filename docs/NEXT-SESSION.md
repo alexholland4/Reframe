@@ -97,3 +97,9 @@ Full ABC/NBC sports coverage, XMLTV schedules and source reliability remain
 open; do not equate local station/news streams with network sports rights.
 Keep owner acceptance separate from automated channel/launch tests. The
 original native return/startup UX tasks above remain deferred.
+
+Owner acceptance of the native IPTV trial passed: normal FS1 picture, audible
+sound and Back returning to the ten-channel guide. Live TV launches correctly
+from Reframe, and app exit/reopen preserves the small list. Refine the subset
+with the owner; do not restore the full catalog by default. A custom player is
+not required for this granularity. No further TV actions are needed for this trial.
