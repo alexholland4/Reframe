@@ -1,172 +1,64 @@
-/*
- * Reframe theme. Designed in a 4K coordinate space (3840x2160). All sizes use
- * a root font-size so the whole UI scales if we later letterbox to 1080p for
- * development. Colors are tokens so themes are a drop-in swap later.
- */
+/* Proportional sizing for 4K TV and desktop previews. */
 :root {
-  --bg: #0b0f14;
-  --bg-elev: #141b24;
-  --fg: #eef3f8;
-  --fg-dim: #8a99ab;
-  --accent: #6ea8fe;
-  --focus-ring: #ffffff;
-  --radius: 1.2rem;
-  font-size: 32px; /* 1rem = 32px at 4K; scale this one value for other panels */
+  color-scheme: dark;
+  font-size: 0.83333333vw;
+  --fg: #f4f5f6;
+  --muted: #9da6ad;
+  --accent: #dce8ed;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
 }
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html,
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
 body {
-  height: 100%;
-}
-
-body {
-  background:
-    radial-gradient(120% 80% at 80% -10%, #1b2942 0%, transparent 55%),
-    var(--bg);
   color: var(--fg);
-  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(ellipse at 78% 8%, rgba(60, 82, 99, .31), transparent 60%),
+    radial-gradient(ellipse at 8% 90%, rgba(32, 76, 76, .22), transparent 60%),
+    linear-gradient(135deg, #171b20, #11151a 58%, #101719);
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
+button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+#app { display: flex; flex-direction: column; height: 100%; padding: 3.5rem 5rem 2.2rem; }
+.top { display: flex; justify-content: space-between; align-items: flex-end; }
+.wordmark { display: flex; align-items: center; gap: .55rem; font-size: .82rem; font-weight: 500; letter-spacing: .06em; color: #a3adb4; margin-bottom: 1.2rem; }
+.brand-mark { width: .85rem; height: .85rem; border: .08rem solid #a3adb4; border-radius: .22rem; box-shadow: .18rem -.18rem 0 -.08rem #171d23, .18rem -.18rem 0 0 #a3adb4; margin-right: .15rem; }
+.greeting { font-size: 2.45rem; font-weight: 400; letter-spacing: -.045em; line-height: 1.12; }
+.clock { text-align: right; }
+.clock-time { font-size: 2.25rem; font-weight: 350; letter-spacing: -.045em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.clock-date { margin-top: .55rem; font-size: .82rem; font-weight: 400; color: var(--muted); }
+.weather { margin-top: .7rem; display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted); }
+.weather[hidden] { display: none; }
+.wx-temp { color: var(--fg); }
+.stage { flex: 1; min-height: 0; display: flex; align-items: center; padding: 2.2rem 0; }
+.launcher { width: 100%; }
+.launcher-section + .launcher-section { margin-top: 2.7rem; }
+.section-title { font-size: .95rem; letter-spacing: -.01em; font-weight: 500; color: #c5cbd1; margin-bottom: 1.1rem; }
+.tile-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.7rem; }
+.tile { display: flex; flex-direction: column; width: 100%; min-width: 0; border: 0; border-radius: 1rem; background: transparent; cursor: pointer; outline: none; text-align: center; }
+.tile-surface { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; border-radius: 1rem; background: var(--tile-color); box-shadow: 0 .35rem .9rem #00000024, inset 0 0 0 1px #ffffff10; transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease; }
+.app-tile .tile-surface { aspect-ratio: 16 / 9; overflow: hidden; }
+.app-icon { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: contain; padding: 13% 22%; pointer-events: none; }
+.tile-caption { display: flex; flex-direction: column; }
+.app-tile > .tile-caption { width: 100%; margin-top: .9rem; }
+.tile-label { color: #b6bfc7; font-size: .95rem; font-weight: 450; letter-spacing: -.015em; line-height: 1.4; transition: color 180ms ease; }
+.utility-tile .tile-surface { height: 5.6rem; justify-content: flex-start; padding: 1.25rem 1.5rem; gap: 1.15rem; background: linear-gradient(135deg, #ffffff0b, #ffffff05); border: 1px solid #ffffff09; text-align: left; }
+.utility-icon { width: 1.85rem; height: 1.85rem; flex: 0 0 auto; color: #c1cbd2; }
+.utility-tile .tile-label { color: #e5e9ed; font-size: 1rem; }
+.tile-detail { color: #8e9aa5; font-size: .73rem; margin-top: .15rem; line-height: 1.4; }
+.tile.focused .tile-surface, .tile:focus-visible .tile-surface { transform: translateY(-.2rem) scale(1.045); box-shadow: 0 0 0 .13rem #f5f7facf, 0 1rem 2.4rem #00000055; }
+.tile.focused .tile-label { color: #fff; }
+.utility-tile.focused .tile-surface { background: linear-gradient(135deg, #ffffff18, #ffffff0a); }
+.tile.launching .tile-surface { opacity: .65; }
+.tile.launch-error .tile-surface { box-shadow: 0 0 0 .13rem #ff9c9c; }
+.hint { display: flex; justify-content: flex-end; gap: 1.2rem; align-items: center; color: #828d97; font-size: .7rem; padding-top: .5rem; }
+.navigation-hint { display: flex; align-items: center; gap: .4rem; }
+.direction-key { font-size: 1.05rem; line-height: 1; }
+.remote-key { border: 1px solid #78838c66; padding: .08rem .25rem; border-radius: .2rem; font-size: .58rem; font-weight: 500; }
+.toast { position: fixed; z-index: 10; left: 50%; bottom: 2.5rem; max-width: 80vw; transform: translate(-50%, 1rem); border: 1px solid #ffffff26; background: #2a333cf5; color: #f4f5f6; padding: .8rem 1.3rem; border-radius: .8rem; box-shadow: 0 .6rem 2rem #00000044; font-size: .85rem; text-align: center; opacity: 0; transition: opacity 180ms ease, transform 180ms ease; pointer-events: none; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
+@media (max-aspect-ratio: 4/3) { body { overflow: auto; } #app { min-height: 100%; height: auto; } .stage { padding: 5rem 0; } }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding: 3rem 4rem;
-  gap: 2rem;
-}
-
-/* ---- Top bar ---- */
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.greeting {
-  font-size: 2.4rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.weather {
-  margin-top: 0.6rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  color: var(--fg-dim);
-  font-size: 1.1rem;
-}
-.wx-icon {
-  font-size: 1.4rem;
-}
-.wx-temp {
-  color: var(--fg);
-  font-weight: 600;
-}
-.clock {
-  text-align: right;
-}
-.clock-time {
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-.clock-date {
-  color: var(--fg-dim);
-  font-size: 1.1rem;
-  margin-top: 0.2rem;
-}
-
-/* ---- Stage ---- */
-.stage {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-.tile-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.6rem;
-  width: 100%;
-}
-
-/* ---- Tiles ---- */
-.tile {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 0.8rem;
-  height: 7rem;
-  padding: 1.4rem;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--bg-elev);
-  color: var(--fg);
-  text-align: left;
-  cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-  outline: none;
-}
-.tile-dot {
-  width: 0.9rem;
-  height: 0.9rem;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.tile-label {
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-.tile.focused {
-  transform: scale(1.06);
-  background: #1b2430;
-  box-shadow:
-    0 0 0 0.18rem var(--focus-ring),
-    0 1.4rem 3rem rgba(0, 0, 0, 0.5);
-}
-.tile.launching {
-  opacity: 0.6;
-}
-.tile.launch-error {
-  box-shadow: 0 0 0 0.18rem #ff6b6b;
-}
-
-/* ---- Footer ---- */
-.hint {
-  display: flex;
-  justify-content: space-between;
-  color: var(--fg-dim);
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* ---- Status and launch errors ---- */
-.toast {
-  position: fixed;
-  bottom: 2rem;
-  max-width: 85vw;
-  text-align: center;
-  left: 50%;
-  transform: translateX(-50%) translateY(2rem);
-  background: var(--accent);
-  color: #06121f;
-  font-weight: 600;
-  padding: 0.7rem 1.4rem;
-  border-radius: 999px;
-  opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-}
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+.app-icon[src$="disney-plus.svg"] { filter: brightness(0) invert(1); }

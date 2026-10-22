@@ -3,6 +3,22 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**UI refresh resumed by owner - Reframe 0.2.0 ready for deployment:**
+The owner superseded the earlier stop specifically for a visual refresh, then
+said to finish after a usage interruption. Real bundled SVG app wordmarks,
+large spacious cards, a restrained charcoal/teal background, light typography
+and quieter TV/input controls are implemented. Desktop preview is in
+[UI-REFRESH.md](UI-REFRESH.md). Build/package, 1080p/4K layout, icon loading and
+four-direction remote navigation pass; 77 Node and 12 Python checks pass.
+
+The new `scripts/deploy-root.py` is prepared for this UI deployment through the
+existing strictly pinned root SSH connection. It validates Reframe-only package
+contents, saves the previous local package, uploads a hash-verified unique stage,
+installs once, checks all installed file hashes/version, launches Reframe and
+cleans only its own stage. Default mode makes no TV connection. It is not yet
+live-tested. The root/boot/wake setup and deferred app-exit/startup-transition
+UX work are unchanged. Deployment is the immediate next action.
+
 **Working stop, 2026-10-21 - session-independent root and boot/wake launcher VERIFIED:**
 The owner is going to bed soon and explicitly deferred UX improvements to next
 session. Do not continue TV changes/foreground tests tonight. Save this baseline

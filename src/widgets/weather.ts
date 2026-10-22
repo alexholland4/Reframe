@@ -23,13 +23,15 @@ const WMO: Record<number, { label: string; icon: string }> = {
 };
 
 export async function mountWeather(host: HTMLElement): Promise<void> {
-  host.innerHTML = `<span class="wx-icon">…</span><span class="wx-temp"></span><span class="wx-label">${config.location.label}</span>`;
+  const location = config.location;
+  if (!location) { host.hidden = true; return; }
+  host.innerHTML = `<span class="wx-icon">…</span><span class="wx-temp"></span><span class="wx-label"></span>`;
   const icon = host.querySelector<HTMLElement>(".wx-icon")!;
   const temp = host.querySelector<HTMLElement>(".wx-temp")!;
   const label = host.querySelector<HTMLElement>(".wx-label")!;
 
   try {
-    const { lat, lon } = config.location;
+    const { lat, lon } = location;
     const url =
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
       `&current=temperature_2m,weather_code&temperature_unit=fahrenheit`;
@@ -41,7 +43,7 @@ export async function mountWeather(host: HTMLElement): Promise<void> {
     const code = WMO[data.current.weather_code] ?? { label: "—", icon: "·" };
     icon.textContent = code.icon;
     temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
-    label.textContent = `${code.label} · ${config.location.label}`;
+    label.textContent = `${code.label} · ${location.label}`;
   } catch {
     icon.textContent = "·";
     temp.textContent = "—";
