@@ -16,16 +16,17 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.2.0** adds large app cards, crisp offline brand icons, a spacious
-layout and a subdued charcoal/teal palette. It uses the native TV bridge for Settings, apps and inputs. The
-owner confirmed Settings/Back, YouTube sound, iPhone Screen Mirroring, AirPlay
-and YouTube iPhone Cast after enabling the launcher. An isolated YouTube check
-stayed open. Home and Back retain native behavior: the helper makes one startup
-or wake decision, yields to native apps/casts/other inputs, and does not take
-over the Home button. App/cast exit currently returns to LG Home, and startup
-briefly shows a native screen before Reframe. These two UX improvements are
-explicitly deferred to the [next session](docs/NEXT-SESSION.md). HDMI 2 is the
-owner's soundbar.
+Version **0.3.0** adds a scenic blue-hour coastal background and 32 installed
+apps across Watch, Listen & Play and Explore shelves, plus TV/input controls.
+Navigation uses real button focus, remembered shelf positions and bounded
+scroll easing. All artwork is bundled for offline use. See the
+[collection, interaction checks and preview](docs/LIBRARY-REFRESH.md).
+
+The owner will choose which of these apps stay on Home versus a future More
+Apps view after trying the full collection. The native launch bridge and
+root/boot/wake setup are unchanged. App/cast exit still returns to native LG Home,
+and startup briefly shows a native screen before Reframe; these separate UX
+changes remain in [next-session notes](docs/NEXT-SESSION.md).
 
 Launcher-only undo/reinstall and session-marker undo were demonstrated live.
 Private original-state/LG package backups are hash-verified; complete unroot
@@ -57,8 +58,8 @@ then use the validated root deployment controller:
 ```bash
 npm run build
 ares-package dist -o .
-python scripts/deploy-root.py com.reframe.home_0.2.0_all.ipk       # local validation
-python scripts/deploy-root.py com.reframe.home_0.2.0_all.ipk --execute
+python scripts/deploy-root.py com.reframe.home_0.3.0_all.ipk       # local validation
+python scripts/deploy-root.py com.reframe.home_0.3.0_all.ipk --execute
 ```
 
 It uses the existing external root key and strict host pin, validates the

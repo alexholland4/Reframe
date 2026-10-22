@@ -4,10 +4,16 @@ import { mountClock } from "./widgets/clock.js";
 import { mountGreeting } from "./widgets/greeting.js";
 import { mountWeather } from "./widgets/weather.js";
 import { mountLauncher } from "./launcher/apps.js";
+import { config } from "./core/config.js";
 
 function render(): void {
   const app = document.getElementById("app")!;
   app.innerHTML = `
+    <div class="backdrop" aria-hidden="true">
+      <img class="landscape" src="./backgrounds/coast-blue-hour.png" alt="" />
+      <div class="backdrop-shade"></div>
+      <div class="focus-light"></div>
+    </div>
     <header class="top">
       <div class="top-left">
         <div class="wordmark"><span class="brand-mark" aria-hidden="true"></span>reframe</div>
@@ -18,12 +24,21 @@ function render(): void {
         <div class="clock"></div>
       </div>
     </header>
-    <main class="stage">
+    <section class="hero" aria-label="Selected app">
+      <p class="hero-section" id="current-section">Watch</p>
+      <h2 class="hero-title" id="current-title">Netflix</h2>
+      <p class="hero-detail" id="current-detail">Movies, series & live streaming</p>
+    </section>
+    <main class="stage" data-focus-scroll>
       <section class="launcher" aria-label="Apps and inputs"></section>
     </main>
     <footer class="hint">
-      <span class="navigation-hint"><span class="direction-key" aria-hidden="true">✣</span> Browse</span>
-      <span class="navigation-hint"><span class="remote-key">OK</span> Open</span>
+      <span class="library-size">${config.tiles.filter(tile => tile.kind === "app").length} apps in your collection</span>
+      <div class="hint-controls">
+        <span class="selection-position" id="selection-position"></span>
+        <span class="navigation-hint"><span class="direction-key" aria-hidden="true">✣</span> Browse</span>
+        <span class="navigation-hint"><span class="remote-key">OK</span> Open</span>
+      </div>
     </footer>
   `;
 

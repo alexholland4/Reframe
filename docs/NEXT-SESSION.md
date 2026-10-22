@@ -54,3 +54,14 @@ Bash developer transport. The inspector and developer-based callback test are
 still historical. The two requested return/startup UX tasks above remain open.
 
 Current automated baseline: 77 Node tests and 12 Python tests passing.
+
+
+## Owner review of the expanded 0.3.0 collection
+
+The owner requested more apps and smoother, more premium presentation after
+trying 0.2.0. Version 0.3.0 exposes 32 installed apps across three shelves, with
+a generated scenic background and rewritten focus/scroll handling. Read
+LIBRARY-REFRESH.md for the full candidate list. Home versus More Apps curation
+is deliberately pending the owner's choices after trying this collection.
+Preserve their eventual selection; do not preselect a small favorite list.
+The earlier app/cast return and startup-flash tasks remain separate.

@@ -13,3 +13,9 @@ Brand names and marks belong to their respective owners. These icons identify
 the installed apps and do not imply endorsement. Utility symbols are drawn in
 Reframe's source. The installed TV icons were used to verify app identity and
 card colors; vector artwork keeps the final layout sharp at 4K.
+
+`installed/` contains public native artwork for 28 additional visible installed
+apps, copied from their app packages for the 0.3.0 collection. No account,
+device-identity, pairing or usage data is included. The marks remain the
+property of their respective owners. See `src/core/config.ts` for the app IDs
+and local assets, and `docs/LIBRARY-REFRESH.md` for the full candidate collection.

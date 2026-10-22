@@ -1,22 +1,38 @@
-import { config, type AppTile } from "../core/config.js";
+import { config, type AppTile, type Shelf } from "../core/config.js";
 import { launchApp } from "../core/tv.js";
 import { isOnTV } from "../core/luna.js";
 
 export function mountLauncher(host: HTMLElement): void {
-  for (const kind of ["app", "utility"] as const) {
+  for (const shelf of ["watch", "play", "explore", "tv"] as const) {
+    const tiles = config.tiles.filter(tile => tile.section === shelf);
     const section = document.createElement("section");
-    section.className = "launcher-section " + kind + "-section";
-    section.setAttribute("aria-label", kind === "app" ? "Your apps" : "TV and inputs");
+    section.className = "launcher-section " + shelf + "-section";
+    section.setAttribute("aria-label", shelfLabels[shelf]);
     const heading = document.createElement("h2");
     heading.className = "section-title";
-    heading.textContent = kind === "app" ? "Your apps" : "TV & inputs";
+    heading.innerHTML = `<span>${shelfLabels[shelf]}</span><span class="section-count">${tiles.length}</span>`;
     const grid = document.createElement("div");
-    grid.className = "tile-grid";
-    for (const tile of config.tiles.filter(tile => tile.kind === kind)) grid.appendChild(createTile(tile));
+    grid.className = "tile-row";
+    grid.dataset.focusGroup = shelf;
+    grid.setAttribute("aria-label", shelfLabels[shelf]);
+    for (const tile of tiles) grid.appendChild(createTile(tile));
     section.append(heading, grid);
     host.appendChild(section);
   }
+  host.addEventListener("reframe:focus", event => {
+    const button = (event as CustomEvent<HTMLElement>).detail;
+    const tile = config.tiles.find(tile => tile.appId === button.dataset.appId);
+    if (!tile) return;
+    document.getElementById("current-title")!.textContent = tile.label;
+    document.getElementById("current-section")!.textContent = shelfLabels[tile.section];
+    document.getElementById("current-detail")!.textContent = tile.detail ?? shelfLabels[tile.section];
+    document.documentElement.style.setProperty("--focus-color", tile.focusColor ?? "#7d9bc7");
+    const row = config.tiles.filter(item => item.section === tile.section);
+    document.getElementById("selection-position")!.textContent = `${row.indexOf(tile) + 1} / ${row.length}`;
+  });
 }
+
+const shelfLabels: Record<Shelf,string> = {watch:"Watch", play:"Listen & play", explore:"Explore", tv:"TV & inputs"};
 
 const utilityIcons: Record<string, string> = {
   settings: '<path d="m15 3 1 3 3 1 3-1 2 3-2 3v3l2 3-2 3-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-3 2-3v-3L2 9l2-3 3 1 3-1 1-3Z"/><circle cx="13" cy="13.5" r="4"/>',
@@ -31,12 +47,13 @@ function createTile(tile: AppTile): HTMLElement {
   el.type = "button";
   el.setAttribute("aria-label", tile.label);
   el.dataset.focusable = "";
+  el.dataset.appId = tile.appId;
   el.style.setProperty("--tile-color", tile.accent ?? "#252b30");
   const surface = document.createElement("span");
   surface.className = "tile-surface";
   if (tile.kind === "app") {
     const img = document.createElement("img");
-    img.className = "app-icon";
+    img.className = "app-icon " + (tile.iconStyle === "wordmark" ? "wordmark-icon" : "native-icon");
     img.src = "./icons/" + tile.icon;
     img.alt = "";
     img.draggable = false;
@@ -66,6 +83,7 @@ function createTile(tile: AppTile): HTMLElement {
 }
 
 async function activate(tile: AppTile, el: HTMLElement): Promise<void> {
+  if (el.classList.contains("launching")) return;
   el.classList.add("launching");
   try {
     await launchApp(tile.appId);

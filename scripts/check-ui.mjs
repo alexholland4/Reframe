@@ -1,0 +1,74 @@
+import {spawn} from 'node:child_process';
+import {writeFileSync,mkdirSync,existsSync} from 'node:fs';
+import {dirname,resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createServer} from 'node:net';
+import {randomBytes} from 'node:crypto';
+// Run after npm run dev. Uses only the loopback preview; never contacts the TV.
+const base=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const browserPath=process.env.REFRAME_BROWSER ?? ['C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','/usr/bin/google-chrome','/usr/bin/chromium'].find(existsSync);
+if(!browserPath)throw Error('Set REFRAME_BROWSER to a Chromium browser executable');
+const portServer=createServer();
+const debugPort=await new Promise((resolve,reject)=>{portServer.once('error',reject);portServer.listen(0,'127.0.0.1',()=>{const port=portServer.address().port;portServer.close(()=>resolve(port));});});
+const profile=base+'/.research/ui-check-'+randomBytes(6).toString('hex');
+const imageDir=base+(process.argv.includes('--capture')?'/docs/images':'/.research/ui-check-results');
+const browser=spawn(browserPath,['--headless=new','--disable-gpu','--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+profile,'--window-size=1920,1080','http://127.0.0.1:5173'],{windowsHide:true,stdio:'ignore'});
+let socket,call;
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+try{
+ let tabs;
+ for(let i=0;i<100;i++){try{tabs=await(await fetch('http://127.0.0.1:'+debugPort+'/json/list')).json();if(tabs.some(t=>t.url.includes('5173')))break;}catch{}await pause(100);}
+ socket=new WebSocket(tabs.find(t=>t.url.includes('5173')).webSocketDebuggerUrl);
+ await new Promise((r,j)=>{socket.onopen=r;socket.onerror=j;});
+ let id=0;const pending=new Map(),errors=[];
+ socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);if(!p)return;pending.delete(m.id);m.error?p.reject(Error(JSON.stringify(m.error))):p.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.text);};
+ call=(method,params={})=>new Promise((resolve,reject)=>{pending.set(++id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
+ const evaluate=async expression=>{const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
+ await call('Runtime.enable');
+ await call('Emulation.setDeviceMetricsOverride',{width:1920,height:1080,deviceScaleFactor:1,mobile:false});
+ const ready=async()=>{for(let n=0;n<140;n++){if(await evaluate(`document.querySelectorAll('.tile').length===36&&[...document.images].every(i=>i.complete&&i.naturalWidth>0)`))return;await pause(100);}throw Error('UI or artwork failed to load');};
+ await ready();
+ const selected=()=>evaluate(`document.querySelector('.tile.focused')?.getAttribute('aria-label')`);
+ const expect=async name=>{const got=await selected();if(got!==name)throw Error('Expected focus '+name+', got '+got);};
+ const key=async(k,code,repeat=false)=>{await call('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code,autoRepeat:repeat});await call('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:k,windowsVirtualKeyCode:code,nativeVirtualKeyCode:code});};
+ await expect('Netflix');
+ await key('ArrowRight',39);await expect('YouTube');
+ await key('ArrowDown',40);await expect('Radio+');
+ await key('ArrowUp',38);await expect('YouTube');
+ await key('ArrowLeft',37);await expect('Netflix');
+ await evaluate(`window.__selectCount=0;document.addEventListener('reframe:select',()=>window.__selectCount++)`);
+ await key('Enter',13);await key('Enter',13,true);await key('Enter',13,true);
+ if(await evaluate('window.__selectCount')!==1)throw Error('Held OK launched repeatedly');
+ await pause(700);
+ const target=await evaluate(`(()=>{const r=document.querySelector('[data-app-id="amazon"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}})()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:target.x,y:target.y});await expect('Prime Video');
+ await key('ArrowRight',39);await expect('Disney+');
+ await evaluate(`window.__edgeStart=performance.now();window.__frames=0;requestAnimationFrame(function tick(){window.__frames++;requestAnimationFrame(tick)})`);for(let n=0;n<20;n++)await key('ArrowRight',39);
+ await expect('Movies & TV');await pause(650);
+ const edge=await evaluate(`(()=>{const e=document.querySelector('.tile.focused'),r=e.getBoundingClientRect(),g=e.closest('[data-focus-group]');return {left:r.left,right:r.right,width:innerWidth,scroll:g.scrollLeft,active:document.activeElement===e,visibility:document.visibilityState,elapsed:performance.now()-window.__edgeStart,frames:window.__frames}})()`);
+ if(!edge.active||edge.left<0||edge.right>edge.width||edge.scroll<=0)throw Error('Shelf reveal/focus failed: '+JSON.stringify(edge));
+ await key('ArrowDown',40);await expect('Radio+');
+ await key('ArrowDown',40);await key('ArrowDown',40);await pause(650);
+ const lower=await evaluate(`(()=>{const e=document.querySelector('.tile.focused'),r=e.getBoundingClientRect(),s=document.querySelector('.stage'),v=s.getBoundingClientRect();return {label:e.getAttribute('aria-label'),top:r.top,bottom:r.bottom,viewportTop:v.top,viewportBottom:v.bottom,scroll:s.scrollTop}})()`);
+ if(lower.scroll<=0||lower.top<lower.viewportTop||lower.bottom>lower.viewportBottom)throw Error('Vertical reveal failed '+JSON.stringify(lower));
+ await key('ArrowUp',38);await key('ArrowUp',38);await expect('Radio+');
+ await key('ArrowUp',38);await expect('Movies & TV');
+ // Return to the first card and preserve a clean screenshot of the first two shelves.
+ for(let n=0;n<20;n++)await key('ArrowLeft',37);
+ await expect('Netflix');await pause(500);
+ // Reverse before the pending animation settles; old scroll goals must not hide focus.
+ for(let n=0;n<16;n++)await key('ArrowRight',39);
+ for(let n=0;n<16;n++)await key('ArrowLeft',37);
+ await expect('Netflix');await pause(500);
+ const reversed=await evaluate(`(()=>{const r=document.querySelector('.tile.focused').getBoundingClientRect();return {left:r.left,right:r.right}})()`);
+ if(reversed.left<45||reversed.right>1920)throw Error('Rapid reversal lost the shelf gutter/focus');
+ await evaluate(`document.querySelector('.toast')?.remove()`);
+ mkdirSync(imageDir,{recursive:true});
+ const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.0.png',Buffer.from(shot.data,'base64'));
+ await key('ArrowDown',40);await key('ArrowDown',40);await key('ArrowDown',40);await pause(650);
+ const lowerShot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.0-library.png',Buffer.from(lowerShot.data,'base64'));
+ await call('Emulation.setDeviceMetricsOverride',{width:3840,height:2160,deviceScaleFactor:1,mobile:false});await pause(500);
+ const metrics=await evaluate(`JSON.stringify({width:innerWidth,height:innerHeight,pageOverflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,tiles:document.querySelectorAll('.tile').length,loadedImages:[...document.images].filter(i=>i.complete&&i.naturalWidth>0).length,shelves:[...document.querySelectorAll('[data-focus-group]')].map(r=>({name:r.dataset.focusGroup,apps:r.querySelectorAll('.tile').length}))})`);
+ const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==36||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
+ console.log(JSON.stringify({checks:['32 apps + 4 controls','all artwork loaded','shelf left/right boundaries','up/down row memory','pointer/remote focus synchronization','held OK activates once','horizontal reveal','rapid reversal preserves focus','vertical reveal','4K no page overflow'],metrics:parsed},null,2));
+}finally{try{await call?.('Browser.close');}catch{}socket?.close();browser.kill();}

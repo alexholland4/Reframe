@@ -3,6 +3,30 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Current - Reframe 0.3.0 collection/scenic refresh ready for deployment:**
+The owner found 0.2.0 too flat, limited and unpleasant to navigate, and requested
+more installed apps before choosing Home favorites versus More Apps. The new
+build exposes 32 current visible installed apps across Watch (14), Listen & Play
+(5), Explore (13), plus four TV/input controls. No Home/More Apps choices were
+made for the owner. See [LIBRARY-REFRESH.md](LIBRARY-REFRESH.md) for the full list
+and desktop previews. Hidden internal apps/overlays and a promotion are omitted.
+
+A built-in-imagegen coastal landscape is bundled at public/backgrounds/
+coast-blue-hour.png; full prompt and generation details are in LIBRARY-REFRESH.
+The focus manager now uses real roving button focus, ordered shelves, remembered
+row selections, genuine pointer movement, independent cancellable 220 ms scroll
+reveal, rapid direction-reversal handling and nonrepeating OK. Native Back,
+root/boot/wake code and launch bridge are unchanged. Added public app icons were
+copied from installed packages; all artwork works offline.
+
+Production build, 77 Node/12 Python tests and the reusable local browser check
+pass. scripts/check-ui.mjs verifies 36 buttons/33 images, 1080p/4K layout, row
+memory, held OK, pointer/remote synchronization, horizontal/vertical reveal and
+rapid reversal. Hidden-browser background throttling is disabled explicitly
+for meaningful animation checks. Source/package are ready; live deployment is
+next and owner feel/favorite selection is pending. Supersedes the earlier stop
+for this explicitly requested UI iteration.
+
 **Latest - Reframe 0.2.0 UI refresh deployed, 2026-10-21:**
 The owner superseded the earlier stop for a visual refresh and then explicitly
 said to finish after a usage interruption. Source checkpoint `e4a47d9` is pushed.
