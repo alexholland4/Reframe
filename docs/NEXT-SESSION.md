@@ -66,3 +66,11 @@ the LG App Store. Settings/input rows are removed; existing native apps remain
 installed. Curation is resolved; do not restore the multi-shelf collection.
 Read CURATED-HOME.md and the current HANDOFF.md for deployment status.
 The app/cast return and startup transition requests above remain deferred.
+
+## Small visual cleanup and local weather (0.3.2)
+
+The owner accepted the curated row and requested removing the changing app
+heading, Reframe branding and footer text. Greeting/time/date are enlarged;
+Sheboygan weather in Fahrenheit is restored with refresh/reconnect handling.
+See current HANDOFF.md and CURATED-HOME.md for deployment and validation.
+The two native return/startup UX tasks above remain deferred.

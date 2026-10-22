@@ -16,11 +16,13 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.1** keeps the scenic coastal background and simplifies Home to
+Version **0.3.2** keeps the scenic coastal background and simplifies Home to
 nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music. A matching **More Apps** tile ends the
 single row and opens the native LG App Store. Settings and input rows are gone.
 Large cards use smooth horizontal reveals and synchronized pointer/remote focus.
+The screen shows a larger greeting, time and date with live Sheboygan, Wisconsin
+weather in Fahrenheit. Branding, selected-app headings and footer hints are removed.
 See the [curated Home preview and checks](docs/CURATED-HOME.md).
 
 The native launch bridge and root/boot/wake setup are unchanged.
@@ -33,7 +35,7 @@ Private original-state/LG package backups are hash-verified; complete unroot
 and firmware rescue are not established. No signed firmware partition or LG
 startup script was patched. See [launcher behavior and undo](docs/LAUNCH-PERSISTENCE.md),
 [session independence](docs/SESSION-INDEPENDENCE.md) and
-[recovery](docs/ROOT-RECOVERY.md). Weather is hidden until a real location is configured.
+[recovery](docs/ROOT-RECOVERY.md). Weather uses Sheboygan city coordinates and refreshes every 15 minutes while visible.
 
 ## Develop
 
@@ -58,8 +60,8 @@ then use the validated root deployment controller:
 ```bash
 npm run build
 ares-package dist -o .
-python scripts/deploy-root.py com.reframe.home_0.3.1_all.ipk       # local validation
-python scripts/deploy-root.py com.reframe.home_0.3.1_all.ipk --execute
+python scripts/deploy-root.py com.reframe.home_0.3.2_all.ipk       # local validation
+python scripts/deploy-root.py com.reframe.home_0.3.2_all.ipk --execute
 ```
 
 It uses the existing external root key and strict host pin, validates the

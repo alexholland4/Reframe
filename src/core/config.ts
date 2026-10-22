@@ -19,7 +19,7 @@ export interface ReframeConfig {
 }
 export const config: ReframeConfig = {
   name: "Alex",
-  location: null,
+  location: { label: "Sheboygan, WI", lat: 43.75083, lon: -87.71453 },
   clock24h: false,
   tiles: [
   {

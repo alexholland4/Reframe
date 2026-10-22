@@ -20,12 +20,7 @@ export function mountLauncher(host: HTMLElement): void {
     const button = (event as CustomEvent<HTMLElement>).detail;
     const tile = config.tiles.find(tile => tile.appId === button.dataset.appId);
     if (!tile) return;
-    document.getElementById("current-title")!.textContent = tile.label;
-    document.getElementById("current-section")!.textContent = shelfLabels[tile.section];
-    document.getElementById("current-detail")!.textContent = tile.detail ?? shelfLabels[tile.section];
     document.documentElement.style.setProperty("--focus-color", tile.focusColor ?? "#7d9bc7");
-    const row = config.tiles.filter(item => item.section === tile.section);
-    document.getElementById("selection-position")!.textContent = `${row.indexOf(tile) + 1} / ${row.length}`;
   });
 }
 

@@ -1,4 +1,33 @@
-# Reframe 0.3.1: a simpler Home
+# Reframe 0.3.2: a quieter Home with local weather
+
+The owner accepted the simpler app row and requested a final small cleanup.
+The changing selected-app heading, Reframe branding and all footer text
+(position count, Browse/Open and Home) are removed. The greeting, time and date
+are larger. The scenic background and exact ten-card row remain unchanged.
+
+![Current Home](images/reframe-0.3.2.png)
+
+Weather now uses Sheboygan, Wisconsin city coordinates (43.75083, -87.71453),
+resolved with the [Open-Meteo geocoding API](https://open-meteo.com/en/docs/geocoding-api).
+[Open-Meteo current conditions](https://open-meteo.com/en/docs) provide Fahrenheit
+temperature, condition and day/night. Simple bundled SVG symbols avoid emoji
+font differences on the TV. Weather refreshes every 15 minutes while visible,
+on returning after that interval, and when connectivity returns after a failure.
+Requests time out after 10 seconds. A failed or invalid response displays
+Weather unavailable with the city, and clears the temperature rather than
+showing stale or invented conditions. Weather never blocks app navigation.
+
+The local Chromium check passed with live Sheboygan weather, exact ten-card
+order, navigation/reveal tests and 1080p/4K layout. It also verifies removal of
+the headings/branding/footer, larger header sizes, weather validation, network
+failure and reconnect behavior. This check now needs internet for live weather;
+it never contacts the TV. The screenshot contains the live response at capture
+time, not a fixed production temperature.
+
+Deployment of 0.3.2 is pending. Root/boot/wake, native launch/Back behavior,
+and the deferred app-exit/startup routing tasks are unchanged.
+
+## Previous 0.3.1 checkpoint
 
 The owner selected exactly nine apps, in this order: Netflix, Prime Video,
 HBO Max, Peacock, Paramount+, Hulu, Apple TV, Disney+ and Apple Music.
