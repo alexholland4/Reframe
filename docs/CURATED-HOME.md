@@ -5,7 +5,9 @@ approved scene, header, nine favorites and navigation tuning, and adds one
 Live TV tile immediately before More Apps. It launches com.lennylxx.iptv and
 the TV-resident curated channel list. No Settings/input rows are restored.
 Browser checks pass for eleven tiles, twelve images, navigation and 1080p/4K
-layout. See [IPTV-TRIAL.md](IPTV-TRIAL.md) for native playback results.
+layout. The TV installation passed all 43 file hashes and foreground checks.
+Actual D-pad/OK activation of Live TV opened the saved ten-channel guide.
+See [IPTV-TRIAL.md](IPTV-TRIAL.md) for native playback results.
 
 ![Home with Live TV](images/reframe-0.3.4.png)
 

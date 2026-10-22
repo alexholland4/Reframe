@@ -3,7 +3,7 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - IPTV installed and native playback tested; Live TV tile prepared:**
+**Current - IPTV/Live TV tile installed and tested; owner check pending:**
 webOS IPTV Player 1.17.0 is installed; all 80 package files match the reviewed
 pinned release and its service runs as ordinary UID 6149. The GitHub US catalog
 parsed 1,486 entries, then was saved disabled. The active TV-resident shortlist
@@ -21,8 +21,14 @@ Back returned to the guide. A real app exit closed the setup listener and
 removed its inspector target; a fresh native launch preserved the guide.
 The immediate post-exit foreground reply was empty; native return routing
 stays deferred. Reframe 0.3.4 adds a single Live TV tile before
-More Apps; build/package/browser checks pass, deployment pending. Final
-launch-tile/background and owner sound/remote acceptance pending. Root/boot/wake,
+More Apps; build/package/browser checks pass. Reframe 0.3.4 is installed; all
+43 installed file hashes match, actual foreground verified and owned stage
+removed. Source checkpoint `f809fc7` is pushed. Actual TV D-pad/OK through
+Reframe launched the saved IPTV guide. Background IPTV was hidden/paused and
+its setup listener closed. FS1 is left playing at 1280x720, error-free, for
+owner picture/sound/Back-to-guide confirmation. An async question is pending;
+DO NOT send more TV/app/inspector/recovery requests during the owner check.
+Only local documentation/Git cleanup followed. Root/boot/wake,
 SSH policy and native return/startup routing are unchanged. Private logs,
 playlists, screenshots, packages and backups stay ignored.
 

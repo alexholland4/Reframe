@@ -51,8 +51,14 @@ EPG is configured, so schedule data is not claimed. Reboot persistence has not
 been retested during this app trial.
 
 Reframe 0.3.4 has one Live TV tile before More Apps. Its production package and
-local browser checks pass; UI deployment and final launch-tile/background checks
-are pending. Owner picture/sound/physical-remote confirmation is pending.
+local browser checks pass; UI deployment passed: all 43 installed Reframe app files matched the package,
+foreground was Reframe and the owned stage was removed. Source checkpoint
+`f809fc7` is pushed. Actual TV D-pad navigation focused Live TV, and OK launched
+the IPTV app into its saved ten-channel guide. While backgrounded, IPTV was
+hidden, its video was paused and its old setup port was closed.
+FS1 was then selected and verified playing at 1280x720 with no media error.
+The owner was asked to confirm picture/sound and Back-to-guide; all automated
+TV actions are stopped while that check is pending.
 
 ## Repeat the setup or change the shortlist
 
