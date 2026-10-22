@@ -46,4 +46,11 @@ separate from owner playback/casting tests: a recovery cleanup previously
 restored Reframe over YouTube while testing overlapped. The isolated follow-up
 stayed on YouTube. No evidence showed the helper caused that interruption.
 
-Current automated baseline: 77 Node tests and seven Python tests passing.
+The owner later requested a visual refresh, completed as Reframe 0.2.0:
+large app cards, crisp offline logos, more space and subdued colors. It is
+installed/foreground; see UI-REFRESH.md. Rooted app updates now have a validated,
+live-tested route through `scripts/deploy-root.py`; use it instead of the old
+Bash developer transport. The inspector and developer-based callback test are
+still historical. The two requested return/startup UX tasks above remain open.
+
+Current automated baseline: 77 Node tests and 12 Python tests passing.

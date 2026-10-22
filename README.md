@@ -16,7 +16,8 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.1.1** uses the native TV bridge for Settings, apps and inputs. The
+Version **0.2.0** adds large app cards, crisp offline brand icons, a spacious
+layout and a subdued charcoal/teal palette. It uses the native TV bridge for Settings, apps and inputs. The
 owner confirmed Settings/Back, YouTube sound, iPhone Screen Mirroring, AirPlay
 and YouTube iPhone Cast after enabling the launcher. An isolated YouTube check
 stayed open. Home and Back retain native behavior: the helper makes one startup
@@ -31,7 +32,7 @@ Private original-state/LG package backups are hash-verified; complete unroot
 and firmware rescue are not established. No signed firmware partition or LG
 startup script was patched. See [launcher behavior and undo](docs/LAUNCH-PERSISTENCE.md),
 [session independence](docs/SESSION-INDEPENDENCE.md) and
-[recovery](docs/ROOT-RECOVERY.md). Weather coordinates remain placeholders.
+[recovery](docs/ROOT-RECOVERY.md). Weather is hidden until a real location is configured.
 
 ## Develop
 
@@ -50,13 +51,25 @@ on a detected TV raises an error instead of simulating success.
 
 ## Package and deploy
 
-**This TV now uses dedicated root SSH on port 2222.** The Bash deployment and
-inspector commands below document the earlier developer transport (9922), which
-was retired by the explicitly approved LG Developer Mode removal. Local build
-and `ares-package` still work. These older deployment/inspector tools need a
-root-transport update before their next use on this TV; do not reinstall LG
-Developer Mode alongside the session-independent rooted setup. Current root
-and recovery controllers use the dedicated key and strict saved host pin.
+**This TV now uses dedicated root SSH on port 2222.** Build/package locally,
+then use the validated root deployment controller:
+
+```bash
+npm run build
+ares-package dist -o .
+python scripts/deploy-root.py com.reframe.home_0.2.0_all.ipk       # local validation
+python scripts/deploy-root.py com.reframe.home_0.2.0_all.ipk --execute
+```
+
+It uses the existing external root key and strict host pin, validates the
+Reframe-only package, preserves the previous local package in ignored backups,
+verifies upload/installed file hashes and version, launches Reframe and cleans
+only its upload stage. This route was exercised live for 0.2.0. Do not reinstall
+LG Developer Mode alongside the session-independent rooted setup.
+
+The older Bash deployment and inspector commands below document developer SSH
+9922, which is retired. Use the root controller above for this TV; the inspector
+workflow still needs a separate migration.
 
 ### Earlier developer transport
 

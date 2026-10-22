@@ -3,21 +3,32 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**UI refresh resumed by owner - Reframe 0.2.0 ready for deployment:**
-The owner superseded the earlier stop specifically for a visual refresh, then
-said to finish after a usage interruption. Real bundled SVG app wordmarks,
-large spacious cards, a restrained charcoal/teal background, light typography
-and quieter TV/input controls are implemented. Desktop preview is in
-[UI-REFRESH.md](UI-REFRESH.md). Build/package, 1080p/4K layout, icon loading and
-four-direction remote navigation pass; 77 Node and 12 Python checks pass.
+**Latest - Reframe 0.2.0 UI refresh deployed, 2026-10-21:**
+The owner superseded the earlier stop for a visual refresh and then explicitly
+said to finish after a usage interruption. Source checkpoint `e4a47d9` is pushed.
+Reframe 0.2.0 is now installed and foreground on the TV. It has crisp bundled
+Netflix/YouTube/Prime Video/Disney+ SVG wordmarks, large rounded app cards,
+spacious layout, subdued charcoal/teal gradients, light type and a quieter
+Settings/input row. Weather is hidden until a real location is configured.
+See [UI-REFRESH.md](UI-REFRESH.md) and its saved screenshot.
 
-The new `scripts/deploy-root.py` is prepared for this UI deployment through the
-existing strictly pinned root SSH connection. It validates Reframe-only package
-contents, saves the previous local package, uploads a hash-verified unique stage,
-installs once, checks all installed file hashes/version, launches Reframe and
-cleans only its own stage. Default mode makes no TV connection. It is not yet
-live-tested. The root/boot/wake setup and deferred app-exit/startup-transition
-UX work are unchanged. Deployment is the immediate next action.
+TypeScript/Vite build and native package passed. Browser checks passed at
+1080p/4K with all icons loaded, no clipping, and Right/Down/Left/Up focus movement.
+77 Node and 12 Python tests pass. The new pinned-root deploy controller passed
+live: previous 0.1.1 IPK saved privately, staged upload hash verified, native
+install accepted, all 11 installed app files matched their package hashes,
+Reframe launch accepted and actual foreground verified, own stage removed.
+Existing boot/wake helper remains enabled/running with the same PID 3767.
+No root/boot/wake settings or Home/Back routing were changed by this UI update.
+The earlier full owner casting/playback acceptance belongs to 0.1.1; no new
+owner visual/functional confirmation has been received for 0.2.0 yet.
+
+Use `python scripts/deploy-root.py <Reframe.ipk> --execute` for future rooted app
+updates; default mode validates locally without TV access. The old developer
+SSH deployment/inspector tools remain historical. App/cast exit return routing
+and the brief native startup screen stay deferred in NEXT-SESSION.md. Current
+work is complete; retain this working stop and do not perform additional TV
+foreground tests or power cycles without a new request.
 
 **Working stop, 2026-10-21 - session-independent root and boot/wake launcher VERIFIED:**
 The owner is going to bed soon and explicitly deferred UX improvements to next
