@@ -3,7 +3,7 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - Reframe 0.3.2 cleanup/local weather prepared:**
+**Current - Reframe 0.3.2 cleanup/local weather installed/foreground:**
 The owner accepted the simpler 0.3.1 row, then requested removal of the changing
 selected-app heading, Reframe branding, position count, Browse/Open and Home
 footer text. These are removed. Greeting, time and date are larger, and live
@@ -12,7 +12,12 @@ nine apps plus More Apps remain unchanged. Weather refreshes every 15 minutes
 while visible and after resume/reconnection; errors clear temperature and show
 unavailability. Build and browser checks passed, including live weather and
 invalid-data/offline/reconnect cases. See [CURATED-HOME.md](CURATED-HOME.md).
-Deployment pending. Root/boot/wake and native Home/Back routing are unchanged.
+Source checkpoint `827fde8` is pushed. Native install/launch passed; all 41
+installed file hashes matched, foreground was com.reframe.home and the owned
+upload stage was removed. The previous local 0.3.1 IPK was preserved privately.
+Live weather was verified in the local browser; owner confirmation of weather
+on the TV and visual/remote acceptance of 0.3.2 remain pending. Root/boot/wake
+and native Home/Back routing are unchanged.
 Entries below are previous checkpoints and are superseded where relevant.
 
 **Current - owner curated Home; Reframe 0.3.1 installed/foreground:**

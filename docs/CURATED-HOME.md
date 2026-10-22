@@ -24,8 +24,13 @@ failure and reconnect behavior. This check now needs internet for live weather;
 it never contacts the TV. The screenshot contains the live response at capture
 time, not a fixed production temperature.
 
-Deployment of 0.3.2 is pending. Root/boot/wake, native launch/Back behavior,
-and the deferred app-exit/startup routing tasks are unchanged.
+Reframe 0.3.2 is installed and foreground on the TV. Native install/launch
+passed, all 41 installed file hashes matched the package and the exact owned
+upload stage was removed. The previous local 0.3.1 IPK was preserved privately.
+Source checkpoint `827fde8` is pushed. Live weather was verified in the local
+browser; owner TV weather/visual/remote acceptance is pending. Root/boot/wake,
+native launch/Back behavior and the deferred app-exit/startup routing tasks
+are unchanged.
 
 ## Previous 0.3.1 checkpoint
 
