@@ -27,6 +27,9 @@ bursts, hold delay/pacing, release/reversal, pointer jitter and unmarked held
 OK, alongside earlier navigation, More Apps, weather and 1080p/4K checks.
 Browser shutdown now tolerates a missing Browser.close acknowledgement.
 No claim of measured TV frame rate or owner acceptance is made by these checks.
-Deployment is pending.
+Reframe 0.3.3 is installed and foreground on the TV. Native install/launch
+passed, all 41 installed file hashes matched and the owned upload stage was
+removed. The previous local 0.3.2 package was saved privately. Source checkpoint
+`5e3202f` is pushed. Owner physical-remote acceptance remains pending.
 
 IPTV feasibility was investigated separately; see IPTV-FEASIBILITY.md.

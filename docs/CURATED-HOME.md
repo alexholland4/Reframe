@@ -1,5 +1,8 @@
 # Reframe 0.3.2: a quieter Home with local weather
 
+This layout is retained in 0.3.3 with lighter focus rendering and deliberate
+remote repeat handling; see [REMOTE-NAVIGATION.md](REMOTE-NAVIGATION.md).
+
 The owner accepted the simpler app row and requested a final small cleanup.
 The changing selected-app heading, Reframe branding and all footer text
 (position count, Browse/Open and Home) are removed. The greeting, time and date

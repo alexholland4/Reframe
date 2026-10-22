@@ -3,7 +3,7 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - Reframe 0.3.3 navigation tuning prepared; IPTV assessed:**
+**Current - Reframe 0.3.3 navigation tuning installed/foreground; IPTV assessed:**
 The owner said 0.3.2 looks great, but reported left/right lag and multi-tile
 skips. Explicit press/release tracking now handles unmarked repeat bursts:
 first press immediate, 360 ms hold delay, then at most one step per 180 ms.
@@ -11,7 +11,10 @@ Short pointer jitter after D-pad is suppressed. Focus/scroll are 160 ms;
 shadow transitions and the changing blurred background glow are removed.
 The approved visual layout, nine apps, More Apps and weather are preserved.
 Build and browser regression checks passed; owner hardware feel is pending.
-Deployment pending. See [REMOTE-NAVIGATION.md](REMOTE-NAVIGATION.md).
+Source checkpoint `5e3202f` is pushed. Native install/launch succeeded, all 41
+installed file hashes matched, foreground was com.reframe.home and the owned
+upload stage was removed. Previous local 0.3.2 IPK was preserved privately.
+See [REMOTE-NAVIGATION.md](REMOTE-NAVIGATION.md).
 IPTV is feasible via a dedicated webOS player launched from a future Live TV
 tile. Playlist/codec/guide sources and one broadcaster manifest were checked;
 no IPTV app/tile/service installed and no TV channel playback tested. See
