@@ -67,4 +67,27 @@ class IptvPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.inspect(fixture(wrong_service=True))
 
 
+class TrialToolBoundaries(unittest.TestCase):
+    def test_inspector_rejects_other_apps_without_connecting(self):
+        import tv_inspector
+        with patch.object(tv_inspector,"ssh") as ssh:
+            with self.assertRaises(ValueError):tv_inspector.commands("com.palm.app.settings",[{"method":"Runtime.evaluate"}])
+            ssh.assert_not_called()
+    def test_inspector_rejects_unlisted_commands_without_connecting(self):
+        import tv_inspector
+        with patch.object(tv_inspector,"ssh") as ssh:
+            with self.assertRaises(ValueError):tv_inspector.commands("com.lennylxx.iptv",[{"method":"Browser.close"}])
+            ssh.assert_not_called()
+    def test_setup_rejects_unrelated_routes_without_connecting(self):
+        import iptv_setup
+        with patch.object(iptv_setup,"evaluate") as evaluate:
+            with self.assertRaises(ValueError):iptv_setup.request("/uploads/../../etc/passwd")
+            evaluate.assert_not_called()
+    def test_capture_rejects_tracked_output_without_connecting(self):
+        import capture_tv
+        with patch.object(capture_tv,"luna") as luna:
+            with self.assertRaises(ValueError):capture_tv.capture("com.lennylxx.iptv",ROOT/"docs/unwanted.png")
+            luna.assert_not_called()
+
+
 if __name__=="__main__":unittest.main()

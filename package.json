@@ -1,6 +1,6 @@
 {
   "name": "reframe",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A lightweight, personalized, ad-free home screen for LG webOS TVs.",
   "private": true,
   "type": "module",

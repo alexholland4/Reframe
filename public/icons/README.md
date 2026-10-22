@@ -19,3 +19,7 @@ apps, copied from their app packages for the 0.3.0 collection. No account,
 device-identity, pairing or usage data is included. The marks remain the
 property of their respective owners. See `src/core/config.ts` for the app IDs
 and local assets, and `docs/LIBRARY-REFRESH.md` for the full candidate collection.
+
+`iptv-player.png` is the installed webOS IPTV Player 1.17.0 app icon, from
+[lennylxx/webos-iptv-player](https://github.com/lennylxx/webos-iptv-player).
+Its Apache 2.0 license is included as `iptv-player-LICENSE.txt`.

@@ -83,3 +83,17 @@ IPTV feasibility is documented in IPTV-FEASIBILITY.md. No player/tile installed.
 Next proof would evaluate a dedicated webOS player's package, then test a small
 playlist with real picture/sound before adding one Live TV tile. This does not
 replace the two separately deferred native return/startup UX tasks.
+
+## Native IPTV trial and curated sports list (0.3.4)
+
+The owner authorized installation/setup/testing and specified common US sports
+networks with some news. webOS IPTV Player 1.17.0 is installed. Native playback
+and display captures establish feasibility; see IPTV-TRIAL.md and current
+HANDOFF.md for precise results/limits. The full US catalog is saved disabled;
+the active ten-channel subset is TV-resident and configurable through
+iptv-trial-channels.json and prepare-iptv.py. No custom player is needed for
+favorites/hiding/reordering. Reframe 0.3.4 has one Live TV tile before More Apps.
+Full ABC/NBC sports coverage, XMLTV schedules and source reliability remain
+open; do not equate local station/news streams with network sports rights.
+Keep owner acceptance separate from automated channel/launch tests. The
+original native return/startup UX tasks above remain deferred.

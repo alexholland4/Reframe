@@ -17,7 +17,7 @@ def ssh(command, input=None, timeout=30, root=True):
     options += ["-i", str(Path.home() / ".ssh" / ("reframe-root_ed25519" if root else "reframe-tv_dec")),
                 "-p", "2222" if root else "9922", ("root" if root else "prisoner") + "@" + HOST]
     return subprocess.run([r"C:\Windows\System32\OpenSSH\ssh.exe", "-T", *options, command],
-                          input=input, capture_output=True, text=True, timeout=timeout)
+                          input=input, capture_output=True, text=True, encoding="utf-8", timeout=timeout)
 
 
 def luna(uri, payload, root=True, seconds=5):

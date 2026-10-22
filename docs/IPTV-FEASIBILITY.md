@@ -1,5 +1,9 @@
 # IPTV on this TV: feasibility investigation
 
+The owner subsequently authorized an app trial. The player is now installed;
+see current [IPTV-TRIAL.md](IPTV-TRIAL.md) and HANDOFF.md. The findings below
+describe the pre-install investigation.
+
 Investigated 2026-10-21. No IPTV package, repository, tile or background service
 was installed or enabled. Reframe's approved Home selection is unchanged.
 

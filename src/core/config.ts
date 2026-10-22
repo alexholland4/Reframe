@@ -122,6 +122,16 @@ export const config: ReframeConfig = {
     "detail": "Music, made for your TV"
   },
   {
+    "label": "Live TV",
+    "appId": "com.lennylxx.iptv",
+    "icon": "iptv-player.png",
+    "kind": "app",
+    "section": "home",
+    "iconStyle": "native",
+    "accent": "#241e52",
+    "detail": "Your channels"
+  },
+  {
     "label": "More Apps",
     "appId": "com.webos.app.discovery",
     "icon": "more-apps.svg",

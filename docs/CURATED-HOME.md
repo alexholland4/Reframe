@@ -1,4 +1,15 @@
-# Reframe 0.3.2: a quieter Home with local weather
+# Reframe 0.3.4: Home with a Live TV launch tile
+
+The owner authorized a native IPTV player trial. This version retains the
+approved scene, header, nine favorites and navigation tuning, and adds one
+Live TV tile immediately before More Apps. It launches com.lennylxx.iptv and
+the TV-resident curated channel list. No Settings/input rows are restored.
+Browser checks pass for eleven tiles, twelve images, navigation and 1080p/4K
+layout. See [IPTV-TRIAL.md](IPTV-TRIAL.md) for native playback results.
+
+![Home with Live TV](images/reframe-0.3.4.png)
+
+## Earlier 0.3.2 layout
 
 This layout is retained in 0.3.3 with lighter focus rendering and deliberate
 remote repeat handling; see [REMOTE-NAVIGATION.md](REMOTE-NAVIGATION.md).

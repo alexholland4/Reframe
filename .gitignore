@@ -5,6 +5,7 @@ dist/
 
 # Device fingerprints, inventories, pairing credentials, and trust pins
 docs/fingerprint*.txt
+docs/fingerprint*.json
 
 # Downloaded research code/packages and future device backups
 .research/

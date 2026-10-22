@@ -3,6 +3,29 @@
 _Last updated: 2026-10-21. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Current - IPTV installed and native playback tested; Live TV tile prepared:**
+webOS IPTV Player 1.17.0 is installed; all 80 package files match the reviewed
+pinned release and its service runs as ordinary UID 6149. The GitHub US catalog
+parsed 1,486 entries, then was saved disabled. The active TV-resident shortlist
+contains FS1, ESPN, TNT West, TBS East, truTV West, NBC Sports NOW, NBC News NOW,
+FOX Weather, WISN 12 local stream and TMJ4 local stream. All ten have native
+playback progress/dimensions/audio-track evidence across runs and rechecks.
+Native screenshots verify visible programming, including FS1/TBS/Turner sports;
+ESPN snapshots show commercials, so its program identity remains unconfirmed.
+ABC News/CBS Chicago candidates were excluded after unsuccessful selections.
+Existing local streams do not establish full ABC/NBC network sports coverage.
+Channel choices are in docs/iptv-trial-channels.json and can be revised without
+a custom player. Full details/tools/limits: [IPTV-TRIAL.md](IPTV-TRIAL.md).
+App reload preserved the shortlist, disabled catalog and autoplay-off setting.
+Back returned to the guide. A real app exit closed the setup listener and
+removed its inspector target; a fresh native launch preserved the guide.
+The immediate post-exit foreground reply was empty; native return routing
+stays deferred. Reframe 0.3.4 adds a single Live TV tile before
+More Apps; build/package/browser checks pass, deployment pending. Final
+launch-tile/background and owner sound/remote acceptance pending. Root/boot/wake,
+SSH policy and native return/startup routing are unchanged. Private logs,
+playlists, screenshots, packages and backups stay ignored.
+
 **Current - owner authorized IPTV installation/configuration/testing:**
 The owner wants us to do setup and as much automated native-TV testing as
 possible, then they can confirm picture/sound. A small trial channel selection
