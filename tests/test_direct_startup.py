@@ -52,6 +52,29 @@ class DirectStartupTests(unittest.TestCase):
             manager.restore()
         luna.assert_called_once_with(manager.EIM + "deleteDevice", {"appId": manager.APP})
 
+    def test_home_mapping_requires_installed_home_category(self):
+        helper = Mock()
+        helper.status.return_value = {"running": False}
+        with patch.object(manager, "load", return_value=self.plan(["helper"])), \
+                patch.object(manager, "launcher", return_value=helper), \
+                patch.object(manager, "general", return_value={"defaultApps": {}}), \
+                patch.object(manager, "node", return_value=False), patch.object(manager, "luna") as luna:
+            with self.assertRaisesRegex(RuntimeError, "appCategory"):
+                manager.map_home()
+        luna.assert_not_called()
+
+    def test_failed_home_launch_restores_native_mapping(self):
+        helper = Mock()
+        helper.status.return_value = {"running": False}
+        with patch.object(manager, "load", return_value=self.plan(["helper"])), \
+                patch.object(manager, "launcher", return_value=helper), patch.object(manager, "save"), \
+                patch.object(manager, "general", side_effect=[{"defaultApps": {}}, {"defaultApps": {"home": manager.APP}}]), \
+                patch.object(manager, "node", return_value=True), \
+                patch.object(manager, "luna", side_effect=[{}, RuntimeError("not eligible"), {}]) as luna:
+            with self.assertRaisesRegex(RuntimeError, "restored native"):
+                manager.map_home()
+        self.assertEqual(luna.call_args.args, (manager.MANAGER + "setDefaultApp", {"category": "home", "appId": manager.STOCK}))
+
     def test_restore_stops_if_home_was_changed_by_someone_else(self):
         with patch.object(manager, "load", return_value=self.plan(["home", "input"])), \
                 patch.object(manager, "general", return_value={"defaultApps": {"home": "another.launcher"}}), \

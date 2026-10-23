@@ -1,6 +1,6 @@
 {
   "id": "com.reframe.home",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "vendor": "Reframe",
   "type": "web",
   "main": "index.html",
@@ -13,6 +13,7 @@
   "noSplashOnLaunch": true,
   "spinnerOnLaunch": false,
   "supportGIP": true,
+  "appCategory": ["home"],
   "resolution": "3840x2160",
   "supportTouchMode": "none",
   "requiredACG": [

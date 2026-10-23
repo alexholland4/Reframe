@@ -8,10 +8,11 @@ spinner where possible.
 
 ## Installed UI and recovery preparation
 
-Reframe 0.3.7 moves the app row into the lower part of the screen. On this TV,
+Reframe 0.3.8 retains the lower app row introduced in 0.3.7. On this TV,
 the focused tile's top is 1,391.5 pixels on a 2,160-pixel-high canvas (64.4%).
 The Madison photo and the large app tiles remain. The package has
-`noSplashOnLaunch=true`, `spinnerOnLaunch=false` and `supportGIP=true`.
+`noSplashOnLaunch=true`, `spinnerOnLaunch=false`, `supportGIP=true` and
+`appCategory=["home"]`.
 The running native app manager recognizes the splash/spinner metadata names;
 [homebrew documentation](https://www.webosbrew.org/pages/appinfojson) describes
 their behavior. Actual owner-visible startup timing still requires observation.
@@ -24,8 +25,8 @@ independent recovery channel. LG's Input and Settings buttons are unchanged.
 
 The UI production build and browser checks passed, including the lower-row
 layout at 1080p/4K and Blue's explicit stock-Home target/held-key handling.
-Native installation verified all 46 package file hashes. Twenty-seven Python
-tests pass, including five direct-startup mutation/undo boundaries.
+Native installation verified all 46 package file hashes. Twenty-nine Python
+tests pass, including seven direct-startup mutation/undo boundaries.
 
 ![Lower app row](images/reframe-0.3.7.png)
 
@@ -72,3 +73,22 @@ It does not restore the older UI package or change IPTV sources/Favorites.
 
 Native startup behavior, cold boot and wake results will be recorded here as
 the trial progresses; API acceptance is not proof of a zero-flash transition.
+
+## Native Home eligibility and rollback results
+
+The first Home mapping saved `defaultApps.home` but `launchDefaultApp` rejected
+Reframe because its metadata did not declare the Home category. Stock LG Home
+was restored and its native category launch verified. LG Home's own app metadata
+declares `appCategory=["home"]`; the same eligibility requirement is documented
+in [independent native-TV research](https://rorygallagher2024.github.io/glasshouse/development/TV-RESEARCH/#glasshouse-home-on-webos-10-g5-webos-1031).
+Reframe 0.3.8 declares that category in its own package. The native Home-category
+launch now opens Reframe; Blue still opens stock Home, which stays open, and
+a second native Home launch returns to Reframe. No system app file was changed.
+The controller now checks installed category eligibility and tests the actual
+Home-category launch, restoring stock Home if that request fails.
+
+A complete live rollback was demonstrated before the final trial: stock Home
+mapping restored, only Reframe's input removed, Home auto-launch restored, the
+previous HDMI input selected, and the old managed helper reinstalled/started.
+Root SSH stayed available. That restored trial journal is archived privately;
+a fresh snapshot protects the final trial.

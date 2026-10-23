@@ -101,8 +101,11 @@ def input_startup():
     if general(["homeAutoLaunch"])["homeAutoLaunch"] != "off":
         raise RuntimeError("Home auto-launch preference did not persist")
     luna(MANAGER + "launch", {"id": APP})
+    routing = general(["lastInputApp", "physicalLastInputApp"])
+    if routing.get("lastInputApp") != APP:
+        raise RuntimeError("The native input manager did not remember Reframe")
     print("Native input registered; Home auto-launch disabled")
-    print("Input routing:", general(["lastInputApp", "physicalLastInputApp"]))
+    print("Input routing:", routing)
 
 
 def retire_helper():
@@ -126,10 +129,18 @@ def map_home():
     defaults = general(["defaultApps"])["defaultApps"]
     if defaults.get("home", STOCK) not in {STOCK, APP}:
         raise RuntimeError("Home mapping changed outside this trial; preserving it")
+    eligible = node("const a=JSON.parse(require('fs').readFileSync('/media/developer/apps/usr/palm/applications/com.reframe.home/appinfo.json','utf8'));console.log(JSON.stringify(Array.isArray(a.appCategory)&&a.appCategory.includes('home')));")
+    if not eligible:
+        raise RuntimeError("Installed Reframe must declare appCategory home before mapping it")
     attempt(plan, "home")
     luna(MANAGER + "setDefaultApp", {"category": "home", "appId": APP})
     if general(["defaultApps"])["defaultApps"].get("home") != APP:
         raise RuntimeError("Native Home mapping not observed")
+    try:
+        luna(MANAGER + "launchDefaultApp", {"category": "home", "params": {"launchType": "homeKey"}})
+    except Exception:
+        luna(MANAGER + "setDefaultApp", {"category": "home", "appId": STOCK})
+        raise RuntimeError("Home-category launch failed; restored native LG Home mapping")
     print("Home category mapped to Reframe; explicit stock Home remains launchable")
 
 
