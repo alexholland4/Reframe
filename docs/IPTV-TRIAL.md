@@ -1,5 +1,17 @@
 # IPTV player trial
 
+## Current channel-management setup (2026-10-22)
+
+The owner requested remote-managed Favorites and wider US browsing, without
+more playback tests. The US catalog is now enabled (1,483 entries loaded), with
+the ten original streams saved as Favorites. Green-button actions, Favorites
+membership, CBS search results and app-reload persistence were verified without
+playing any channel. Autoplay remains off. Fresh load selects All; choose
+Favorites in the sidebar for the shortlist. See [remote instructions](IPTV-REMOTE-GUIDE.md).
+The uploaded trial source is retained. This supersedes the disabled-catalog
+state described in the historical trial results below. Reframe 0.3.5 uses a
+clean white TV symbol for Live TV; all 44 installed files were verified.
+
 ## Current native-TV results
 
 webOS IPTV Player 1.17.0 is installed and all 80 installed app/service/package

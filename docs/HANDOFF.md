@@ -1,9 +1,30 @@
 # Reframe — Project Handoff
 
-_Last updated: 2026-10-21. Written so a new coding agent can pick up the work
+_Last updated: 2026-10-22. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - IPTV/Live TV tile installed and VERIFIED by owner:**
+**Current - TV-managed Favorites/catalog and cleaner Live TV icon, 2026-10-22:**
+The owner requested self-service channel browsing/search and Favorites on the
+TV, explicitly without testing more streams, plus a less spammy Live TV icon.
+All ten accepted channels are now Favorites (Green-button UI actions verified).
+The existing GitHub US URL source is enabled: 1,483 entries loaded, with
+duplicates merged across the retained uploaded source. Favorites still contain
+the same ten streams; upstream names/resolution labels now appear in the list.
+CBS Search results were verified without opening a result. Video stayed paused;
+no additional streams or health scans ran. An app reload preserved both enabled
+sources, ten Favorites and autoplay=false. Fresh load defaults to All, not
+Favorites; Favorites is one sidebar selection. It was restored before leaving.
+An initial open showed zero channels despite the uploaded file still existing;
+the player's supported source off/on refresh restored it. Subsequent reload
+with the US source enabled loaded all 1,483 entries and ten Favorites normally.
+See [IPTV-REMOTE-GUIDE.md](IPTV-REMOTE-GUIDE.md) for exact owner controls/limits.
+Reframe 0.3.5 replaces the IPTV logo with a white TV/play symbol on muted navy.
+Build, package validation and browser/navigation/weather/1080p/4K checks pass.
+Native install passed all 44 file hashes, foreground was com.reframe.home and
+the owned stage was removed. Root/boot/routing unchanged.
+This request supersedes earlier instructions to keep the full catalog disabled.
+
+**Earlier - IPTV/Live TV tile installed and VERIFIED by owner:**
 webOS IPTV Player 1.17.0 is installed; all 80 package files match the reviewed
 pinned release and its service runs as ordinary UID 6149. The GitHub US catalog
 parsed 1,486 entries, then was saved disabled. The active TV-resident shortlist

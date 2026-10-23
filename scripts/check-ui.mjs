@@ -116,7 +116,7 @@ try{
    }finally{dispose();window.fetch=originalFetch;window.setInterval=originalInterval}
  })()`);
  mkdirSync(imageDir,{recursive:true});
- const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.4.png',Buffer.from(shot.data,'base64'));
+ const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.5.png',Buffer.from(shot.data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:3840,height:2160,deviceScaleFactor:1,mobile:false});await pause(500);
  const metrics=await evaluate(`JSON.stringify({width:innerWidth,height:innerHeight,pageOverflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,tiles:document.querySelectorAll('.tile').length,loadedImages:[...document.images].filter(i=>i.complete&&i.naturalWidth>0).length,shelves:[...document.querySelectorAll('[data-focus-group]')].map(r=>({name:r.dataset.focusGroup,apps:r.querySelectorAll('.tile').length}))})`);
  const layout=await evaluate(`(()=>{const l=document.querySelector('.top-left').getBoundingClientRect(),r=document.querySelector('.top-right').getBoundingClientRect(),t=document.querySelector('.tile.focused').getBoundingClientRect(),style=e=>parseFloat(getComputedStyle(document.querySelector(e)).fontSize);return {overlap:l.right>=r.left,top:t.top,bottom:t.bottom,height:innerHeight,time:style('.clock-time'),date:style('.clock-date'),greeting:style('.greeting')}})()`);

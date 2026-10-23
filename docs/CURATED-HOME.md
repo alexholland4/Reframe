@@ -1,4 +1,14 @@
-# Reframe 0.3.4: Home with a Live TV launch tile
+# Reframe 0.3.5: a simpler Live TV icon
+
+Live TV now uses an original white TV/play symbol on muted navy, replacing the
+IPTV player's busy logo. The approved layout and navigation are unchanged.
+Build and browser checks pass at 1080p/4K; the native installation passed all
+44 file hashes and foreground verification. The player now has ten Favorites
+plus a searchable US catalog; see [remote instructions](IPTV-REMOTE-GUIDE.md).
+
+![Home with the cleaner Live TV icon](images/reframe-0.3.5.png)
+
+## Earlier 0.3.4 Live TV tile
 
 The owner authorized a native IPTV player trial. This version retains the
 approved scene, header, nine favorites and navigation tuning, and adds one

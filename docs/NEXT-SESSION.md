@@ -1,5 +1,14 @@
 # Next session: launcher UX polish
 
+Latest follow-up, 2026-10-22: the owner asked for wider US channel browsing with
+the original ten as Favorites, without testing more streams. This is configured
+and app-reload verified. Full catalog enabled, 1,483 entries, ten Favorites,
+autoplay off; fresh load selects All, so choose Favorites in the sidebar.
+Remote controls are in IPTV-REMOTE-GUIDE.md. Reframe 0.3.5's cleaner Live TV icon
+is installed, with 44 file hashes/foreground verified. Earlier instructions
+below to keep the full catalog disabled are superseded by this request.
+The two native return/startup tasks remain deferred.
+
 Working stop: 2026-10-21. The owner is going to bed and deferred these changes.
 Preserve the current TV configuration tonight. Read HANDOFF.md first next time.
 

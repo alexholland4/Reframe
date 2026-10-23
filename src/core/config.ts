@@ -124,11 +124,12 @@ export const config: ReframeConfig = {
   {
     "label": "Live TV",
     "appId": "com.lennylxx.iptv",
-    "icon": "iptv-player.png",
+    "icon": "live-tv.svg",
     "kind": "app",
     "section": "home",
-    "iconStyle": "native",
-    "accent": "#241e52",
+    "iconStyle": "wordmark",
+    "accent": "#172e3c",
+    "focusColor": "#b9dae4",
     "detail": "Your channels"
   },
   {
