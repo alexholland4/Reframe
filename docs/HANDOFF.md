@@ -1,9 +1,45 @@
 # Reframe — Project Handoff
 
-_Last updated: 2026-10-22. Written so a new coding agent can pick up the work
+_Last updated: 2026-10-23. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - Madison wallpaper installed; direct startup investigated, 2026-10-22:**
+**Current - native Reframe startup/Home and lower row installed; owner checks pending:**
+The owner authorized all implementation, including Home mapping if a separate
+LG Home escape is preserved. This supersedes the earlier Home-button restriction.
+Reframe 0.3.8 is installed: lower app row (tile top 64.4% on actual TV), the same
+Madison photo, noSplashOnLaunch=true, spinnerOnLaunch=false, supportGIP=true,
+and appCategory=["home"]. All 46 installed hashes matched and actual foreground
+was verified. The UI layout/navigation/weather/Blue escape browser checks pass.
+Blue in Reframe explicitly launches stock LG Home; trusted native-TV inspector
+input verified that escape. Independent paired SSAP also launched both stock
+Home and Reframe. Existing root SSH remains available.
+Native input registration remembers Reframe while retaining physical HDMI 2
+as the soundbar. Home auto-launch is off, and defaultApps.home is Reframe.
+The old delayed boot/wake helper was removed with its hash/PID-checked manager;
+the minimal root SSH callback remains. A complete undo was demonstrated live,
+then a fresh snapshot was taken and the final native configuration enabled.
+The first Home-mapping trial needed appCategory eligibility; stock Home was
+restored during correction. The guarded manager now tests real category launch
+and restores stock mapping on failure. Native Home -> Reframe and Blue ->
+LG Home -> native Home -> Reframe all passed before the restart.
+After a controlled full restart, bootManager reports **firstAppId=com.reframe.home**
+and actual Reframe foreground, with old helper absent and root callback marking
+launcher.enabled=false. No manual launch/recovery was used after that restart.
+The snapshot boot UUID repeated; low uptime and a fresh root callback prove the
+restart, as documented previously. Do not require UUID change as the sole gate.
+77 Node and 29 Python tests pass. Source checkpoints: 3aa8543 and bfe9396.
+Owner checks have been requested for visible wake/spinner/Home/Blue behavior,
+Settings/Back, YouTube sound and the three iPhone casting paths. **No TV actions
+while those questions are pending.** Native evidence establishes the restart
+first-app result; visual zero-flash/wake acceptance is pending. Native startup
+after choosing another physical HDMI input/mains disconnection is not yet proven.
+Read [NATIVE-STARTUP.md](NATIVE-STARTUP.md) for exact live results, Blue escape and
+`manage-direct-startup.py restore --execute` undo. Current private journal is
+backups/direct-startup/current.json; the demonstrated earlier rollback journal
+is archived beside it. Never overwrite/delete the live snapshot during a trial.
+IPTV sources/Favorites remain unchanged; no additional streams were tested.
+
+**Earlier - Madison wallpaper installed; direct startup investigated, 2026-10-22:**
 The owner requested a recognizable Madison scenic photo and investigation of
 direct cold-boot/wake to Reframe, explicitly preserving the remote Home button
 as LG Home. Reframe 0.3.6 now bundles Josh Sorenson's Madison sunset aerial from

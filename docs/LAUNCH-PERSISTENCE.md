@@ -1,5 +1,12 @@
 # Reframe boot and wake launcher
 
+Update 2026-10-23: this post-Home helper is now retired on the TV. Native input
+startup plus the native default-Home mapping replaced it, with a tested Blue
+escape to stock LG Home. The old helper remains a verified undo/reinstall path;
+root SSH's separate minimal callback remains active. Current results/undo are
+in [NATIVE-STARTUP.md](NATIVE-STARTUP.md). Do not reinstall the old helper by
+default: its startup window can conflict with intentional LG Home escape.
+
 Update 2026-10-22: the owner wants direct startup with no LG Home flash while
 preserving the physical Home button as LG Home. A read-only investigation is
 documented in [DIRECT-STARTUP.md](DIRECT-STARTUP.md). This helper remains

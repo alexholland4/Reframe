@@ -1,5 +1,13 @@
 # Direct Reframe startup: feasibility investigation
 
+**Implementation update, 2026-10-23:** the owner subsequently authorized Home
+mapping too, provided LG Home remains accessible. The native input/default-Home
+integration is installed, with Blue as a direct stock-Home escape. A full restart
+reports Reframe as the native first app, with the old delayed helper removed.
+Read [NATIVE-STARTUP.md](NATIVE-STARTUP.md) and the latest HANDOFF.md for current
+results, owner checks and scoped undo. The investigation/restrictions below are
+historical and do not supersede that later authorization.
+
 Investigated 2026-10-22 on the owner's rooted LG 55UA7050PUB, webOS 25,
 firmware 33.30.97. The owner wants Reframe to be the first visible app on both
 cold power-on and standby/wake. The physical Home button must continue opening

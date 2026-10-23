@@ -1,5 +1,16 @@
 # Next session: launcher UX polish
 
+Current 2026-10-23: Reframe 0.3.8 has the lower row and launch-spinner metadata.
+Native input/default-Home integration replaced the delayed helper. A controlled
+restart selected Reframe as native first app and actual foreground, with root
+SSH returned and the old helper absent. Blue in Reframe opens stock LG Home;
+paired recovery does too. The full undo was demonstrated before final install.
+Read NATIVE-STARTUP.md and the latest HANDOFF.md. The owner now explicitly
+allows Home -> Reframe, superseding the earlier restriction. Visible wake/
+spinner, physical controls and native/casting checks are pending owner answers:
+do not send TV actions during that check. Other-HDMI/mains boot cases remain
+untested. IPTV is unchanged. Preserve the private live rollback snapshot.
+
 Latest follow-up: Madison sunset aerial is installed in Reframe 0.3.6; all 46
 file hashes and foreground verified. See MADISON-BACKGROUND.md. The owner has
 now reopened direct boot/wake investigation, with Home explicitly staying LG

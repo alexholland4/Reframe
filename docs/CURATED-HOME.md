@@ -1,4 +1,15 @@
-# Reframe 0.3.6: Madison at sunset
+# Reframe 0.3.8: more room for Madison
+
+The app row sits lower, exposing more of the Capitol and cityscape. Tile size,
+photo, header and navigation are retained. The focused tile starts at 64.4% of
+the actual 2160p TV canvas. Reframe also has an explicit Blue-button escape to
+LG Home and metadata disabling its launch spinner/splash. Native install passed
+all 46 file hashes; browser checks include lower-row bounds and the Blue target.
+See [NATIVE-STARTUP.md](NATIVE-STARTUP.md) for startup/Home integration results.
+
+![Lower app row on Madison](images/reframe-0.3.7.png)
+
+## Earlier 0.3.6 wallpaper
 
 The background is now a real Madison aerial with the Capitol dome and Lake
 Mendota at sunset. The approved app row, Live TV icon, header and navigation

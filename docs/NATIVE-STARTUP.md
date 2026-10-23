@@ -92,3 +92,29 @@ mapping restored, only Reframe's input removed, Home auto-launch restored, the
 previous HDMI input selected, and the old managed helper reinstalled/started.
 Root SSH stayed available. That restored trial journal is archived privately;
 a fresh snapshot protects the final trial.
+
+## Full restart: native Reframe first, old helper absent
+
+The final input/Home configuration survived a controlled `/sbin/reboot`:
+
+- Boot manager reports **firstAppId=com.reframe.home**, normal hardware boot,
+  `firstAppLaunched=true` and completed boot signals.
+- Actual foreground is **com.reframe.home**, with `appCategory=["home"]`.
+- Home auto-launch remains off, the native default Home is Reframe, and
+  `lastInputApp=com.reframe.home`. The physical input remains soundbar HDMI 2.
+- Root SSH returned with a fresh root callback and low uptime; the callback
+  records `launcher.enabled=false`, and the old launcher's enable flag is absent.
+  No app launch or recovery request was used to produce the observed foreground.
+- The TV restored the same snapshot boot UUID. As recorded in ROOT-RECOVERY.md,
+  UUID change alone is not a valid restart gate; use uptime and fresh callback
+  evidence as well. The initial UUID-only observer was stopped and corrected.
+
+The native configuration is therefore responsible for this restart result.
+Owner checks for the visible Home/spinner transition, remote standby/wake,
+physical Home/Blue controls, sound and iPhone casting have been requested.
+No TV actions run during those checks. Do not claim their acceptance until the
+owner answers. Full mains-disconnection boot and behavior after choosing a
+different physical HDMI input remain separate cases, not established here.
+
+All 77 Node tests and 29 Python tests pass. The original once-per-wake helper's
+tests are retained for its tested rollback path; that helper is not active.
