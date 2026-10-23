@@ -1,6 +1,6 @@
 {
   "id": "com.reframe.home",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "vendor": "Reframe",
   "type": "web",
   "main": "index.html",
@@ -10,6 +10,9 @@
   "bgColor": "#07172c",
   "iconColor": "#dce8ed",
   "disableBackHistoryAPI": false,
+  "noSplashOnLaunch": true,
+  "spinnerOnLaunch": false,
+  "supportGIP": true,
   "resolution": "3840x2160",
   "supportTouchMode": "none",
   "requiredACG": [

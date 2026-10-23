@@ -89,7 +89,7 @@ async function activate(tile: AppTile, el: HTMLElement): Promise<void> {
   }
 }
 
-function flashToast(msg: string): void {
+export function flashToast(msg: string): void {
   let toast = document.querySelector<HTMLElement>(".toast");
   if (!toast) {
     toast = document.createElement("div");

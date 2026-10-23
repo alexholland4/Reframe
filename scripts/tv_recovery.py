@@ -45,7 +45,7 @@ def connect(pair=False):
 
 
 def launch(target, params=None):
-    if target not in {"com.reframe.home", "com.webos.app.adoverlayex"}:
+    if target not in {"com.reframe.home", "com.webos.app.home", "com.webos.app.adoverlayex"}:
         raise ValueError("Unsupported recovery launch target")
     tv = connect()
     try:

@@ -24,7 +24,7 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
 .clock-date { font-size: 1.25rem; color: #eff5ffd1; margin-top: .5rem; }
 .weather { display: flex; align-items: center; gap: .65rem; margin-top: 1rem; font-size: 1.05rem; color: var(--muted); }
 .weather[hidden] { display: none; }
-.stage { padding-top: 10rem; position: relative; display: flex; align-items: center; flex: 1; min-height: 0; overflow-x: hidden; overflow-y: hidden; overscroll-behavior: contain; scrollbar-width: none; scroll-padding: 1rem 0; }
+.stage { padding: 0 0 3rem; position: relative; display: flex; align-items: flex-end; flex: 1; min-height: 0; overflow-x: hidden; overflow-y: hidden; overscroll-behavior: contain; scrollbar-width: none; scroll-padding: 1rem 0; }
 .stage::-webkit-scrollbar, .tile-row::-webkit-scrollbar { display: none; }
 .launcher { width: 100%; min-width: 0; }
 .tile-row { position: relative; display: flex; gap: 1.4rem; width: 100%; padding: 1.2rem 4.5rem 1.45rem; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }

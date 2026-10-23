@@ -115,12 +115,20 @@ try{
      return true;
    }finally{dispose();window.fetch=originalFetch;window.setInterval=originalInterval}
  })()`);
+ // The escape must launch stock Home explicitly, independent of Home mapping.
+ await evaluate(`window.__homeCalls=[];window.PalmServiceBridge=class{call(uri,payload){window.__homeCalls.push({uri,payload:JSON.parse(payload)});this.onservicecallback(JSON.stringify({returnValue:true}))}cancel(){}}`);
+ try{
+   for(let n=0;n<3;n++)await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Unidentified',windowsVirtualKeyCode:406,nativeVirtualKeyCode:406});
+   await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Unidentified',windowsVirtualKeyCode:406,nativeVirtualKeyCode:406});
+   const homeCalls=await evaluate(`window.__homeCalls`);
+   if(homeCalls.length!==1||homeCalls[0].uri!=='luna://com.webos.applicationManager/launch'||homeCalls[0].payload.id!=='com.webos.app.home')throw Error('Blue must open stock LG Home once: '+JSON.stringify(homeCalls));
+ }finally{await evaluate(`delete window.PalmServiceBridge;delete window.__homeCalls`);}
  mkdirSync(imageDir,{recursive:true});
- const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.6.png',Buffer.from(shot.data,'base64'));
+ const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.7.png',Buffer.from(shot.data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:3840,height:2160,deviceScaleFactor:1,mobile:false});await pause(500);
  const metrics=await evaluate(`JSON.stringify({width:innerWidth,height:innerHeight,pageOverflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,tiles:document.querySelectorAll('.tile').length,loadedImages:[...document.images].filter(i=>i.complete&&i.naturalWidth>0).length,shelves:[...document.querySelectorAll('[data-focus-group]')].map(r=>({name:r.dataset.focusGroup,apps:r.querySelectorAll('.tile').length}))})`);
  const layout=await evaluate(`(()=>{const l=document.querySelector('.top-left').getBoundingClientRect(),r=document.querySelector('.top-right').getBoundingClientRect(),t=document.querySelector('.tile.focused').getBoundingClientRect(),style=e=>parseFloat(getComputedStyle(document.querySelector(e)).fontSize);return {overlap:l.right>=r.left,top:t.top,bottom:t.bottom,height:innerHeight,time:style('.clock-time'),date:style('.clock-date'),greeting:style('.greeting')}})()`);
- if(layout.overlap||layout.top<0||layout.bottom>layout.height||layout.time<120||layout.date<38||layout.greeting<78)throw Error('Header/card layout failed '+JSON.stringify(layout));
+ if(layout.overlap||layout.top<layout.height*.62||layout.top>layout.height*.78||layout.bottom>layout.height*.95||layout.time<120||layout.date<38||layout.greeting<78)throw Error('Header/card layout failed '+JSON.stringify(layout));
  const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==11||parsed.shelves.length!==1||parsed.loadedImages!==12||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
  console.log(JSON.stringify({checks:['nine favorites plus Live TV and More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow','removed heading, branding and hints','larger greeting, time and date','unmarked repeat burst advances once','hold delay and controlled repeat','release and reversal respond immediately','pointer jitter after D-pad ignored','unmarked held OK activates once','live Sheboygan weather','weather invalid data, offline and reconnect'],weather,weatherRecovery,metrics:parsed},null,2));
 }finally{try{await Promise.race([call?.('Browser.close'),pause(1000)]);}catch{}socket?.close();browser.kill();}
