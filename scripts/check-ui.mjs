@@ -130,27 +130,36 @@ try{
  const layout=await evaluate(`(()=>{const l=document.querySelector('.top-left').getBoundingClientRect(),r=document.querySelector('.top-right').getBoundingClientRect(),t=document.querySelector('.tile.focused').getBoundingClientRect(),style=e=>parseFloat(getComputedStyle(document.querySelector(e)).fontSize);return {overlap:l.right>=r.left,top:t.top,bottom:t.bottom,height:innerHeight,time:style('.clock-time'),date:style('.clock-date'),greeting:style('.greeting')}})()`);
  if(layout.overlap||layout.top<layout.height*.62||layout.top>layout.height*.78||layout.bottom>layout.height*.95||layout.time<120||layout.date<38||layout.greeting<78)throw Error('Header/card layout failed '+JSON.stringify(layout));
  const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==11||parsed.shelves.length!==1||parsed.loadedImages!==12||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
- // Seek real CSS animations: verify staggered strokes, final frame and fail-open fade.
- const startup=await evaluate(`(()=>{
-   const intro=document.querySelector('.startup');intro.hidden=false;
-   const animations=intro.getAnimations({subtree:true});
-   for(const a of animations){a.pause();a.currentTime=900;}
-   const strokes=[...intro.querySelectorAll('.mono__s')].map(e=>parseFloat(getComputedStyle(e).strokeDashoffset));
-   if(strokes.length!==6||strokes[0]>=strokes[5]||strokes[5]!==1)throw Error('Original staggered drawing is missing');
-   for(const a of animations)a.currentTime=1900;
-   if([...intro.querySelectorAll('.mono__s')].some(e=>parseFloat(getComputedStyle(e).strokeDashoffset))!==false)throw Error('Monogram is not fully drawn at 1.9 seconds');
-   return {strokes,animations:animations.length};
+ // Exercise the actual native-cover lifecycle, including a cover lasting longer than the draw.
+ await evaluate(`(async()=>{
+   window.PalmServiceBridge=class{call(uri,payload){if(uri!=='luna://com.webos.surfacemanager/getForegroundWindowInfo'||!JSON.parse(payload).subscribe)throw Error('Unexpected startup observer');window.__startupBridge=this}cancel(){this.cancelled=true}};
+   const {mountStartup}=await import('/src/core/startup.ts');window.__disposeStartup=mountStartup();
+   window.__cover=open=>window.__startupBridge.onservicecallback(JSON.stringify({returnValue:true,windows:open?[{appId:'com.webos.app.cpcover'}]:[{appId:'com.reframe.home'}]}));
+   window.__cover(true);
  })()`);
+ await pause(2300);
+ const waiting=await evaluate(`(()=>{const e=document.querySelector('.startup');return {phase:e.dataset.phase,offsets:[...e.querySelectorAll('.mono__s')].map(s=>parseFloat(getComputedStyle(s).strokeDashoffset)),black:getComputedStyle(e).backgroundColor,filter:getComputedStyle(e.querySelector('svg')).filter}})()`);
+ if(waiting.phase!=='waiting'||waiting.offsets.some(x=>x!==1)||waiting.black!=='rgb(0, 0, 0)'||waiting.filter!=='none')throw Error('Intro advanced behind LG cover: '+JSON.stringify(waiting));
+ await evaluate(`window.__cover(false)`);await pause(650);
+ const drawing=await evaluate(`(()=>{const e=document.querySelector('.startup');return {phase:e.dataset.phase,offsets:[...e.querySelectorAll('.mono__s')].map(s=>parseFloat(getComputedStyle(s).strokeDashoffset))}})()`);
+ if(drawing.phase!=='drawing'||drawing.offsets[0]>=1||drawing.offsets[5]!==1)throw Error('Staggered drawing failed: '+JSON.stringify(drawing));
+ await pause(1300);
+ if(!await evaluate(`(()=>{const e=document.querySelector('.startup');return !e.hidden&&e.dataset.phase==='holding'&&[...e.querySelectorAll('.mono__s')].every(s=>parseFloat(getComputedStyle(s).strokeDashoffset)===0)})()`))throw Error('Final mark must complete and hold before fade');
  const introShot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/personal-startup.png',Buffer.from(introShot.data,'base64'));
- await evaluate(`(()=>{const e=document.querySelector('.startup');for(const a of e.getAnimations({subtree:true}))a.currentTime=2600;if(getComputedStyle(e).visibility!=='hidden')throw Error('Startup must release home without JS completion');})()`);
- // Re-arm the real input listener, then prove a remote press also acts on the shelf.
- await evaluate(`(async()=>{document.querySelector('.startup').hidden=false;const {mountStartup}=await import('/src/core/startup.ts');mountStartup()})()`);
- await key('ArrowRight',39);await expect('Prime Video');
- if(!await evaluate(`document.querySelector('.startup').hidden`))throw Error('Remote input must dismiss the intro immediately');
+ await pause(900);
+ if(!await evaluate(`document.querySelector('.startup').hidden`))throw Error('Completed intro did not release Home');
+ await evaluate(`window.__cover(false)`);await pause(100);
+ if(!await evaluate(`document.querySelector('.startup').hidden`))throw Error('Ordinary app return must skip startup');
+ // A second real cover rearms on wake; remote input cancels even pending readiness work.
+ await evaluate(`window.__cover(true);window.__cover(false)`);
+ await key('ArrowRight',39);await expect('Prime Video');await pause(100);
+ if(!await evaluate(`document.querySelector('.startup').hidden`))throw Error('Remote dismissal raced readiness');
  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
- const reduced=await evaluate(`(()=>{const e=document.querySelector('.startup');e.hidden=false;const style=getComputedStyle(e.querySelector('.mono__s'));const valid=style.animationName==='none'&&parseFloat(style.strokeDashoffset)===0;e.hidden=true;return valid})()`);
- if(!reduced)throw Error('Reduced motion must show the completed mark without drawing');
+ await evaluate(`window.__cover(true);window.__cover(false)`);await pause(100);
+ const reduced=await evaluate(`(()=>{const e=document.querySelector('.startup');return e.dataset.phase==='holding'&&[...e.querySelectorAll('.mono__s')].every(s=>getComputedStyle(s).animationName==='none'&&parseFloat(getComputedStyle(s).strokeDashoffset)===0)})()`);
+ if(!reduced)throw Error('Reduced motion must show the complete mark without drawing');
+ await evaluate(`window.__startupBridge.onservicecallback(JSON.stringify({returnValue:false}));if(!document.querySelector('.startup').hidden||!window.__startupBridge.cancelled)throw Error('Observer failure must leave Home usable');window.__disposeStartup();delete window.PalmServiceBridge;delete window.__startupBridge;delete window.__cover;delete window.__disposeStartup`);
  if(errors.length)throw Error('Startup runtime errors: '+errors.join());
- console.log('Personal startup checks passed:',JSON.stringify({startup,reduced}));
+ console.log('Personal startup checks passed:',JSON.stringify({waiting,drawing,reduced}));
  console.log(JSON.stringify({checks:['nine favorites plus Live TV and More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow','removed heading, branding and hints','larger greeting, time and date','unmarked repeat burst advances once','hold delay and controlled repeat','release and reversal respond immediately','pointer jitter after D-pad ignored','unmarked held OK activates once','live Sheboygan weather','weather invalid data, offline and reconnect'],weather,weatherRecovery,metrics:parsed},null,2));
 }finally{try{await Promise.race([call?.('Browser.close'),pause(1000)]);}catch{}socket?.close();browser.kill();}

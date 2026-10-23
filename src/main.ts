@@ -8,7 +8,6 @@ import { mountHomeEscape } from "./core/home-escape.js";
 import { mountStartup } from "./core/startup.js";
 
 function render(): void {
-  mountStartup();
   const app = document.getElementById("app")!;
   app.innerHTML = `
     <div class="backdrop" aria-hidden="true">
@@ -38,6 +37,7 @@ function render(): void {
 
   const focus = new FocusManager(app);
   focus.focusFirst();
+  mountStartup();
 }
 
 if (document.readyState === "loading") {

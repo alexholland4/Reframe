@@ -1,5 +1,13 @@
 # Next session: launcher UX polish
 
+Latest: 0.3.10 black startup intro waits for native CoverUI closure and draws
+without the expensive SVG shadow. Installed; owner wake/full-animation and
+Prime-exit-without-intro retests pending. Leave the TV alone during checks.
+Native Prime/mirroring exit routing is owner-confirmed working. Read the top
+of HANDOFF.md and PERSONAL-STARTUP.md, including the new read-only status
+permission journal, cached connections, deployment handling and undo.
+
+
 Latest 2026-10-23: 0.3.9 personal AH startup animation is installed; native
 lastAppHandlerPolicy=lastInputApp returned a real paused-guide Back exit to
 Reframe. See PERSONAL-STARTUP.md and HANDOFF.md. Owner visual wake, Prime

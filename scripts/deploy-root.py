@@ -3,6 +3,7 @@ import argparse
 import base64
 import hashlib
 import io
+import importlib.util
 import json
 from pathlib import Path
 import secrets
@@ -79,6 +80,22 @@ def node(source):
     return json.loads(result.stdout)
 
 
+def refresh_startup_visibility():
+    """An app reinstall regenerates public-only permissions; preserve the managed opt-in."""
+    present = node("const fs=require('fs'),p='/var/lib/reframe/visibility-plan.json';let found=false;try{const s=fs.lstatSync(p);if(!s.isFile()||s.isSymbolicLink()||s.uid!==0||(s.mode&18))throw Error('Unsafe visibility plan');found=true}catch(e){if(e.code!=='ENOENT')throw e}console.log(JSON.stringify(found));")
+    if not present:
+        return
+    spec = importlib.util.spec_from_file_location("startup_visibility", PROJECT / "scripts/manage-startup-visibility.py")
+    observer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(observer)
+    print("Startup observer:", node(observer.source("install")), flush=True)
+    # LG caches groups on the app's existing bridge connection. Close only Reframe
+    # through the same native endpoint used by ares-launch --close.
+    running = luna("luna://com.webos.applicationManager/running", {})["running"]
+    if any(app.get("id") == APP for app in running):
+        luna("luna://com.webos.applicationManager/dev/closeByAppId", {"id": APP, "subscribe": False})
+
+
 def deploy(path, data, version, files):
     before = node("const fs=require('fs');console.log(JSON.stringify({uid:process.getuid(),app:JSON.parse(fs.readFileSync(" + json.dumps(INSTALLED + "/appinfo.json") + ",'utf8'))}));")
     if before["uid"] != 0 or before["app"]["id"] != APP:
@@ -116,6 +133,7 @@ console.log(JSON.stringify({uid:process.getuid(),sha256:crypto.createHash('sha25
 for(const [name,expected]of Object.entries(files)){const p=base+'/'+name,s=fs.lstatSync(p);if(!s.isFile()||s.isSymbolicLink()||crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex')!==expected.sha256)throw Error('Installed app differs: '+name);}
 console.log(JSON.stringify({uid:process.getuid(),verifiedFiles:Object.keys(files).length}));"""
         print("Installed bytes verified:", node(verify.replace("BASE", json.dumps(INSTALLED)).replace("FILES", json.dumps(files))), flush=True)
+        refresh_startup_visibility()
         print("Reframe launch:", luna("luna://com.webos.applicationManager/launch", {"id": APP}), flush=True)
         print("Foreground:", luna("luna://com.webos.applicationManager/getForegroundAppInfo", {}).get("appId"), flush=True)
     finally:

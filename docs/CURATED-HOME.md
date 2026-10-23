@@ -1,7 +1,7 @@
-# Reframe 0.3.9: personal startup
+# Reframe 0.3.10: personal startup
 
-Alex's original portfolio AH SVG now draws on the original deep green canvas
-and fades into the same Madison home screen. [Source, checks and native-screen
+Alex's original portfolio AH SVG now draws on pure black after LG's native
+startup cover closes, then fades into the same Madison home screen. [Source, checks and native-screen
 limitations](PERSONAL-STARTUP.md). Existing app row/header remain.
 
 # Reframe 0.3.8: more room for Madison

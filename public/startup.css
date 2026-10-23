@@ -5,22 +5,24 @@
   z-index: 100;
   display: grid;
   place-items: center;
-  background: #0c1410;
+  background: #000;
   pointer-events: none;
-  animation: startupRelease .45s cubic-bezier(.22, 1, .36, 1) 2.1s forwards;
+  opacity: 1;
 }
 .startup[hidden] { display: none; }
+.startup.is-fading { opacity: 0; transition: opacity .45s cubic-bezier(.22, 1, .36, 1); }
 .startup .mono {
   display: block;
   width: 25vw;
   height: 25vw;
   overflow: visible;
-  filter: drop-shadow(0 22px 50px rgba(0, 0, 0, .45));
 }
 .startup .mono__s {
   stroke: #f3f2ea;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
+}
+.startup.is-playing .mono__s {
   animation: monoDraw .62s cubic-bezier(.22, 1, .36, 1) forwards;
   animation-delay: calc(.35s + var(--i) * .17s);
 }
@@ -30,8 +32,7 @@
 .startup .mono__arrow, .startup .mono__pop { opacity: 0; }
 .startup .mono__pop { fill: none; stroke: #5be6a0; stroke-width: 3; }
 @keyframes monoDraw { to { stroke-dashoffset: 0; } }
-@keyframes startupRelease { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) {
-  .startup { animation: startupRelease .01s linear .15s forwards; }
-  .startup .mono__s { animation: none; stroke-dashoffset: 0; }
+  .startup.is-fading { transition: none; }
+  .startup.is-playing .mono__s { animation: none; stroke-dashoffset: 0; }
 }

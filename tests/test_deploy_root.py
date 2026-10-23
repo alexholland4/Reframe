@@ -7,6 +7,7 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
 
 PROJECT = Path(__file__).absolute().parent.parent
 sys.path.insert(0, str(PROJECT / "scripts"))
@@ -73,6 +74,25 @@ class PackageTests(unittest.TestCase):
     def test_package_control_script_is_rejected(self):
         with self.assertRaises(ValueError):
             self.inspect(package(hook=True))
+
+    def test_unconfigured_visibility_permission_never_closes_an_app(self):
+        with patch.object(deploy, "node", return_value=False), patch.object(deploy, "luna") as call:
+            deploy.refresh_startup_visibility()
+        call.assert_not_called()
+
+    def test_managed_permission_is_reapplied_before_closing_only_reframe(self):
+        events = []
+        def node(source):
+            events.append("policy" if "const action=" in source else "check")
+            return True
+        def luna(uri, payload):
+            events.append((uri, payload))
+            return {"running": [{"id": "amazon"}, {"id": deploy.APP}]}
+        with patch.object(deploy, "node", side_effect=node), patch.object(deploy, "luna", side_effect=luna):
+            deploy.refresh_startup_visibility()
+        self.assertEqual(events[:2], ["check", "policy"])
+        self.assertEqual(events[-1], ("luna://com.webos.applicationManager/dev/closeByAppId",
+                                    {"id": deploy.APP, "subscribe": False}))
 
 
 if __name__ == "__main__":

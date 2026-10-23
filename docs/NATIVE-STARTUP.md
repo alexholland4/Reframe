@@ -134,10 +134,10 @@ watcher, key interception or repeated launcher is added.
 The setting was read back and survived an owner standby/off/on during work.
 A real Back/double-Back exit from the Live TV player's paused guide returned
 to Reframe: the immediate foreground was temporarily empty, then settled to
-`com.reframe.home`. No stream was played. Prime Video and Screen Mirroring
-owner checks have been requested; their specific exit paths remain unconfirmed
-until answered. Blue still explicitly targets LG Home rather than the Home
-category; check that it stays there during owner validation.
+`com.reframe.home`. No stream was played. The owner subsequently confirmed both Prime Video exit and Screen Mirroring
+disconnect return to Reframe, and accepted the requested Blue escape check.
+The partial animation observed during those returns prompted the 0.3.10 fix
+in PERSONAL-STARTUP.md; the native return policy itself worked.
 
 Undo only this change, keeping startup/Home integration:
 

@@ -3,7 +3,44 @@
 _Last updated: 2026-10-23. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - personal startup animation installed; native app-exit return tested:**
+**Current - 0.3.10 startup timing/performance fix installed; owner retest pending:**
+The owner confirmed native Prime Video and Screen Mirroring exits return to
+Reframe. The original intro failed visually: LG's native cover fades over two
+seconds while the 1.82-second drawing ran underneath, and the SVG shadow was
+expensive. Actual TV A/B frame sampling measured about 18 fps with shadow vs
+44 fps without. 0.3.10 removes the filter, uses the requested pure black,
+decodes home artwork first, waits for cpcover to disappear from the native
+window list, then plays the original stroke timing and holds the completed mark
+before fading. No absolute 3-second timer truncates normal playback. Ordinary
+app returns without the startup cover skip the intro. Native LG loading words
+still precede the app and are not patched. Power-off animation remains deferred.
+
+The app now needs the read-only surfaces.status group. The explicit, journaled
+controller scripts/manage-startup-visibility.py preserves original public-only
+Reframe profile bytes/mode, adds that group only to com.reframe.home-*, and
+registers its own manifest. Native bridge connections cache grants: reopening
+only Reframe was necessary, then actual app access to getForegroundWindowInfo
+succeeded. No app launch/input/power/root permission was granted. A one-method
+custom group was attempted but not used; its files were removed before the
+working built-in read-only group was installed. No LG service restart occurred.
+The private owner/hash journal is /var/lib/reframe/visibility-plan.json.
+Undo is manage-startup-visibility.py remove --execute, then reopen Reframe to
+refresh its cached grants. The deployment controller now reapplies this managed
+opt-in after app reinstalls and closes only Reframe via the SDK's native
+applicationManager/dev/closeByAppId endpoint before launching it. That new
+installer integration has local tests; a subsequent full deployment is pending.
+
+All 47 installed app files matched; foreground and pure black were inspected.
+Browser checks hold a simulated native cover for 2.3 seconds, then verify full
+staggered playback/final hold/fade, no intro on ordinary returns, wake rearming,
+remote cancellation including pending readiness, and reduced motion. All
+82 Node and 31 Python tests pass. Actual original TV screenshot confirmed SVG
+stroke painting; measured improvement is from the actual TV replay, not desktop.
+**Owner wake/full-animation and Prime-exit-without-intro retests are pending.
+No TV launch/recovery/reboot/power actions while those checks are pending.**
+Read PERSONAL-STARTUP.md for the current implementation and exact undo.
+
+**Earlier 0.3.9 checkpoint - startup animation and native app-exit return:**
 Reframe 0.3.9 now bundles Alex's exact portfolio hero SVG and stroke animation
 from portfolio commit 66c1dec6b1585652681086a618bb6019f33a442e. It draws the
 cream AH mark on the original deep green background, then fades into Madison.
@@ -28,11 +65,10 @@ Home still await owner checks. Return-only undo:
 Full startup undo restores the captured policy first. No polling/foreground
 forcer was added. Native startup/Home and independent root SSH remain as below.
 
-**Pending owner questions: standby/off-10s-on animation and earlier loading
-text; Prime exit, mirroring disconnect and Blue escape. No TV launch/recovery,
-reboot or power actions while those checks are pending.** The earlier brief
-SSH outage was simply the owner switching the TV off; connectivity returned
-when they turned it on. Do not treat it as a regression.
+The owner confirmed Prime Video exit and Screen Mirroring disconnect now
+return to Reframe, and the requested Blue escape check passed. They also
+reported the 0.3.9 intro was blank or partially drawn on actual wake/returns;
+the timing/rendering fix below supersedes its browser-only animation result.
 
 **Earlier checkpoint - native Reframe startup/Home and lower row installed:**
 The owner authorized all implementation, including Home mapping if a separate
