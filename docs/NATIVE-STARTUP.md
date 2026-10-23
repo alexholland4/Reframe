@@ -15,7 +15,8 @@ The Madison photo and the large app tiles remain. The package has
 `appCategory=["home"]`.
 The running native app manager recognizes the splash/spinner metadata names;
 [homebrew documentation](https://www.webosbrew.org/pages/appinfojson) describes
-their behavior. Actual owner-visible startup timing still requires observation.
+their behavior. The owner confirmed remote wake goes from "Reframe loading" directly to
+Reframe, without the default spinner or LG Home flash.
 
 **Blue in Reframe opens LG Home directly**, by its explicit app ID, independent
 of the configurable Home category. Trusted inspector key input on the actual
@@ -110,11 +111,39 @@ The final input/Home configuration survived a controlled `/sbin/reboot`:
   evidence as well. The initial UUID-only observer was stopped and corrected.
 
 The native configuration is therefore responsible for this restart result.
-Owner checks for the visible Home/spinner transition, remote standby/wake,
-physical Home/Blue controls, sound and iPhone casting have been requested.
-No TV actions run during those checks. Do not claim their acceptance until the
-owner answers. Full mains-disconnection boot and behavior after choosing a
+The owner confirmed visible standby/wake: "Reframe loading" then immediate
+Reframe, no default spinner or LG Home flash. Home/Blue/Settings work; YouTube
+sound, iPhone Screen Mirroring, AirPlay and YouTube iPhone Cast still work.
+Exiting Prime Video and Screen Mirroring returned to LG Home, prompting the
+separate native return-policy change below. Full mains-disconnection boot and behavior after choosing a
 different physical HDMI input remain separate cases, not established here.
 
 All 77 Node tests and 29 Python tests pass. The original once-per-wake helper's
 tests are retained for its tested rollback path; that helper is not active.
+
+
+## Native app-exit routing, 2026-10-23
+
+The platform descriptor allows `lastAppHandlerPolicy` values `idleApp` and
+`lastInputApp`. The original was `idleApp`. With Reframe registered/selected as
+`lastInputApp`, `manage-direct-startup.py return --execute` changes this one
+native general setting to `lastInputApp`. Its original value is journaled
+before mutation in the existing private startup snapshot. No foreground
+watcher, key interception or repeated launcher is added.
+
+The setting was read back and survived an owner standby/off/on during work.
+A real Back/double-Back exit from the Live TV player's paused guide returned
+to Reframe: the immediate foreground was temporarily empty, then settled to
+`com.reframe.home`. No stream was played. Prime Video and Screen Mirroring
+owner checks have been requested; their specific exit paths remain unconfirmed
+until answered. Blue still explicitly targets LG Home rather than the Home
+category; check that it stays there during owner validation.
+
+Undo only this change, keeping startup/Home integration:
+
+```powershell
+python scripts/manage-direct-startup.py restore-return --execute
+```
+
+Full `restore --execute` now restores the captured return policy first, then
+performs the previously demonstrated startup/Home undo.

@@ -4,8 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=3840, initial-scale=1.0" />
     <title>Reframe</title>
+    <link rel="stylesheet" href="/startup.css" />
   </head>
   <body>
+    <div class="startup" aria-hidden="true">
+      <svg class="mono" viewBox="0 0 328 328" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- AH monogram, drawn stroke by stroke. Geometry traced from the logo mark. -->
+        <g class="mono__ink" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+          <line class="mono__s" style="--i:0" pathLength="1" x1="154" y1="44"  x2="43"  y2="264"/>
+          <line class="mono__s" style="--i:1" pathLength="1" x1="154" y1="44"  x2="203" y2="150"/>
+          <line class="mono__s" style="--i:2" pathLength="1" x1="96"  y1="180" x2="138" y2="180"/>
+          <line class="mono__s" style="--i:3" pathLength="1" x1="154" y1="118" x2="154" y2="264"/>
+          <line class="mono__s" style="--i:4" pathLength="1" x1="150" y1="180" x2="268" y2="180"/>
+          <line class="mono__s" style="--i:5" pathLength="1" x1="268" y1="60"  x2="268" y2="264"/>
+        </g>
+        <!-- The "hidden" upward arrow built from the icon itself: the A's triangle is
+             the head (apex 154,44 â†’ along the two legs to their feet), and the H's left
+             stem is the shaft. Flashes jade on reveal, then fades behind the mark. -->
+        <g class="mono__arrow">
+          <path class="mono__arrowfill" d="M155 64 L201 172 L101 172 Z"/>
+          <line class="mono__arrowstem" x1="154" y1="150" x2="154" y2="264" stroke-width="22" stroke-linecap="round"/>
+        </g>
+        <circle class="mono__pop" cx="154" cy="150" r="9"/>
+      </svg>
+    </div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

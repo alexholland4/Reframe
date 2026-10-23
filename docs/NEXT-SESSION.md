@@ -1,5 +1,15 @@
 # Next session: launcher UX polish
 
+Latest 2026-10-23: 0.3.9 personal AH startup animation is installed; native
+lastAppHandlerPolicy=lastInputApp returned a real paused-guide Back exit to
+Reframe. See PERSONAL-STARTUP.md and HANDOFF.md. Owner visual wake, Prime
+exit, mirroring disconnect and Blue checks are pending: leave the TV alone
+during those checks. Earlier startup/Home/Blue/Settings/casting acceptance
+was confirmed; subsequent paragraphs describing it as pending are historical.
+Native CoverUI still owns the earlier "Reframe Loading" text. Reverse native
+shutdown animation is deferred; no system QML/logo was changed.
+
+
 Current 2026-10-23: Reframe 0.3.8 has the lower row and launch-spinner metadata.
 Native input/default-Home integration replaced the delayed helper. A controlled
 restart selected Reframe as native first app and actual foreground, with root

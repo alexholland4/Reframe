@@ -3,7 +3,38 @@
 _Last updated: 2026-10-23. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - native Reframe startup/Home and lower row installed; owner checks pending:**
+**Current - personal startup animation installed; native app-exit return tested:**
+Reframe 0.3.9 now bundles Alex's exact portfolio hero SVG and stroke animation
+from portfolio commit 66c1dec6b1585652681086a618bb6019f33a442e. It draws the
+cream AH mark on the original deep green background, then fades into Madison.
+Critical CSS/SVG are in initial HTML; no network needed. Remote input skips it;
+reduced motion is supported. Browser animation/navigation/1080p/4K/weather
+checks pass, as do 77 Node and 29 Python tests. Root install verified all 47
+files, actual foreground, six SVG strokes and the local CSS/retired overlay.
+This is an app-level intro on document creation. The earlier "Reframe Loading"
+text belongs to LG's native CoverUI before the web app. No system QML was
+patched; do not claim that earliest native text was replaced or that a retained
+webview replays the intro on wake until owner observation. Reverse shutdown is
+explicitly deferred: no native logo/power sequencing changes. See
+[PERSONAL-STARTUP.md](PERSONAL-STARTUP.md), including source and undo.
+
+The native general setting lastAppHandlerPolicy changed from idleApp to
+lastInputApp, with the original journaled before mutation in the live private
+startup snapshot. lastInputApp remains Reframe. A real Back/double-Back exit
+from the paused Live TV guide settled to Reframe; no stream tested. Specific
+Prime Video exit, Screen Mirroring disconnect and Blue staying in stock LG
+Home still await owner checks. Return-only undo:
+`python scripts/manage-direct-startup.py restore-return --execute`.
+Full startup undo restores the captured policy first. No polling/foreground
+forcer was added. Native startup/Home and independent root SSH remain as below.
+
+**Pending owner questions: standby/off-10s-on animation and earlier loading
+text; Prime exit, mirroring disconnect and Blue escape. No TV launch/recovery,
+reboot or power actions while those checks are pending.** The earlier brief
+SSH outage was simply the owner switching the TV off; connectivity returned
+when they turned it on. Do not treat it as a regression.
+
+**Earlier checkpoint - native Reframe startup/Home and lower row installed:**
 The owner authorized all implementation, including Home mapping if a separate
 LG Home escape is preserved. This supersedes the earlier Home-button restriction.
 Reframe 0.3.8 is installed: lower app row (tile top 64.4% on actual TV), the same
@@ -28,10 +59,11 @@ launcher.enabled=false. No manual launch/recovery was used after that restart.
 The snapshot boot UUID repeated; low uptime and a fresh root callback prove the
 restart, as documented previously. Do not require UUID change as the sole gate.
 77 Node and 29 Python tests pass. Source checkpoints: 3aa8543 and bfe9396.
-Owner checks have been requested for visible wake/spinner/Home/Blue behavior,
-Settings/Back, YouTube sound and the three iPhone casting paths. **No TV actions
-while those questions are pending.** Native evidence establishes the restart
-first-app result; visual zero-flash/wake acceptance is pending. Native startup
+The owner subsequently confirmed standby/wake shows "Reframe loading" then
+Reframe, with no default spinner or LG Home flash; Home/Blue/Settings work,
+and YouTube sound plus all three iPhone casting paths still work. They reported
+Prime Video and Screen Mirroring exits still returning to LG Home, and requested
+that fix. Native startup
 after choosing another physical HDMI input/mains disconnection is not yet proven.
 Read [NATIVE-STARTUP.md](NATIVE-STARTUP.md) for exact live results, Blue escape and
 `manage-direct-startup.py restore --execute` undo. Current private journal is

@@ -1,6 +1,6 @@
 {
   "id": "com.reframe.home",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "vendor": "Reframe",
   "type": "web",
   "main": "index.html",

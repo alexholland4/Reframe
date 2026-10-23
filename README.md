@@ -16,7 +16,7 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.8** uses a real Madison sunset aerial with the Capitol visible,
+Version **0.3.9** uses a real Madison sunset aerial with the Capitol visible,
 and keeps Home to
 nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music. **Live TV** opens the installed IPTV
@@ -35,7 +35,11 @@ Native input registration and Home mapping now select Reframe; a controlled
 restart reports it as the first app and actual foreground, with the old delayed
 helper removed. The separate root SSH callback remains active. The previous
 configuration's undo was demonstrated live. Owner-visible standby/spinner and
-native/casting acceptance are pending. See [current startup results and undo](docs/NATIVE-STARTUP.md).
+native/casting acceptance passed. The owner confirmed no LG Home flash or
+default spinner on wake; LG's earlier "Reframe Loading" cover remains distinct.
+The new personal AH intro is installed and awaiting owner visual confirmation,
+and native app-exit routing returned a paused-guide Back exit to Reframe.
+See [personal startup animation](docs/PERSONAL-STARTUP.md). See [current startup results and undo](docs/NATIVE-STARTUP.md).
 
 Launcher-only undo/reinstall and session-marker undo were demonstrated live.
 Private original-state/LG package backups are hash-verified; complete unroot

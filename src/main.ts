@@ -5,8 +5,10 @@ import { mountGreeting } from "./widgets/greeting.js";
 import { mountWeather } from "./widgets/weather.js";
 import { mountLauncher } from "./launcher/apps.js";
 import { mountHomeEscape } from "./core/home-escape.js";
+import { mountStartup } from "./core/startup.js";
 
 function render(): void {
+  mountStartup();
   const app = document.getElementById("app")!;
   app.innerHTML = `
     <div class="backdrop" aria-hidden="true">

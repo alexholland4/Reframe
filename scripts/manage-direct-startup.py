@@ -144,8 +144,44 @@ def map_home():
     print("Home category mapped to Reframe; explicit stock Home remains launchable")
 
 
+def return_routing():
+    plan = load()
+    settings = general(["lastAppHandlerPolicy", "lastInputApp"])
+    if settings.get("lastInputApp") != APP:
+        raise RuntimeError("Select Reframe's registered input before configuring app return")
+    if "returnPolicyBefore" not in plan:
+        if settings.get("lastAppHandlerPolicy") not in {"idleApp", "lastInputApp"}:
+            raise RuntimeError("Unexpected native last-app policy; preserving it")
+        plan["returnPolicyBefore"] = settings["lastAppHandlerPolicy"]
+        save(plan)
+    attempt(plan, "return")
+    luna(SETTINGS + "setSystemSettings", {"category": "general", "settings": {
+        "lastAppHandlerPolicy": "lastInputApp"}})
+    if general(["lastAppHandlerPolicy"])["lastAppHandlerPolicy"] != "lastInputApp":
+        raise RuntimeError("Native return policy was not observed")
+    print("Native app-exit policy now returns to the last registered input (Reframe)")
+
+
+def restore_return(plan=None):
+    plan = plan if plan is not None else load()
+    if "return" not in plan["attempted"]:
+        print("No managed return-policy change to restore")
+        return
+    original = plan.get("returnPolicyBefore")
+    current = general(["lastAppHandlerPolicy"])["lastAppHandlerPolicy"]
+    if original not in {"idleApp", "lastInputApp"} or current not in {original, "lastInputApp"}:
+        raise RuntimeError("Unexpected return policy; preserving it")
+    luna(SETTINGS + "setSystemSettings", {"category": "general", "settings": {
+        "lastAppHandlerPolicy": original}})
+    if general(["lastAppHandlerPolicy"])["lastAppHandlerPolicy"] != original:
+        raise RuntimeError("Original return policy not restored")
+    print("Original app-exit return policy restored:", original)
+
+
 def restore():
     plan = load()
+    if "return" in plan["attempted"]:
+        restore_return(plan)
     if "home" in plan["attempted"]:
         current = general(["defaultApps"])["defaultApps"].get("home", STOCK)
         if current not in {APP, STOCK}:
@@ -181,7 +217,7 @@ def restore():
 
 
 def status():
-    print(json.dumps({"settings": general(["homeAutoLaunch", "defaultApps"]),
+    print(json.dumps({"settings": general(["homeAutoLaunch", "defaultApps", "lastAppHandlerPolicy"]),
         "inputs": [{k: d.get(k) for k in ["id", "appId", "activate"]} for d in inputs()],
         "helper": launcher().status(),
         "journal": load()["state"] if PLAN.exists() else None}, indent=2))
@@ -189,14 +225,15 @@ def status():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["snapshot", "input", "retire-helper", "home", "restore", "status"])
+    parser.add_argument("action", choices=["snapshot", "input", "retire-helper", "home", "return", "restore-return", "restore", "status"])
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     if args.action != "status" and not args.execute:
         print("Prepared:", args.action, "(no TV connection; --execute required)")
         return
     {"snapshot": snapshot, "input": input_startup, "retire-helper": retire_helper,
-     "home": map_home, "restore": restore, "status": status}[args.action]()
+     "home": map_home, "return": return_routing, "restore-return": restore_return,
+     "restore": restore, "status": status}[args.action]()
 
 
 if __name__ == "__main__":
