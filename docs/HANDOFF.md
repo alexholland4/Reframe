@@ -3,7 +3,48 @@
 _Last updated: 2026-10-23. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - 0.3.10 startup timing/performance fix installed; owner retest pending:**
+**Current - native startup replacement prepared; explicit approval pending:**
+The owner reports 0.3.10 still shows LG's Reframe Loading plus a translucent
+transition and no AH animation. Prime Video exit now returns directly to
+Reframe without an app-level intro. They want the native words replaced by AH
+on pure black, held if needed, then Madison, and said to work until solved.
+The selected solution is a private native CoverUI QML module, using LG's
+existing optional compositor environment file for QML2_IMPORT_PATH. No firmware
+file would change. The native component renders/completes in a local Qt test.
+Its exact geometry/timing match the portfolio mark. A 90-second rollback
+watchdog, explicit disable, ownership/hash checks and a native screenshot
+trial are prepared. 0.3.11 removes the failed app-level curtain; it is built,
+packaged and browser-checked locally, but not deployed. The TV is still 0.3.10.
+
+**Automatic approval review rejected installing the persistent compositor
+import override because it affects a critical UI component and needs explicit
+approval of that exact action.** The async approval question is pending:
+create /var/systemd/system/env/surface-manager.env, point QML2_IMPORT_PATH at
+the private CoverUI copy, and restart surface-manager-daemon for a guarded
+trial. **No native override has been installed. Do not retry, use a bind-mount
+workaround, or restart the UI for this trial until the owner explicitly
+approves.** Read [NATIVE-COVER-TRIAL.md](NATIVE-COVER-TRIAL.md) for the complete
+prepared change, rollback, next commands and verification. This gate is from
+automatic approval review, not an invented skill permission rule.
+
+The owner additionally requested no firmware-update nags or Alexa onboarding,
+while preserving app updates. Two journaled native preferences were applied:
+support.softwareUpdateEnable is now the string false (was true), and
+voiceframework.amazonLongDistanceGuided is now boolean true (was false).
+Read-back verified firmware automaticUpdate remains off and appUpdateMode
+remains manual, unchanged. No firmware check/download/install was requested;
+no app update service/domain was blocked. Actual wake/popup suppression is not
+yet owner-verified; Alexa flag is a targeted first trial, not proof of every
+promotion source. Controller/undo: manage-notifications.py apply/restore
+--execute; private backups/notifications/current.json must be preserved.
+
+All 85 Node and 38 Python tests pass, including new watchdog/refusal and
+notification scope/undo tests. Native screenshot capture was independently
+verified on Reframe (1920x1080); temporary capture was removed. Local Qt runtime
+is isolated under .research/qt-runtime. Native-Cover trial details are current;
+earlier pending/installed-animation narratives below are historical.
+
+**Earlier 0.3.10 checkpoint - timing/performance fix:**
 The owner confirmed native Prime Video and Screen Mirroring exits return to
 Reframe. The original intro failed visually: LG's native cover fades over two
 seconds while the 1.82-second drawing ran underneath, and the SVG shadow was

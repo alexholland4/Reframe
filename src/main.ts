@@ -5,7 +5,6 @@ import { mountGreeting } from "./widgets/greeting.js";
 import { mountWeather } from "./widgets/weather.js";
 import { mountLauncher } from "./launcher/apps.js";
 import { mountHomeEscape } from "./core/home-escape.js";
-import { mountStartup } from "./core/startup.js";
 
 function render(): void {
   const app = document.getElementById("app")!;
@@ -37,7 +36,6 @@ function render(): void {
 
   const focus = new FocusManager(app);
   focus.focusFirst();
-  mountStartup();
 }
 
 if (document.readyState === "loading") {

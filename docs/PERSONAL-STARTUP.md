@@ -1,5 +1,12 @@
 # Alex's portfolio startup animation
 
+Current follow-up: the owner reports 0.3.10's wake intro still failed. A native
+CoverUI replacement is prepared, with an exact-action approval gate before
+installation. See [NATIVE-COVER-TRIAL.md](NATIVE-COVER-TRIAL.md). 0.3.11 is local
+only; the TV remains on 0.3.10. The preceding TV animation claims were not
+owner acceptance.
+
+
 Reframe 0.3.9 bundles Alex Holland's original AH hero SVG from
 [his portfolio source](https://github.com/alexholland4/alexholland4.github.io/tree/66c1dec6b1585652681086a618bb6019f33a442e),
 at commit `66c1dec6b1585652681086a618bb6019f33a442e`.

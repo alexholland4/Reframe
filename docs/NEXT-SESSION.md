@@ -1,5 +1,14 @@
 # Next session: launcher UX polish
 
+Latest: 0.3.10 failed the owner wake animation test. Native CoverUI replacement
+is prepared (local Qt render/rollback tests pass), with 0.3.11 companion package
+built but not deployed. Automatic approval review rejected its persistent
+compositor environment override; explicit owner approval is pending. Do not
+enable/retry/bypass that gate. Read NATIVE-COVER-TRIAL.md and the top of HANDOFF.md.
+Firmware checks and Alexa-guide flags were changed with undo; app updates
+remain in their original mode. Wake/popup suppression still needs observation.
+
+
 Latest: 0.3.10 black startup intro waits for native CoverUI closure and draws
 without the expensive SVG shadow. Installed; owner wake/full-animation and
 Prime-exit-without-intro retests pending. Leave the TV alone during checks.

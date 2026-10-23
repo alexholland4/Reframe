@@ -8,6 +8,14 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
+Latest 2026-10-23: the TV remains on 0.3.10; its wake animation failed owner
+observation. A native AH-only CoverUI replacement and 0.3.11 companion package
+are prepared and locally tested, awaiting explicit approval of the compositor
+import override. See [guarded native trial](docs/NATIVE-COVER-TRIAL.md). Firmware
+checks/Alexa-guide preferences were changed with undo; app updates are unchanged.
+Actual reminder suppression remains to be observed.
+
+
 As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
 working on this exact TV**. HBC 0.7.3 executes as root. A controlled restart
 returned root SSH and the launcher with LG Developer Mode uninstalled and its
