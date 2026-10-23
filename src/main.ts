@@ -9,7 +9,7 @@ function render(): void {
   const app = document.getElementById("app")!;
   app.innerHTML = `
     <div class="backdrop" aria-hidden="true">
-      <img class="landscape" src="./backgrounds/coast-blue-hour.png" alt="" />
+      <img class="landscape" src="./backgrounds/madison-capitol-sunset.jpg" alt="" />
       <div class="backdrop-shade"></div>
       <div class="focus-light"></div>
     </div>

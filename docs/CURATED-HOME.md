@@ -1,4 +1,14 @@
-# Reframe 0.3.5: a simpler Live TV icon
+# Reframe 0.3.6: Madison at sunset
+
+The background is now a real Madison aerial with the Capitol dome and Lake
+Mendota at sunset. The approved app row, Live TV icon, header and navigation
+remain. The crop keeps the Capitol above the cards. All 46 native installed
+file hashes matched; browser/build/package checks pass. Source/license and
+preview: [MADISON-BACKGROUND.md](MADISON-BACKGROUND.md).
+
+![Madison wallpaper](images/reframe-0.3.6.png)
+
+## Earlier 0.3.5 Live TV icon
 
 Live TV now uses an original white TV/play symbol on muted navy, replacing the
 IPTV player's busy logo. The approved layout and navigation are unchanged.

@@ -1,5 +1,12 @@
 # Next session: launcher UX polish
 
+Latest follow-up: Madison sunset aerial is installed in Reframe 0.3.6; all 46
+file hashes and foreground verified. See MADISON-BACKGROUND.md. The owner has
+now reopened direct boot/wake investigation, with Home explicitly staying LG
+Home as a backup. Read DIRECT-STARTUP.md: native input startup is a plausible
+first trial, not yet applied or proven. Current startup settings/helper are
+unchanged. The separate app/cast-exit return task remains deferred.
+
 Latest follow-up, 2026-10-22: the owner asked for wider US channel browsing with
 the original ten as Favorites, without testing more streams. This is configured
 and app-reload verified. Full catalog enabled, 1,483 entries, ten Favorites,

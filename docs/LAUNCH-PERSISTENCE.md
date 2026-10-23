@@ -1,5 +1,10 @@
 # Reframe boot and wake launcher
 
+Update 2026-10-22: the owner wants direct startup with no LG Home flash while
+preserving the physical Home button as LG Home. A read-only investigation is
+documented in [DIRECT-STARTUP.md](DIRECT-STARTUP.md). This helper remains
+unchanged; its post-Home launch behavior is not a zero-flash startup solution.
+
 Prepared 2026-10-21; live installation/results are recorded in HANDOFF.md.
 
 The optional root helper subscribes to native foreground and TV power-state events.

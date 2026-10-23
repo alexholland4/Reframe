@@ -16,7 +16,8 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.5** keeps the scenic coastal background and simplifies Home to
+Version **0.3.6** uses a real Madison sunset aerial with the Capitol visible,
+and keeps Home to
 nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music. **Live TV** opens the installed IPTV
 player with a clean white TV icon. A matching **More Apps** tile ends the
@@ -26,11 +27,14 @@ tracking, with a deliberate hold delay to reduce accidental multi-tile skips.
 The screen shows a larger greeting, time and date with live Sheboygan, Wisconsin
 weather in Fahrenheit. Branding, selected-app headings and footer hints are removed.
 See the [curated Home preview and checks](docs/CURATED-HOME.md).
+Photo source/license: [Madison background](docs/MADISON-BACKGROUND.md).
 
 The native launch bridge and root/boot/wake setup are unchanged.
 App/cast exit still returns to native LG Home,
 and startup briefly shows a native screen before Reframe; these separate UX
-changes remain in [next-session notes](docs/NEXT-SESSION.md).
+changes remain in [next-session notes](docs/NEXT-SESSION.md). A read-only
+[direct-startup investigation](docs/DIRECT-STARTUP.md) identifies a native input
+trial that preserves the Home button; no startup changes have been applied.
 
 Launcher-only undo/reinstall and session-marker undo were demonstrated live.
 Private original-state/LG package backups are hash-verified; complete unroot
@@ -68,8 +72,8 @@ then use the validated root deployment controller:
 ```bash
 npm run build
 ares-package dist -o .
-python scripts/deploy-root.py com.reframe.home_0.3.5_all.ipk       # local validation
-python scripts/deploy-root.py com.reframe.home_0.3.5_all.ipk --execute
+python scripts/deploy-root.py com.reframe.home_0.3.6_all.ipk       # local validation
+python scripts/deploy-root.py com.reframe.home_0.3.6_all.ipk --execute
 ```
 
 It uses the existing external root key and strict host pin, validates the

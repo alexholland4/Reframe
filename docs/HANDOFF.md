@@ -3,7 +3,29 @@
 _Last updated: 2026-10-22. Written so a new coding agent can pick up the work
 without the original conversation._
 
-**Current - TV-managed Favorites/catalog and cleaner Live TV icon, 2026-10-22:**
+**Current - Madison wallpaper installed; direct startup investigated, 2026-10-22:**
+The owner requested a recognizable Madison scenic photo and investigation of
+direct cold-boot/wake to Reframe, explicitly preserving the remote Home button
+as LG Home. Reframe 0.3.6 now bundles Josh Sorenson's Madison sunset aerial from
+Unsplash, framed with the Capitol dome above the app row. Source/license are in
+public/backgrounds/ATTRIBUTION.md. Prior coastal asset remains available.
+Build, browser/navigation/weather/1080p/4K and package checks pass. Native
+install verified all 46 app file hashes and com.reframe.home foreground; owned
+stage removed. See [MADISON-BACKGROUND.md](MADISON-BACKGROUND.md).
+Startup investigation was read-only. Actual boot status names LG Home first;
+homeAutoLaunch is on, last EIM input is soundbar HDMI 2, and Reframe is not an
+input. The existing helper waits for Home/HDMI 2 plus 350ms: it cannot establish
+zero Home frames. Upstream input registration/autostart plus this firmware's
+native Input App boot action support a reversible trial. Last-input semantics,
+soundbar CEC and Home escape during the old helper's armed window need care.
+The fixed-input descriptor lists physical HDMI ports only, not a Reframe target.
+Zero-flash/unconditional cold/wake startup is unproven; no input registration,
+startup preference, root helper, default Home or key-filter change was applied.
+Concrete next experiment/undo and sources: [DIRECT-STARTUP.md](DIRECT-STARTUP.md).
+The separate app/cast-exit return request remains deferred. IPTV stays as set
+in the preceding session, with ten Favorites and searchable full US catalog.
+
+**Earlier - TV-managed Favorites/catalog and cleaner Live TV icon, 2026-10-22:**
 The owner requested self-service channel browsing/search and Favorites on the
 TV, explicitly without testing more streams, plus a less spammy Live TV icon.
 All ten accepted channels are now Favorites (Green-button UI actions verified).
