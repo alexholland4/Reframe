@@ -1,5 +1,30 @@
 # Next session: startup performance
 
+**Current follow-up 2026-10-25 - Reframe 0.3.13 performance changes installed.**
+The owner approved optimization and made the TV available. The lighter app
+package is about 61% smaller; warm fresh-document load measured 4.15 seconds
+before versus 1.84-2.00 seconds after. The offline-start flag is returned by LG,
+but one full restart still took about 35.8 seconds to compositor-visible Reframe
+(previously 36.5); do not claim a large cold-boot improvement. The three optional
+LG Channels/browser/voice preload exclusions survived restart and those apps
+were absent from the running list. Their live undo/reapply passed. No apps or
+services were removed. Existing native cover/hosts/root/startup routing remains
+intact. 0.3.13 additionally opts into app Quick Start; wake benefit is unproven.
+
+Owner off/on and Home/Blue/Settings/Back, Prime and iPhone casting checks are
+pending for this final package. Make NO TV launch, recovery, restart or power
+requests during those checks. A passive observer reads bootd events only.
+92 Node / 45 Python tests and desktop 1080p/4K checks passed. Preserve
+backups/preloads/current.json and both UI deployment backups. Read
+[STARTUP-PERFORMANCE.md](STARTUP-PERFORMANCE.md) for measurements and exact undo.
+
+The Packers stream search found WITI/Fox Milwaukee's free news feed, not a
+verified free NFL stream. FOX6 explicitly excludes NFL from FOX LOCAL. The
+owner has neither an antenna nor subscription. No channel/Favorite was added,
+no extra channels played and no paid service/trial started. Read
+[PACKERS-LOCAL-TV.md](PACKERS-LOCAL-TV.md). The accepted 0.3.11 native startup
+checkpoint below remains the rollback baseline.
+
 **Current 2026-10-25 - owner accepted startup animation, popup suppression and compatibility.**
 After a real remote off / wait about 10 seconds / on, the owner confirmed the
 full AH monogram draws on pure black and fades into Madison, with no Reframe

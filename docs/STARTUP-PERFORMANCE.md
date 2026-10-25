@@ -1,5 +1,94 @@
 # Startup performance investigation
 
+## Installed optimization checkpoint
+
+Later October 25: **Reframe 0.3.13 is installed**, with all 46 package files
+verified. 0.3.12 introduced the measured changes below; 0.3.13 has identical UI
+assets and adds only `supportQuickStart: true`. The owner approved optimization
+and made the TV available for testing. Owner off/on and compatibility checks
+for this final package are pending. Make no app-launch, recovery, restart or
+power requests during those checks. A passive read-only wake observer is
+recording events; it cannot press Power or launch an app.
+
+Changes actually applied:
+
+- `needNetworkToLaunchOnBoot: false`, confirmed in LG's getAppInfo response.
+  Weather remains asynchronous. The real restart below did **not** demonstrate
+  removal of the approximately 10-second cover-to-launch interval; metadata
+  acceptance alone is not proof of an effective boot-time improvement.
+- Wallpaper preloaded from the HTML, with asynchronous decoding on the image.
+  The bundled JPEG is now 3840 x 2160 and 1,325,791 bytes, retaining precisely
+  the bottom-aligned area already displayed. Original bytes remain in
+  `assets/source/`; the unused coastal photo was also moved out of the package.
+  IPK size fell from 4,024,642 to about 1,564,576 bytes (61% smaller).
+- Only LG Channels, browser and LG voice **preloads** are disabled, using the
+  existing writable version-3 allowlist plus the immediate native policy API.
+  No apps were uninstalled and no services stopped. Stock Home, HDMI/audio,
+  AirPlay, YouTube, Prime, Netflix, update services and root startup are unchanged.
+  The live restore/reapply passed before the restart.
+- App-only Quick Start support is declared in 0.3.13, confirmed in getAppInfo.
+  This is also used by the upstream
+  [webOS Homebrew YouTube app](https://github.com/webosbrew/youtube-webos/blob/main/assets/appinfo.json).
+  Retention on this retail firmware is unproven until a standby/wake test;
+  it does not force apps to stay resident under memory pressure.
+
+### Measurements, with limits
+
+| Browser event after fresh document navigation | 0.3.11 sample | 0.3.12 samples |
+| --- | ---: | ---: |
+| First contentful paint | 2.96 s | 1.94 s / 1.52 s |
+| Window load complete | 4.15 s | 2.00 s / 1.84 s |
+
+These are fresh Reframe relaunches on an already-running TV, with the three
+optional preload policies already disabled in both versions. Caches and CPU
+conditions can vary; the small sample is not a statistical speed guarantee.
+It supports a faster launcher page, not a claim that the whole TV is twice as
+fast. `measure-launch.py` also records SAM foreground timing, but **that can
+precede actual first paint** and must not be presented as time-to-picture.
+
+One actual 0.3.12 full restart returned pinned root SSH at uptime 45.50 s with
+a fresh root callback. Reframe's native launch began at 27.76 s; compositor
+visibility was recorded at 35.76 s, versus 36.45 s previously. The cover opened
+at 17.72 s. Cold-start browser load complete was 1.92 s and first contentful
+paint 1.84 s. Thus the web page improved substantially, but total cold boot
+improved little in this comparison. The native service/readiness interval
+still dominates the completed-logo hold. No further native cover/early-loader
+patch has been made to bypass those gates or add a Loading label.
+
+After restart the three exclusions persisted as `isAllowed: false`.
+`isEnabled` resets to true in LG's runtime policy; the persistent allowlist
+still prevents those apps from preloading. At more than three minutes uptime,
+all three were absent from SAM's running-app list; stock Home, Prime, Netflix,
+YouTube and AirPlay remained present. No extra replay hook was added.
+Post-restart memory was healthier than the earlier post-playback sample, but
+these different workloads cannot isolate how many bytes the change freed.
+
+Production build, package validation, desktop 1080p/4K artwork/navigation/live
+weather checks, 92 Node tests and 45 Python tests passed. The native cover's
+three readonly mounts and exact ownership/hash status remain active. Actual
+owner visual/casting acceptance for 0.3.13 remains separate from these checks.
+
+### Undo and evidence
+
+- `python scripts/manage-preloads.py restore --execute` restores only the three
+  saved policy/allowlist entries and preserves unrelated changes. Its private
+  journal is `backups/preloads/current.json`; preserve it. Default apply/restore
+  commands are review-only without `--execute`.
+- Reinstall the preserved 0.3.12 IPK using `deploy-root.py` to undo only the
+  Quick Start opt-in. Reinstall 0.3.11 to undo the entire app optimization.
+  Private deployment backups are under `backups/ui-before-0.3.12-*` and
+  `backups/ui-before-0.3.13-*`. Native Home/return routing, AH cover, firmware
+  hostname block and root SSH are independent of these app packages.
+- New ignored evidence includes `fresh-0311.json`, `fresh-0312-a.json`,
+  `fresh-0312-b.json`, `0312-full-restart.json`, `0312-cold-browser.json`,
+  `0312-postboot-preloads.json`, `0312-running.json` and
+  `0312-postboot-memory.json`. `0313-before-wake.json` is the passive observer's
+  baseline; do not call the wake measured without its matching result.
+
+The initial investigation below is historical and explains the selected work.
+
+---
+
 October 25, 2026. Read-only investigation after the owner accepted the early
 AH cover on real remote off/on. The complete drawing, pure black background,
 fade into Madison, absence of firmware/Alexa popups in that use, controls,

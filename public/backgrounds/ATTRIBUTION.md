@@ -9,11 +9,15 @@
 - License: https://unsplash.com/license
 - Photo published August 23, 2022; downloaded October 22, 2026.
 - Download: https://images.unsplash.com/photo-1661224083534-0c13674b5664?auto=format&fit=max&w=3840&q=88&fm=jpg
-- Bundled JPEG: 3840 x 2765. The downloaded bytes are unchanged.
+- Preserved original: `assets/source/madison-capitol-sunset.jpg`, 3840 x 2765.
+- Bundled TV derivative: 3840 x 2160, cropped to the same bottom-aligned
+  area previously shown by CSS, JPEG quality 85. Rebuild with
+  `scripts/optimize-wallpaper.ps1`; no generated content or scene changes.
 
 The launcher displays the photo with a CSS cover crop aligned to the bottom,
 plus its existing dark gradients, keeping the Wisconsin State Capitol above
 the app row. No remote image request is required to display the wallpaper.
 
-The previous generated `coast-blue-hour.png` is retained as an optional fallback.
+The previous generated `coast-blue-hour.png` is retained under `assets/source/`
+as an optional source-level fallback and is no longer bundled on the TV.
 Its generation provenance is recorded in docs/LIBRARY-REFRESH.md in the repository.

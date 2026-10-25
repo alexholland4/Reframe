@@ -1,6 +1,6 @@
 {
   "id": "com.reframe.home",
-  "version": "0.3.11",
+  "version": "0.3.13",
   "vendor": "Reframe",
   "type": "web",
   "main": "index.html",
@@ -12,6 +12,8 @@
   "disableBackHistoryAPI": false,
   "noSplashOnLaunch": true,
   "spinnerOnLaunch": false,
+  "needNetworkToLaunchOnBoot": false,
+  "supportQuickStart": true,
   "supportGIP": true,
   "appCategory": ["home"],
   "resolution": "3840x2160",

@@ -6,11 +6,14 @@ Photograph by [Josh Sorenson](https://unsplash.com/@joshsorenson), from
 [Unsplash](https://unsplash.com/photos/a-city-with-a-domed-building-rA6Y9-eflx8),
 used under the [Unsplash License](https://unsplash.com/license).
 
-The JPEG is bundled locally at `public/backgrounds/madison-capitol-sunset.jpg`,
-3840 x 2765, with source/license details in `public/backgrounds/ATTRIBUTION.md`.
-Downloaded photo bytes are unchanged. CSS cover cropping is bottom-aligned so
-the Capitol dome stays above the tile row. Existing contrast gradients remain.
-The previous coastal asset is retained for a simple source-level rollback.
+The original 3840 x 2765 download is preserved unchanged under `assets/source/`.
+Version 0.3.12 bundles a 3840 x 2160 JPEG at
+`public/backgrounds/madison-capitol-sunset.jpg`, with source/license details in
+`public/backgrounds/ATTRIBUTION.md`. It keeps precisely the bottom-aligned
+16:9 area previously displayed by CSS and uses quality 85 compression. The
+Capitol framing and contrast gradients are unchanged. The previous coastal
+asset is retained under `assets/source/` for source-level rollback, outside
+the TV package. Rebuild the derivative using `scripts/optimize-wallpaper.ps1`.
 
 ![Madison wallpaper on Reframe](images/reframe-0.3.6.png)
 

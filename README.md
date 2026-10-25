@@ -8,18 +8,26 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
+Latest performance follow-up: **0.3.13 is installed**. The app package is about
+61% smaller and fresh-document loading measured 1.84-2.00 s versus 4.15 s.
+LG Channels/browser/voice preloads are disabled with demonstrated undo and
+restart persistence; their apps remain available. Cold boot improved little
+in one comparison (35.8 s to compositor visibility versus 36.5 s). Quick Start
+opt-in is installed; final owner wake/casting checks are pending. No native
+cover, firmware, root or Home/return routing change was made for performance.
+See [measured results and undo](docs/STARTUP-PERFORMANCE.md) and
+[the local Fox/Packers stream findings](docs/PACKERS-LOCAL-TV.md).
+
 Latest 2026-10-25: the owner accepted the **early native AH startup animation**
 on real off/on: complete cream monogram on pure black, then Madison, with no
 Reframe Loading words or default spinner. No firmware/Alexa reminder appeared
 in that use. Controls, Prime playback/exit and all requested iPhone casting
-checks passed. Reframe is 0.3.11; the old late override is disabled. Firmware-only
+checks passed. That accepted baseline was 0.3.11; the old late override is disabled. Firmware-only
 host mappings preserve app-store DNS and app-update services. All 134 tests
 passed at this installed checkpoint. See [evidence and undo](docs/EARLY-COVER-TRIAL.md).
 
-The completed mark still waits for native startup. A read-only
-[startup performance investigation](docs/STARTUP-PERFORMANCE.md) identifies
-app loading and a possible network readiness wait as the next targets; no
-performance or service-removal change has been deployed.
+The completed mark still waits for native startup. Page loading and optional
+preload changes are now deployed; a large power-on speedup is not established.
 
 
 As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
@@ -30,7 +38,7 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.11** uses a real Madison sunset aerial with the Capitol visible,
+Version **0.3.13** uses a real Madison sunset aerial with the Capitol visible,
 and keeps Home to
 nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music. **Live TV** opens the installed IPTV
