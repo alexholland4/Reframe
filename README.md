@@ -13,8 +13,11 @@ Latest performance follow-up: **0.3.13 is installed**. The app package is about
 LG Channels/browser/voice preloads are disabled with demonstrated undo and
 restart persistence; their apps remain available. Cold boot improved little
 in one comparison (35.8 s to compositor visibility versus 36.5 s). Quick Start
-opt-in is installed; final owner wake/casting checks are pending. No native
-cover, firmware, root or Home/return routing change was made for performance.
+opt-in is installed. The owner confirmed a notably faster wake and all controls,
+Prime and iPhone casting checks passed. The recorded cover-to-foreground wake
+interval fell from 13.68 s to 2.32 s; this is distinct from full reboot time.
+No native cover, firmware, root or Home/return routing change was made for
+performance.
 See [measured results and undo](docs/STARTUP-PERFORMANCE.md) and
 [the local Fox/Packers stream findings](docs/PACKERS-LOCAL-TV.md).
 

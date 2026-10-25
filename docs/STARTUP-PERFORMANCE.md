@@ -5,10 +5,10 @@
 Later October 25: **Reframe 0.3.13 is installed**, with all 46 package files
 verified. 0.3.12 introduced the measured changes below; 0.3.13 has identical UI
 assets and adds only `supportQuickStart: true`. The owner approved optimization
-and made the TV available for testing. Owner off/on and compatibility checks
-for this final package are pending. Make no app-launch, recovery, restart or
-power requests during those checks. A passive read-only wake observer is
-recording events; it cannot press Power or launch an app.
+and made the TV available for testing. The owner has now accepted the final
+package: real off/on was notably faster, AH to Madison worked, and all requested
+controls, Prime playback/exit and iPhone casting checks passed. The passive wake
+observer completed without making any launch, recovery or power requests.
 
 Changes actually applied:
 
@@ -29,10 +29,26 @@ Changes actually applied:
 - App-only Quick Start support is declared in 0.3.13, confirmed in getAppInfo.
   This is also used by the upstream
   [webOS Homebrew YouTube app](https://github.com/webosbrew/youtube-webos/blob/main/assets/appinfo.json).
-  Retention on this retail firmware is unproven until a standby/wake test;
-  it does not force apps to stay resident under memory pressure.
+  The combined changes passed the real standby/wake test below. This flag's
+  individual contribution and renderer retention were not isolated, and it
+  is not a guarantee of residency under memory pressure.
 
 ### Measurements, with limits
+
+The owner confirmed the new real remote off/on was notably faster, while the
+complete AH animation and all compatibility checks still passed. The passive
+bootd record contains this matching native event comparison:
+
+| Wake event | Earlier accepted 0.3.11 wake | New 0.3.13 wake |
+| --- | ---: | ---: |
+| Cover open | 382.661 s | 618.394 s |
+| Reframe foreground report | 396.342 s | 620.717 s |
+| Cover to foreground interval | 13.68 s | 2.32 s |
+
+This records the startup handoff, not the entire remote-button-to-picture
+latency. It also does not isolate which individual change contributed how
+much. The owner independently confirmed the visible improvement. Do not
+conflate this standby/wake result with the slower full-restart measurement.
 
 | Browser event after fresh document navigation | 0.3.11 sample | 0.3.12 samples |
 | --- | ---: | ---: |
@@ -65,8 +81,9 @@ these different workloads cannot isolate how many bytes the change freed.
 
 Production build, package validation, desktop 1080p/4K artwork/navigation/live
 weather checks, 92 Node tests and 45 Python tests passed. The native cover's
-three readonly mounts and exact ownership/hash status remain active. Actual
-owner visual/casting acceptance for 0.3.13 remains separate from these checks.
+three readonly mounts and exact ownership/hash status remain active. Owner
+visual wake and Home/Blue/Settings/Back, Prime playback/exit, Screen Mirroring,
+AirPlay and YouTube Cast acceptance for 0.3.13 subsequently passed.
 
 ### Undo and evidence
 
@@ -83,7 +100,7 @@ owner visual/casting acceptance for 0.3.13 remains separate from these checks.
   `fresh-0312-b.json`, `0312-full-restart.json`, `0312-cold-browser.json`,
   `0312-postboot-preloads.json`, `0312-running.json` and
   `0312-postboot-memory.json`. `0313-before-wake.json` is the passive observer's
-  baseline; do not call the wake measured without its matching result.
+  baseline; `0313-owner-wake.json` contains the completed matching wake result.
 
 The initial investigation below is historical and explains the selected work.
 
