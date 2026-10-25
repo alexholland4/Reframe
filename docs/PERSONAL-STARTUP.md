@@ -1,5 +1,30 @@
 # Alex's portfolio startup animation
 
+**Current 2026-10-25 - native AH cover installed and verified on TV.**
+The owner explicitly approved the private CoverUI import override and guarded
+UI restart. Reframe 0.3.11 is installed (47 file hashes verified), and the obsolete
+app observer permission was removed. The compositor loads our private module;
+all 57 module files match their journal. Actual 1920x1080 compositor captures
+show partial AH strokes, the completed cream monogram on pure black, then an
+automatic fade into Madison, with Reframe foreground. No Reframe Loading text
+appears in the native test. The final guarded trial was accepted while enabled.
+Two earlier unconfirmed trials rolled back safely; the first capture attempt
+also ran before app surfaces recovered. No firmware files changed.
+
+Owner standby/wake and controls/app-return/popup checks are now pending.
+**Make no TV launch, recovery, restart or power requests during those checks.**
+A fresh full boot with this cover has not yet been tested. Root SSH stayed
+available through the UI restarts. The prior Home/Blue/Settings and app/cast-exit
+routing are preserved. Reverse shutdown animation remains deferred.
+
+Firmware checks remain disabled (softwareUpdateEnable string false), firmware
+automaticUpdate remains off, and the Alexa guide is marked seen. App update mode
+is still manual, unchanged. Those settings persisted since October 23; actual
+popup suppression still needs owner observation. Preserve both private rollback
+journals. See [NATIVE-COVER-TRIAL.md](NATIVE-COVER-TRIAL.md) for evidence and undo.
+
+The earlier app-level implementation below is historical; it was removed in 0.3.11.
+
 Current follow-up: the owner reports 0.3.10's wake intro still failed. A native
 CoverUI replacement is prepared, with an exact-action approval gate before
 installation. See [NATIVE-COVER-TRIAL.md](NATIVE-COVER-TRIAL.md). 0.3.11 is local

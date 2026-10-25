@@ -22,18 +22,19 @@ def main():
     nonce = secrets.token_hex(12)
     source = "const nonce=" + json.dumps(nonce) + r""";
 const fs=require('fs'),cp=require('child_process');
-function luna(uri,p){const r=JSON.parse(cp.execFileSync('/usr/bin/luna-send',['-n','1','-w','2500',uri,JSON.stringify(p)],{encoding:'utf8',timeout:3500}));if(r.returnValue!==true)throw Error(JSON.stringify(r));return r}
-const app='com.reframe.home';if(luna('luna://com.webos.applicationManager/getForegroundAppInfo',{}).appId!==app)throw Error('Leave active app alone');
+function luna(uri,p){return new Promise((resolve,reject)=>{const child=cp.spawn('/usr/bin/luna-send',['-i','-n','1','-w','4000',uri,JSON.stringify(p)]);let data='',done=false;const timer=setTimeout(()=>finish(Error('No reply: '+uri)),5000);function finish(error,value){if(done)return;done=true;clearTimeout(timer);child.stdin.end();child.kill();error?reject(error):resolve(value)}child.on('error',finish);child.stdout.on('data',chunk=>{data+=chunk;let r;try{r=JSON.parse(data)}catch(e){return}finish(r.returnValue===true?null:Error(JSON.stringify(r)),r)});child.on('exit',()=>{if(!done)finish(Error('Incomplete reply: '+uri))});})}
+const app='com.reframe.home';
 const images=[],paths=[];let opened=false;
-function capture(name){const p='/tmp/reframe-cover-'+nonce+'-'+name+'.png';try{fs.lstatSync(p);throw Error('Destination exists')}catch(e){if(e.code!=='ENOENT')throw e}
-paths.push(p);const r=luna('luna://com.webos.surfacemanager/captureCompositorOutput',{output:p,format:'PNG'});const s=fs.lstatSync(p);if(!s.isFile()||s.isSymbolicLink()||s.uid!==0||s.size>2000000)throw Error('Unexpected capture');images.push({name,base64:fs.readFileSync(p).toString('base64'),resolution:r.resolution})}
+async function capture(name){const p='/tmp/reframe-cover-'+nonce+'-'+name+'.png';try{fs.lstatSync(p);throw Error('Destination exists')}catch(e){if(e.code!=='ENOENT')throw e}
+paths.push(p);const r=await luna('luna://com.webos.surfacemanager/captureCompositorOutput',{output:p,format:'PNG'});const s=fs.lstatSync(p);if(!s.isFile()||s.isSymbolicLink()||s.uid!==0||s.size>8000000)throw Error('Unexpected capture');images.push({name,base64:fs.readFileSync(p).toString('base64'),resolution:r.resolution})}
 function cleanup(){for(const p of paths){try{const s=fs.lstatSync(p);if(s.isFile()&&!s.isSymbolicLink()&&s.uid===0)fs.unlinkSync(p)}catch(e){if(e.code!=='ENOENT')throw e}}}
 (async()=>{try{
- luna('luna://com.webos.coverUI/open',{firstApp:{id:app},fallback:{id:app}});opened=true;
- const start=Date.now();for(const [name,at] of [['middle',1000],['final',1950],['home',3200]]){await new Promise(r=>setTimeout(r,Math.max(0,start+at-Date.now())));capture(name)}
- const foreground=luna('luna://com.webos.applicationManager/getForegroundAppInfo',{}).appId;
+ if((await luna('luna://com.webos.applicationManager/getForegroundAppInfo',{})).appId!==app)throw Error('Leave active app alone');
+ await luna('luna://com.webos.coverUI/open',{firstApp:{id:app},fallback:{id:app}});opened=true;
+ const start=Date.now();for(const [name,at] of [['middle',1000],['final',1950],['home',3200]]){await new Promise(r=>setTimeout(r,Math.max(0,start+at-Date.now())));await capture(name)}
+ const foreground=(await luna('luna://com.webos.applicationManager/getForegroundAppInfo',{})).appId;
  console.log(JSON.stringify({images,foreground}));
-}catch(e){console.error(String(e));process.exitCode=1}finally{if(opened){try{luna('luna://com.webos.coverUI/close',{})}catch(e){}}cleanup()}})();"""
+}catch(e){console.error(String(e));process.exitCode=1}finally{if(opened){try{await luna('luna://com.webos.coverUI/close',{})}catch(e){}}cleanup()}})();"""
     result = ssh("/usr/bin/node -", input=source, timeout=30)
     if result.returncode:
         raise RuntimeError(result.stderr.strip())

@@ -1,4 +1,4 @@
-# Native personal startup replacement: prepared, not enabled
+# Native personal startup replacement: installed, TV frames verified
 
 2026-10-23: the owner reported that 0.3.10 still shows LG's Reframe Loading
 cover and a translucent transition, with no visible AH draw. Prime Video exit
@@ -6,34 +6,58 @@ does return directly to Reframe, without the failed app-level animation.
 The owner requested one sequence: AH on pure black, then Madison, with no
 Reframe Loading text, and explicitly said to work until this is solved.
 
-## Approval gate
+## Approval and current state - October 25
 
-Automatic approval review **rejected** enabling a persistent compositor import
-override because of the broad boot/UI impact and absence of explicit approval
-for that exact system mutation. The owner has been asked via the async input
-tool to approve creation of
-`/var/systemd/system/env/surface-manager.env`, a private CoverUI import path,
-and a controlled `surface-manager-daemon` restart. **Approval is pending. Do not
-install this override, use a bind mount as a workaround, or restart the UI for
-this trial until that explicit answer arrives.** The rejected command never
-ran; no native module or environment override has been installed.
+The owner explicitly answered **"Approve native CoverUI override and UI restart"**
+to the exact environment-path/private-import/guarded-restart question. That
+resolved the earlier automatic approval rejection; no alternate bypass was used.
 
-The current TV package is still **0.3.10**. **0.3.11 is built/packaged locally**
-and passes browser checks. It removes the failed app-level curtain/observer;
-its UI is otherwise unchanged. It has not been deployed. The original portfolio
-SVG is preserved in `public/identity/ah-monogram.svg`. The old observer permission
-controller remains available for exact cleanup/undo.
+The private module is installed, all 57 file hashes match, and the environment
+file exists. The compositor process environment was read back with the intended
+QML2_IMPORT_PATH. Reframe **0.3.11 is installed**, all 47 app file hashes verified,
+and its failed browser-level startup curtain is gone. The obsolete read-only
+observer permission was removed with its exact restore controller.
 
-## Prepared approach
+Actual native compositor screenshots verify the progressive draw, complete AH
+on true black, and automatic transition into Madison. The final successful
+trial was accepted while enabled. Root SSH and the UI daemon remained healthy.
+These are actual TV pixels, not a browser or local Qt preview:
+
+![AH cover captured on the TV](images/native-ah-tv.png)
+
+Private evidence: `.research/native-cover-trial/8e5bc78e05620505dbf02931/`
+contains middle, final and home captures. The home capture is taken before the
+tool's forced cleanup, establishing that the cover faded by itself. Reframe was
+the foreground app at the end. No firmware files were modified.
+
+Two unconfirmed trials restored the original environment automatically. In the
+second, image review outlasted the window, so acceptance arrived after rollback;
+a fresh trial was correctly rerun and confirmed. The controller now refuses to
+accept disabled/rolled-back trials. Initial all-black captures were taken while
+app surfaces were still recovering from a compositor restart; a foreground ID
+alone was not sufficient evidence of a ready app surface.
+
+The capture tool now holds luna-send's interactive stdin open until a complete
+reply arrives. The previous execFileSync path could close stdin before the
+service response, returning an empty string. Full-screen PNG bounds were raised
+to 8 MB to accommodate the real Madison frame. Temporary captures are cleaned.
+
+**Owner standby/wake, control/app-return, and popup observations are pending.**
+No TV launch/recovery/restart/power requests during those checks. A new full
+boot with this native import override is also still unverified. Earlier native
+startup/Home/return acceptance remains the baseline, not proof of this change.
+
+## Installed approach
 
 Native CoverUI imports a `CoverUI 1.0` QML module. The compositor's systemd unit
-already reads the optional writable environment path above. That file and its
-parent directories are currently absent. The native wrapper does not overwrite
+already reads `/var/systemd/system/env/surface-manager.env`. The installer
+created that file and its previously absent parent directories after recording
+them in its ownership plan. The native wrapper does not overwrite
 `QML2_IMPORT_PATH`, and its product environment has no QML import-path assignment.
 Qt supports module search paths through that environment variable:
 [Qt import documentation](https://doc.qt.io/qt-6/qtqml-syntax-imports.html#qml-import-path).
 
-`scripts/manage-native-cover.py install --execute` is prepared to:
+`scripts/manage-native-cover.py install --execute` completed these steps:
 
 1. Snapshot the original module privately under `backups/native-cover/original.json`.
 2. Copy all 55 original files (197,303 bytes) into a private module tree under
@@ -74,35 +98,43 @@ event cannot cut it off. A slow app leaves the complete logo visible.
   Reframe, with its temporary file cleaned up. This can verify trial pixels:
   [native capture API](https://www.webosose.org/docs/reference/ls2-api/com-webos-surfacemanager/#capturecompositoroutput).
 
-## Next steps after explicit approval
+## Trial operation and recovery
 
-Review the prepared controller, then install and verify its hash plan. Remove
-the now-unneeded app observer permission with its existing controller, deploy
-0.3.11, and verify ordinary launcher functionality. Keep the original UI package.
+The original module snapshot is private at `backups/native-cover/original.json`.
+The active remote ownership plan is `/var/lib/reframe/native-cover-plan.json`.
+Do not overwrite either. No bind mount or firmware modification was used.
 
-`manage-native-cover.py trial --execute` starts a 90-second independent root
-watchdog and requests a controlled UI-daemon restart. The watchdog removes only
-our exact environment override and restarts the stock UI if no confirmation
-marker appears. It refuses a foreign/changed environment file. Its source is
-`scripts/native-cover/TrialWatchdog.cjs`, copied into the protected private tree.
+`manage-native-cover.py trial --execute` starts an independent 90-second root
+watchdog and restarts only `surface-manager-daemon.service`. The watchdog removes
+only our exact environment file and restarts the stock UI if no confirmation
+appears. It refuses foreign/changed configuration. Two live rollbacks worked.
 
-Check independent root SSH, UI daemon health, and native CoverUI QML errors.
-Exercise the native cover with Reframe as first/fallback app and capture actual
-intermediate/final frames. Confirm the full mark/fade and Reframe foreground
-before calling `accept --execute`; do not accept merely because the daemon runs.
-The accept command writes the per-trial proof marker; the controller currently
-relies on the operator to verify actual health/animation before that action.
+`check-native-cover.py --execute` requires Reframe foreground, exercises the
+native cover and captures middle/final/home frames. Verify actual pixels and
+healthy UI/root before `accept --execute`. Acceptance is an operator judgment;
+the command refuses disabled or already rolled-back trials but does not itself
+judge the images. The final accepted trial is recorded privately in
+`backups/native-cover/trial.json` with its root-owned confirmation marker.
 
-If needed, `disable --execute` removes only our exact environment override;
-then restart the UI daemon to reload stock imports. The original firmware
-module remains available. Copies/journal stay for inspection. A failed GUI can
-be recovered through pinned root SSH; this is not a firmware/bootloader rescue.
+Rollback via independent pinned root SSH:
 
-After automated proof, obtain owner standby/wake acceptance: AH only on black,
-full draw, direct Madison, no LG/Reframe loading words, no duplicate app intro.
-Check Home/Blue/Settings and ordinary app/cast return. Verify a controlled full
-restart separately for early persistence. Preserve the previously demonstrated
-native Home/startup/return undo and independent root callback.
+1. `python scripts/manage-native-cover.py disable --execute` removes only the
+   exact owned compositor environment file.
+2. Restart `surface-manager-daemon.service` using `/bin/systemctl` to reload
+   the unchanged original module. This temporarily interrupts GUI applications.
+3. Keep the private module and journals for inspection. Firmware paths are
+   untouched. This is GUI recovery, not a firmware/bootloader rescue.
+
+For another approved guarded trial, `enable --execute` verifies all module
+hashes and recreates only the exact absent owned environment file, then `trial
+--execute` arms rollback and restarts the UI. A fresh install is intentionally
+refused when the journal already exists.
+
+Obtain owner standby/wake acceptance: AH only on black, full draw, direct
+Madison, no LG/Reframe loading words, no duplicate app intro. Check
+Home/Blue/Settings and ordinary app/cast return. Verify a controlled full restart
+separately for early persistence. Preserve the native Home/startup/return undo
+and independent root callback. Reverse shutdown animation remains deferred.
 
 ## Notification work in parallel
 
@@ -115,7 +147,7 @@ has completed with a private intent/undo snapshot:
 - `support.automaticUpdate` remains `"off"`; it was already off.
 - `option.appUpdateMode` remains `"manual"`; no app service/domain was blocked.
 
-Read-back verified all four. No firmware check, download or installation was
+Read-back verified all four again on October 25; they persisted since October 23. No firmware check, download or installation was
 requested. Actual reminder suppression still needs wake observation, including
 whether any cached firmware notice remains. Alexa's flag is a targeted first
 trial, not proof that every Alexa promotion uses it. The firmware service reads

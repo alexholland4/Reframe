@@ -22,10 +22,19 @@ patcher = module("native_patch", "scripts/native-cover/patch-cover.py")
 
 class NativeCoverTests(unittest.TestCase):
     def test_native_install_without_execute_never_connects(self):
-        with patch.object(sys, "argv", ["manage-native-cover.py", "install"]), \
-                patch.object(manager, "ssh") as ssh:
-            manager.main()
-        ssh.assert_not_called()
+        for action in ["install", "enable", "trial", "accept", "disable"]:
+            with self.subTest(action=action), \
+                    patch.object(sys, "argv", ["manage-native-cover.py", action]), \
+                    patch.object(manager, "ssh") as ssh:
+                manager.main()
+            ssh.assert_not_called()
+
+    def test_disabled_or_rolled_back_trial_cannot_be_accepted(self):
+        with patch.object(manager, "manage", return_value={"enabled": False}), \
+                patch.object(manager, "node") as node:
+            with self.assertRaisesRegex(RuntimeError, "rolled-back"):
+                manager.accept()
+        node.assert_not_called()
 
     def test_unknown_native_source_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "refusing patch"):

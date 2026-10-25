@@ -89,8 +89,9 @@ if(plan.schema!==1||plan.purpose!=='reframe-native-cover'||plan.environment!==EN
 let enabled=false;try{safe(ENVPATH);if(crypto.createHash('sha256').update(fs.readFileSync(ENVPATH)).digest('hex')!==plan.environmentSha256)throw Error('Foreign compositor environment');enabled=true}catch(e){if(e.code!=='ENOENT')throw e}
 if(action==='disable'){if(enabled)fs.unlinkSync(ENVPATH);console.log(JSON.stringify({disabled:true,restartNeeded:true}));process.exit(0)}
 for(const f of plan.files){if(!f.path.startsWith(BASE+'/imports/CoverUI/')||f.path.includes('/../'))throw Error('Unexpected module path');safe(f.path);if(crypto.createHash('sha256').update(fs.readFileSync(f.path)).digest('hex')!==f.sha256)throw Error('Module changed');}
+if(action==='enable'&&!enabled){const body=ENVDATA;if(crypto.createHash('sha256').update(body).digest('hex')!==plan.environmentSha256)throw Error('Environment differs from plan');fs.writeFileSync(ENVPATH,body,{flag:'wx',mode:420});enabled=true;}
 console.log(JSON.stringify({enabled,verifiedFiles:plan.files.length,firmwareFilesChanged:0}));"""
-    for key, value in {"PLANPATH": PLAN, "ENVPATH": ENV, "ACTION": action, "BASE": BASE}.items():
+    for key, value in {"PLANPATH": PLAN, "ENVPATH": ENV, "ACTION": action, "BASE": BASE, "ENVDATA": ENV_DATA}.items():
         source = source.replace(key, json.dumps(value))
     result = node(source)
     print(result)
@@ -113,16 +114,18 @@ console.log(JSON.stringify({trial:nonce,watchdog:child.pid,restartRequested:true
 
 
 def accept():
+    if not manage("status")["enabled"]:
+        raise RuntimeError("Cannot accept a disabled or rolled-back native trial")
     trial = json.loads((PROJECT / "backups/native-cover/trial.json").read_text())
     nonce = trial["trial"]
     if len(nonce) != 32 or any(c not in "0123456789abcdef" for c in nonce):
         raise ValueError("Invalid trial marker")
-    print(node("const fs=require('fs'),nonce=" + json.dumps(nonce) + ";const p='/var/lib/reframe/native-cover/trial-ok-'+nonce;fs.writeFileSync(p,nonce,{flag:'wx',mode:384});console.log(JSON.stringify({accepted:true}));"))
+    print(node("const fs=require('fs'),nonce=" + json.dumps(nonce) + ";const base='/var/lib/reframe/native-cover/';if(fs.existsSync(base+'trial-rolled-back-'+nonce))throw Error('Trial already rolled back');const p=base+'trial-ok-'+nonce;fs.writeFileSync(p,nonce,{flag:'wx',mode:384});console.log(JSON.stringify({accepted:true}));"))
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["install", "disable", "status", "trial", "accept"])
+    parser.add_argument("action", choices=["install", "enable", "disable", "status", "trial", "accept"])
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     if args.action != "status" and not args.execute:

@@ -8,11 +8,12 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
-Latest 2026-10-23: the TV remains on 0.3.10; its wake animation failed owner
-observation. A native AH-only CoverUI replacement and 0.3.11 companion package
-are prepared and locally tested, awaiting explicit approval of the compositor
-import override. See [guarded native trial](docs/NATIVE-COVER-TRIAL.md). Firmware
-checks/Alexa-guide preferences were changed with undo; app updates are unchanged.
+Latest 2026-10-25: Reframe **0.3.11** and the approved native AH cover are
+installed. Actual TV compositor frames show the monogram drawing on pure black,
+completing, then fading to Madison without Reframe Loading words. The guarded
+trial was accepted; owner standby/wake acceptance and fresh full-boot validation
+remain pending. See [native trial and undo](docs/NATIVE-COVER-TRIAL.md).
+Firmware checks/Alexa-guide preferences persisted; app updates are unchanged.
 Actual reminder suppression remains to be observed.
 
 
