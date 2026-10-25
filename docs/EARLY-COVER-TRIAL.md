@@ -1,6 +1,6 @@
 # Early cover and firmware notices: installed native resource
 
-The October 25 owner wake check **failed**: Reframe Loading still appeared,
+The earlier October 25 wake check with the late environment override **failed**: Reframe Loading still appeared,
 followed by black and Madison. Home/Blue/Settings/app returns passed. Firmware
 reminders still appeared; Alexa did not. Prime Video's remote shortcut asked
 for an app update, while Reframe's tile opened Prime normally.
@@ -34,7 +34,10 @@ partial AH, complete AH on black, then faded to Madison. Private evidence:
 This proves the restored compositor now reads the early resource. The actual
 startup observer connected after Madison was already visible; its four captures
 are `.research/actual-early-boot/c0c3e23eb5e9b912e05fcc29/`. **Those captures do
-not prove the full opening sequence. Owner off/on acceptance is pending.**
+not prove the full opening sequence. The subsequent owner off/on check did:**
+the complete AH animation drew on pure black and faded into Madison, with no
+Reframe Loading words or default spinner. The completed mark held for several
+seconds; performance follow-up is tracked in [STARTUP-PERFORMANCE.md](STARTUP-PERFORMANCE.md).
 
 The early trial was accepted while its mounts/record were active and GUI/root
 were healthy. Only its own trial Activity was cancelled; the original root/HBC
@@ -44,8 +47,10 @@ after the guard window found the resource still active.
 All four firmware hosts resolve to loopback through the TV's resolver;
 `us.lgtvsdp.com` resolves to a non-loopback address. This establishes the narrow
 DNS mapping, not a completed app-update download. App-update mode/services and
-existing hosts entries remain unchanged. Firmware/Alexa popup and compatibility
-observations are pending, with no TV actions during the owner's checks.
+existing hosts entries remain unchanged. The owner subsequently observed no firmware or Alexa popup during the acceptance
+use. Home/Blue/Settings/Back, Prime playback/exit, iPhone Screen Mirroring,
+AirPlay and YouTube Cast all passed; app/cast exits did not replay the intro.
+This is an accepted baseline, while future notification sources remain possible.
 
 ## Cause established on the actual TV
 

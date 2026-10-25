@@ -8,14 +8,18 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
-Latest 2026-10-25: the approved **early native resource** is installed and
-survived a full restart. Root SSH returned, readonly CoverUI/firmware-hosts mounts
-verify, and the restored compositor renders the complete AH animation without a
-late UI restart. The old environment override is disabled; Reframe is 0.3.11.
-**Owner off/on animation and popup acceptance remain pending.** Unattended startup
-captures began after Madison was visible. Firmware hosts resolve to loopback;
-LG app-store DNS and app-update mode remain unchanged. All 134 tests pass.
-See [early resource, evidence and undo](docs/EARLY-COVER-TRIAL.md).
+Latest 2026-10-25: the owner accepted the **early native AH startup animation**
+on real off/on: complete cream monogram on pure black, then Madison, with no
+Reframe Loading words or default spinner. No firmware/Alexa reminder appeared
+in that use. Controls, Prime playback/exit and all requested iPhone casting
+checks passed. Reframe is 0.3.11; the old late override is disabled. Firmware-only
+host mappings preserve app-store DNS and app-update services. All 134 tests
+passed at this installed checkpoint. See [evidence and undo](docs/EARLY-COVER-TRIAL.md).
+
+The completed mark still waits for native startup. A read-only
+[startup performance investigation](docs/STARTUP-PERFORMANCE.md) identifies
+app loading and a possible network readiness wait as the next targets; no
+performance or service-removal change has been deployed.
 
 
 As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
@@ -26,7 +30,7 @@ initial HDMI 2 screen automatically. The owner also confirmed final
 post-transition standby/wake and all requested native/playback/iPhone casting
 checks pass. See the [current handoff](docs/HANDOFF.md).
 
-Version **0.3.10** uses a real Madison sunset aerial with the Capitol visible,
+Version **0.3.11** uses a real Madison sunset aerial with the Capitol visible,
 and keeps Home to
 nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
 Hulu, Apple TV, Disney+ and Apple Music. **Live TV** opens the installed IPTV
@@ -46,9 +50,8 @@ restart reports it as the first app and actual foreground, with the old delayed
 helper removed. The separate root SSH callback remains active. The previous
 configuration's undo was demonstrated live. Owner-visible standby/spinner and
 native/casting acceptance passed. The owner confirmed no LG Home flash or
-default spinner on wake; LG's earlier "Reframe Loading" cover remains distinct.
-The personal AH intro now uses pure black, waits for LG's startup cover and
-finishes drawing before fading; its timing fix awaits owner visual confirmation.
+default spinner on wake. The early native cover now replaces LG's Reframe
+Loading words with the accepted personal AH animation on pure black.
 Native Prime Video and Screen Mirroring exits return to Reframe, owner-confirmed.
 See [personal startup animation](docs/PERSONAL-STARTUP.md). See [current startup results and undo](docs/NATIVE-STARTUP.md).
 
