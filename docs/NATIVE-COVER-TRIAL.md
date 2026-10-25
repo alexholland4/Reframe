@@ -1,4 +1,13 @@
-# Native personal startup replacement: installed, TV frames verified
+# Late compositor override: manual test passed, real wake failed
+
+**Owner result: real wake still showed Reframe Loading, black, then Madison.**
+The restored compositor uses its original import path, ignoring the persistent
+environment file until restarted. The screenshots below prove the manual cover
+component only. The replacement early-resource approach was subsequently explicitly approved,
+installed and accepted after a real restart. The old environment override is
+now disabled. See [EARLY-COVER-TRIAL.md](EARLY-COVER-TRIAL.md) and the top of
+HANDOFF.md for current state and pending owner wake acceptance. The early
+resource, rather than this late override, is the active persistence method.
 
 2026-10-23: the owner reported that 0.3.10 still shows LG's Reframe Loading
 cover and a translucent transition, with no visible AH draw. Prime Video exit

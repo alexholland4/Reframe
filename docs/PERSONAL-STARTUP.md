@@ -1,5 +1,42 @@
 # Alex's portfolio startup animation
 
+**Current 2026-10-25 - approved early resource installed; full restart passed, owner wake check pending.**
+The owner explicitly approved the guarded early-boot and firmware-hosts trial,
+resolving automatic approval review's rejection of that broader change. Only
+our com.reframe.nativecover resource record was added to LG's native loader.
+The old late compositor environment override is disabled. Reframe remains 0.3.11.
+
+A real /sbin/reboot returned independent root SSH at uptime 46.68 seconds with
+a fresh root callback. LG's restored compositor is PID 758 with its ORIGINAL
+QML import path, yet the early image's CoverUI and hosts mounts are active and
+readonly. All 60 staged files verify. Actual post-reboot native cover captures
+show partial AH, complete AH on black, and automatic fade into Madison, without
+any late compositor restart. The guarded trial was accepted and only its own
+trial Activity was cancelled; the existing HBC/root startup is unchanged.
+The unattended real-startup captures started AFTER Madison was already visible,
+so they do not establish the full owner-visible opening sequence.
+
+The four Homebrew firmware-server names resolve to loopback on the TV; LG's
+us.lgtvsdp.com app-store hostname resolves normally. Existing hosts entries and
+app-update mode/services are preserved. No app/firmware updates were requested,
+downloaded or installed. Alexa had passed the previous owner observation;
+firmware popup suppression with the new early mapping awaits observation.
+
+**Owner off-10s/on, firmware/Alexa popup, and controls/playback/casting checks are
+pending. Make NO TV launch, recovery, restart or power requests during them.**
+Do not call the actual wake animation solved until that answer arrives.
+Previously confirmed working: Home/Blue/Settings/Back and app/cast returns to
+Reframe without replaying the intro. The latest trial preserves those settings.
+
+All 92 Node and 42 Python tests pass. Native isolated activation/full undo also
+passed, including stacked mounts from repeated setup. No signed firmware,
+bootloader, kernel or saved snapshot image was changed. Early-loader details,
+exact rollback, guard limitations and evidence: [EARLY-COVER-TRIAL.md](EARLY-COVER-TRIAL.md).
+Preserve backups/early-cover/current.json, the remote ownership plan, source
+image and original resource DB backup. Root SSH remains pinned on port 2222.
+
+Earlier checkpoints below are historical.
+
 **Current 2026-10-25 - native AH cover installed and verified on TV.**
 The owner explicitly approved the private CoverUI import override and guarded
 UI restart. Reframe 0.3.11 is installed (47 file hashes verified), and the obsolete

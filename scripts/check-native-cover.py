@@ -10,14 +10,17 @@ from tv_connection import PROJECT, ssh
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--early", action="store_true", help="Validate the early resource mounts instead of the compositor environment")
     args = parser.parse_args()
     if not args.execute:
         print("Prepared native-cover capture trial; no TV connection without --execute")
         return
-    spec = importlib.util.spec_from_file_location("native_cover", PROJECT / "scripts/manage-native-cover.py")
+    spec = importlib.util.spec_from_file_location("native_cover", PROJECT / ("scripts/manage-early-cover.py" if args.early else "scripts/manage-native-cover.py"))
     manager = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(manager)
-    if not manager.manage("status")["enabled"]:
+    state = manager.control("status") if args.early else manager.manage("status")
+    enabled = state.get("registered") and state.get("active") and len(state.get("mounts", [])) >= 3 if args.early else state["enabled"]
+    if not enabled:
         raise RuntimeError("Native cover override must be enabled before this trial")
     nonce = secrets.token_hex(12)
     source = "const nonce=" + json.dumps(nonce) + r""";

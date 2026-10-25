@@ -8,13 +8,14 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
-Latest 2026-10-25: Reframe **0.3.11** and the approved native AH cover are
-installed. Actual TV compositor frames show the monogram drawing on pure black,
-completing, then fading to Madison without Reframe Loading words. The guarded
-trial was accepted; owner standby/wake acceptance and fresh full-boot validation
-remain pending. See [native trial and undo](docs/NATIVE-COVER-TRIAL.md).
-Firmware checks/Alexa-guide preferences persisted; app updates are unchanged.
-Actual reminder suppression remains to be observed.
+Latest 2026-10-25: the approved **early native resource** is installed and
+survived a full restart. Root SSH returned, readonly CoverUI/firmware-hosts mounts
+verify, and the restored compositor renders the complete AH animation without a
+late UI restart. The old environment override is disabled; Reframe is 0.3.11.
+**Owner off/on animation and popup acceptance remain pending.** Unattended startup
+captures began after Madison was visible. Firmware hosts resolve to loopback;
+LG app-store DNS and app-update mode remain unchanged. All 134 tests pass.
+See [early resource, evidence and undo](docs/EARLY-COVER-TRIAL.md).
 
 
 As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
