@@ -30,6 +30,16 @@ channels played and no paid service/trial started. Read
 [PACKERS-LOCAL-TV.md](PACKERS-LOCAL-TV.md). The earlier accepted 0.3.11 native
 startup checkpoint below remains available as the rollback baseline.
 
+Deeper same-day follow-up: the owner declined trials/signup and prefers a
+software stream today (an antenna is acceptable later). Fourteen public stream
+candidates failed (timeouts, refused connections, 404, 403 or DNS failure).
+The ordinary official WITI browser player identifies Packers-Lions but offers
+only a roughly five-minute preview; full-game/TV playback is NOT established.
+Puffer requires signup and its regional game coverage was not verified. No TV
+app/settings/Favorites change was made. The no-signup full-game requirement
+remains unmet; do not describe the research or preview as a working solution.
+See PACKERS-LOCAL-TV.md and ignored .research/packers-channel/deeper evidence.
+
 **Earlier accepted 0.3.11 baseline - startup animation, popup suppression and compatibility.**
 After a real remote off / wait about 10 seconds / on, the owner confirmed the
 full AH monogram draws on pure black and fades into Madison, with no Reframe
