@@ -23,8 +23,9 @@ docs/fingerprint*.json
 *.pfx
 id_rsa
 id_ed25519
-reframe-tv_dec
-reframe-tv_webos
+*_dec
+*_webos
+*_ed25519
 
 # Runtime and OS caches
 *.log
@@ -33,3 +34,37 @@ __pycache__/
 .DS_Store
 Thumbs.db
 /Microsoft/
+
+# Private device operations and session history. Keep the public checkout focused
+# on the launcher, portable checks and the sanitized project case study.
+/docs/*
+!/docs/ARCHITECTURE.md
+!/docs/DEVELOPMENT.md
+!/docs/PERFORMANCE.md
+!/docs/images/
+/docs/images/*
+!/docs/images/before-home.jpg
+!/docs/images/before-promotions.jpg
+!/docs/images/before-fullscreen.jpg
+!/docs/images/after-home.jpg
+/scripts/*
+!/scripts/check-ui.mjs
+!/scripts/optimize-wallpaper.ps1
+!/scripts/prepare-readme-photos.ps1
+/tests/*
+!/tests/luna.test.mjs
+/public/identity/
+/assets/source/coast-blue-hour.png
+/public/icons/installed/*
+!/public/icons/installed/com.apple.applemusic.png
+!/public/icons/installed/com.apple.appletv.png
+!/public/icons/installed/com.cbs-all-access.webapp.prod.png
+!/public/icons/installed/com.peacock.tv.png
+!/public/icons/installed/com.wbd.stream.png
+!/public/icons/installed/hulu.png
+/public/icons/iptv-player*
+/public/icons/youtube.svg
+
+# Unprocessed owner photos can include location/device metadata.
+/TV before*.JPG
+/TV after.JPG

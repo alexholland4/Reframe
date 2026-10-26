@@ -17,7 +17,3 @@
 The launcher displays the photo with a CSS cover crop aligned to the bottom,
 plus its existing dark gradients, keeping the Wisconsin State Capitol above
 the app row. No remote image request is required to display the wallpaper.
-
-The previous generated `coast-blue-hour.png` is retained under `assets/source/`
-as an optional source-level fallback and is no longer bundled on the TV.
-Its generation provenance is recorded in docs/LIBRARY-REFRESH.md in the repository.

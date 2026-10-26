@@ -1,4 +1,8 @@
-import { defineConfig, type Plugin } from "vite";
+import { fileURLToPath } from "node:url";
+import { defineConfig, normalizePath, type Plugin } from "vite";
+
+const localOnlyPaths = ["backups", ".research", "docs", "scripts", "tests", ".codex", ".agents"]
+  .map(directory => normalizePath(fileURLToPath(new URL(`./${directory}/`, import.meta.url))) + "**");
 
 // webOS packaged apps load over file://. Vite stamps `crossorigin` onto the
 // emitted <script>/<link>, which makes file:// fetches fail as cross-origin on
@@ -24,9 +28,12 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    host: true,
+    host: "127.0.0.1",
     port: 5173,
     // Browser-check profiles contain extension HTML; they must not reload the app mid-test.
     watch: { ignored: ["**/.research/**", "**/backups/**", "**/docs/images/**"] },
+    fs: {
+      deny: [".env", ".env.*", "**/.git/**", "**/*.{crt,pem,key,p12,pfx}", ...localOnlyPaths],
+    },
   },
 });

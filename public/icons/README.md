@@ -2,24 +2,18 @@
 
 Bundled locally so Reframe does not depend on an icon CDN at runtime.
 
-- Netflix and YouTube wordmarks: [SVG Logos](https://github.com/gilbarbara/logos),
-  `logos/netflix.svg` and `logos/youtube.svg`.
+- Netflix wordmark: [SVG Logos](https://github.com/gilbarbara/logos),
+  `logos/netflix.svg`.
 - Prime Video: [Simple Icons 11.15.0](https://github.com/simple-icons/simple-icons/blob/11.15.0/icons/primevideo.svg),
   displayed white with a tighter viewBox for a TV card.
 - Disney+: [SVGL](https://github.com/pheralb/svgl/blob/main/static/library/disneyplus.svg),
   displayed white through CSS.
 
 Brand names and marks belong to their respective owners. These icons identify
-the installed apps and do not imply endorsement. Utility symbols are drawn in
-Reframe's source. The installed TV icons were used to verify app identity and
-card colors; vector artwork keeps the final layout sharp at 4K.
+installed apps and do not imply endorsement. Utility symbols are drawn in
+Reframe's source; the Live TV and More Apps symbols are local SVG assets.
 
-`installed/` contains public native artwork for 28 additional visible installed
-apps, copied from their app packages for the 0.3.0 collection. No account,
-device-identity, pairing or usage data is included. The marks remain the
-property of their respective owners. See `src/core/config.ts` for the app IDs
-and local assets, and `docs/LIBRARY-REFRESH.md` for the full candidate collection.
-
-`iptv-player.png` is the installed webOS IPTV Player 1.17.0 app icon, from
-[lennylxx/webos-iptv-player](https://github.com/lennylxx/webos-iptv-player).
-Its Apache 2.0 license is included as `iptv-player-LICENSE.txt`.
+`installed/` contains the six app icons used by the curated row: Apple Music,
+Apple TV, Paramount+, Peacock, HBO Max, and Hulu. These are app artwork, without
+account, device-identity, pairing, or usage data. See `src/core/config.ts` for
+the corresponding app IDs. The marks remain property of their respective owners.

@@ -1,7 +1,7 @@
 /**
  * TV control actions, built on the Luna bridge.
  *
- * All of these use the public applicationManager API and require no root:
+ * App launches use the public applicationManager API:
  *   - launching a streaming app  = launch its app id
  *   - switching to an HDMI input  = launch the input's built-in "app" id
  *     (webOS models HDMI/live inputs as system apps, e.g. com.webos.app.hdmi1)

@@ -4,34 +4,44 @@ import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createServer} from 'node:net';
 import {randomBytes} from 'node:crypto';
-// Run after npm run dev. Uses loopback preview and live Open-Meteo; never contacts the TV.
+// Run after npm run dev. Uses loopback preview; never contacts the TV.
 const base=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const preview=new URL(process.env.REFRAME_PREVIEW_URL ?? 'http://127.0.0.1:5173');
+if(preview.protocol!=='http:'||!['127.0.0.1','localhost','[::1]'].includes(preview.hostname))throw Error('Use a local HTTP preview');
+const liveWeather=process.argv.includes('--live-weather');
 const browserPath=process.env.REFRAME_BROWSER ?? ['C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','/usr/bin/google-chrome','/usr/bin/chromium'].find(existsSync);
 if(!browserPath)throw Error('Set REFRAME_BROWSER to a Chromium browser executable');
 const portServer=createServer();
 const debugPort=await new Promise((resolve,reject)=>{portServer.once('error',reject);portServer.listen(0,'127.0.0.1',()=>{const port=portServer.address().port;portServer.close(()=>resolve(port));});});
 const profile=base+'/.research/ui-check-'+randomBytes(6).toString('hex');
-const imageDir=base+(process.argv.includes('--capture')?'/docs/images':'/.research/ui-check-results');
-const browser=spawn(browserPath,['--headless=new','--disable-gpu','--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+profile,'--window-size=1920,1080','http://127.0.0.1:5173'],{windowsHide:true,stdio:'ignore'});
+const imageDir=base+'/.research/ui-check-results';
+const browser=spawn(browserPath,['--headless=new','--disable-gpu','--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+profile,'--window-size=1920,1080',preview.href],{windowsHide:true,stdio:'ignore'});
 let socket,call;
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 try{
  let tabs;
- for(let i=0;i<100;i++){try{tabs=await(await fetch('http://127.0.0.1:'+debugPort+'/json/list')).json();if(tabs.some(t=>t.url.includes('5173')))break;}catch{}await pause(100);}
- socket=new WebSocket(tabs.find(t=>t.url.includes('5173')).webSocketDebuggerUrl);
+ for(let i=0;i<100;i++){try{tabs=await(await fetch('http://127.0.0.1:'+debugPort+'/json/list')).json();if(tabs.some(t=>t.url.startsWith(preview.origin)))break;}catch{}await pause(100);}
+ socket=new WebSocket(tabs.find(t=>t.url.startsWith(preview.origin)).webSocketDebuggerUrl);
  await new Promise((r,j)=>{socket.onopen=r;socket.onerror=j;});
  let id=0;const pending=new Map(),errors=[];
  socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);if(!p)return;pending.delete(m.id);m.error?p.reject(Error(JSON.stringify(m.error))):p.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.text);};
  call=(method,params={})=>new Promise((resolve,reject)=>{pending.set(++id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
  const evaluate=async expression=>{const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
  await call('Runtime.enable');
+ if(!liveWeather){
+  await call('Page.addScriptToEvaluateOnNewDocument',{source:`(()=>{const original=window.fetch;window.fetch=(url,options)=>String(url).startsWith('https://api.open-meteo.com/')?Promise.resolve(new Response(JSON.stringify({current:{temperature_2m:52,weather_code:3,is_day:1}}),{status:200,headers:{'Content-Type':'application/json'}})):original(url,options)})()`});
+  await call('Page.reload',{ignoreCache:true});
+  await pause(400);
+ }
  await call('Emulation.setDeviceMetricsOverride',{width:1920,height:1080,deviceScaleFactor:1,mobile:false});
  const ready=async()=>{for(let n=0;n<140;n++){if(await evaluate(`document.querySelectorAll('.tile').length===11&&[...document.images].every(i=>i.complete&&i.naturalWidth>0)`))return;await pause(100);}throw Error('UI or artwork failed to load');};
  await ready();
- // The live weather request also checks CORS and the configured city/units.
+ // Fixture mode is deterministic; optional live mode also checks endpoint/CORS.
  for(let n=0;n<120;n++){if(await evaluate(`document.querySelector('.weather')?.dataset.state!=='loading'`))break;await pause(100);}
  const weather=await evaluate(`({state:document.querySelector('.weather').dataset.state,label:document.querySelector('.wx-label').textContent,temp:document.querySelector('.wx-temp').textContent})`);
- if(weather.state!=='ready'||!weather.label.includes('Sheboygan, WI')||!weather.temp.endsWith('F'))throw Error('Live Sheboygan weather failed: '+JSON.stringify(weather));
+ const location=await evaluate(`import('/src/core/config.ts').then(({config})=>config.location)`);
+ if(location&&(weather.state!=='ready'||!weather.label.includes(location.label)||!weather.temp.endsWith('F')))throw Error('Configured weather failed');
+ if(!location&&!await evaluate(`document.querySelector('.weather').hidden`))throw Error('Disabled weather is visible');
  if(await evaluate(`!!document.querySelector('.hero,.wordmark,.brand-mark,.hint,#selection-position')`))throw Error('Removed headings/branding/hints are still present');
  const selected=()=>evaluate(`document.querySelector('.tile.focused')?.getAttribute('aria-label')`);
  const expect=async name=>{const got=await selected();if(got!==name)throw Error('Expected focus '+name+', got '+got);};
@@ -94,7 +104,7 @@ try{
  for(let n=0;n<12;n++)await key('ArrowLeft',37);
  await expect('Netflix');await pause(500);await evaluate(`document.querySelector('.toast')?.remove()`);
  // Exercise weather failures and retry independently, without changing the live widget.
- const weatherRecovery=await evaluate(`(async()=>{
+ const weatherRecovery=location?await evaluate(`(async()=>{
    const {mountWeather}=await import('/src/widgets/weather.ts');
    const host=document.createElement('div'),originalFetch=window.fetch,originalInterval=window.setInterval;
    let tick,period,dispose=()=>{},reply={current:{temperature_2m:48.6,weather_code:61,is_day:0}};
@@ -114,7 +124,7 @@ try{
      if(period!==900000)throw Error('Weather refresh must be every 15 minutes');
      return true;
    }finally{dispose();window.fetch=originalFetch;window.setInterval=originalInterval}
- })()`);
+ })()`):'weather disabled';
  // The escape must launch stock Home explicitly, independent of Home mapping.
  await evaluate(`window.__homeCalls=[];window.PalmServiceBridge=class{call(uri,payload){window.__homeCalls.push({uri,payload:JSON.parse(payload)});this.onservicecallback(JSON.stringify({returnValue:true}))}cancel(){}}`);
  try{
@@ -124,12 +134,12 @@ try{
    if(homeCalls.length!==1||homeCalls[0].uri!=='luna://com.webos.applicationManager/launch'||homeCalls[0].payload.id!=='com.webos.app.home')throw Error('Blue must open stock LG Home once: '+JSON.stringify(homeCalls));
  }finally{await evaluate(`delete window.PalmServiceBridge;delete window.__homeCalls`);}
  mkdirSync(imageDir,{recursive:true});
- const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/reframe-0.3.7.png',Buffer.from(shot.data,'base64'));
+ const shot=await call('Page.captureScreenshot',{format:'png'});writeFileSync(imageDir+'/home-1080.png',Buffer.from(shot.data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:3840,height:2160,deviceScaleFactor:1,mobile:false});await pause(500);
  const metrics=await evaluate(`JSON.stringify({width:innerWidth,height:innerHeight,pageOverflow:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,tiles:document.querySelectorAll('.tile').length,loadedImages:[...document.images].filter(i=>i.complete&&i.naturalWidth>0).length,shelves:[...document.querySelectorAll('[data-focus-group]')].map(r=>({name:r.dataset.focusGroup,apps:r.querySelectorAll('.tile').length}))})`);
  const layout=await evaluate(`(()=>{const l=document.querySelector('.top-left').getBoundingClientRect(),r=document.querySelector('.top-right').getBoundingClientRect(),t=document.querySelector('.tile.focused').getBoundingClientRect(),style=e=>parseFloat(getComputedStyle(document.querySelector(e)).fontSize);return {overlap:l.right>=r.left,top:t.top,bottom:t.bottom,height:innerHeight,time:style('.clock-time'),date:style('.clock-date'),greeting:style('.greeting')}})()`);
  if(layout.overlap||layout.top<layout.height*.62||layout.top>layout.height*.78||layout.bottom>layout.height*.95||layout.time<120||layout.date<38||layout.greeting<78)throw Error('Header/card layout failed '+JSON.stringify(layout));
  const parsed=JSON.parse(metrics);if(parsed.pageOverflow||parsed.tiles!==11||parsed.shelves.length!==1||parsed.loadedImages!==12||errors.length)throw Error('4K/runtime check failed '+metrics+' '+errors.join());
  if(await evaluate(`!!document.querySelector('.startup')`))throw Error('Native startup must not duplicate an app-level intro');
- console.log(JSON.stringify({checks:['nine favorites plus Live TV and More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow','removed heading, branding and hints','larger greeting, time and date','unmarked repeat burst advances once','hold delay and controlled repeat','release and reversal respond immediately','pointer jitter after D-pad ignored','unmarked held OK activates once','live Sheboygan weather','weather invalid data, offline and reconnect'],weather,weatherRecovery,metrics:parsed},null,2));
+ console.log(JSON.stringify({checks:['nine favorites plus Live TV and More Apps in one row','large cards','all artwork loaded','left/right boundaries','no extra rows','pointer/remote focus synchronization','held OK activates once','More Apps targets LG App Store','horizontal reveal','rapid reversal preserves focus','4K no page overflow','removed heading, branding and hints','larger greeting, time and date','unmarked repeat burst advances once','hold delay and controlled repeat','release and reversal respond immediately','pointer jitter after D-pad ignored','unmarked held OK activates once','configured weather','weather invalid data, offline and reconnect'],weatherMode:liveWeather?'live':'fixture',weatherEnabled:!!location,weatherRecovery,metrics:parsed},null,2));
 }finally{try{await Promise.race([call?.('Browser.close'),pause(1000)]);}catch{}socket?.close();browser.kill();}

@@ -4,5 +4,5 @@ export function mountGreeting(host: HTMLElement): void {
   const h = new Date().getHours();
   const part =
     h < 5 ? "Still up" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
-  host.textContent = `${part}, ${config.name}`;
+  host.textContent = config.name ? `${part}, ${config.name}` : part;
 }

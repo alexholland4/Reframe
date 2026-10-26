@@ -1,182 +1,75 @@
 # Reframe
 
-A lightweight, personalized, ad-free launcher for an LG smart TV, with a clock,
-greeting, weather, and one spacious app row controlled by the remote's D-pad.
-Built with TypeScript and Vite, without a UI framework.
+**A calmer, faster home screen for the TV I already owned.**
 
-Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
+Turning on my TV meant navigating ads, promotions, and apps I rarely used.
+I built Reframe to make that everyday experience simpler: turn it on, choose
+an app, and watch something.
 
-## Current status
+| Before | After |
+| :---: | :---: |
+| ![Original TV home screen dominated by sponsored content and crowded app rows](docs/images/before-home.jpg) | ![Reframe on the same TV, with a scenic background and one row of large app tiles](docs/images/after-home.jpg) |
+| Promotions compete with the apps. | The apps become the focus. |
 
-Latest October 25: **direct startup is installed**. The owner retired AH;
-Reframe's native cover now has no logo, Loading text, minimum hold or fade.
-A guarded full restart returned normal Madison/Reframe with exact resource
-hashes/mounts verified. Root, firmware-popup suppression, app updates and native
-Home/return routing are preserved. LG Home's preload and optional Live Plus /
-live promotions / screensaver ads are disabled with separate undo journals.
-Blue still opens stock Home on demand. No apps or system services were deleted.
-96 Node / 50 Python tests pass. The owner confirmed black -> Madison/Reframe
-within a reasonable few seconds on wake, with no AH/loading/spinner, and all
-Settings/Back, Prime and iPhone casting checks passed. A brief reveal fade and
-further measured startup work remain optional follow-ups.
-See [direct startup, audit findings and undo](docs/DIRECT-START-PERFORMANCE.md).
+<sub>Photos of the actual TV. Personal greeting and weather location are redacted; camera metadata is removed.</sub>
 
-Reframe remains **0.3.13**. Earlier artwork/offline/Quick Start improvements
-made the package about 61% smaller, and the owner accepted a notably faster
-standby/wake. The latest full restart still took about 36.6 seconds to Reframe;
-a large cold-boot improvement is not established. Hardware/native readiness
-can still leave a black interval before the launcher appears.
-See [earlier measured results](docs/STARTUP-PERFORMANCE.md) and
-[the local Fox/Packers stream findings](docs/PACKERS-LOCAL-TV.md).
+## What I changed
 
+- **Designed a simpler home screen.** One curated app row, generous spacing,
+  recognizable icons, a scenic background, clock, and optional greeting/weather.
+- **Made the remote feel better.** Smooth focus movement and deliberate
+  press/release handling prevent accidental multi-app skips and repeated launches.
+- **Reduced advertising and background work.** Disabled optional promotions,
+  content recognition, and unused app preloads after inspecting their behavior.
+- **Investigated startup end to end.** Optimized packaged artwork, enabled
+  offline startup, and integrated the launcher into the TV's native Home/wake flow.
+  Removed the extra loading presentation.
+- **Kept the everyday essentials.** Settings, streaming playback, sound, screen
+  mirroring, AirPlay, and YouTube casting were checked on the real TV. The original
+  home screen remains available through a remote shortcut.
 
-As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
-working on this exact TV**. HBC 0.7.3 executes as root. A controlled restart
-returned root SSH and the launcher with LG Developer Mode uninstalled and its
-session startup absent; the directory marker survived. Reframe followed the
-initial HDMI 2 screen automatically. The owner also confirmed final
-post-transition standby/wake and all requested native/playback/iPhone casting
-checks pass. See the [current handoff](docs/HANDOFF.md).
+## Measured progress
 
-Version **0.3.13** uses a real Madison sunset aerial with the Capitol visible,
-and keeps Home to
-nine owner-selected apps: Netflix, Prime Video, HBO Max, Peacock, Paramount+,
-Hulu, Apple TV, Disney+ and Apple Music. **Live TV** opens the installed IPTV
-player with a clean white TV icon. A matching **More Apps** tile ends the
-single row and opens the native LG App Store. Settings and input rows are gone.
-Large cards use lighter 160 ms focus/scroll motion and explicit press/release
-tracking, with a deliberate hold delay to reduce accidental multi-tile skips.
-The app row sits lower to expose more of the skyline. Blue in Reframe opens
-stock LG Home as an escape from the configurable native Home mapping.
-The screen shows a larger greeting, time and date with live Sheboygan, Wisconsin
-weather in Fahrenheit. Branding, selected-app headings and footer hints are removed.
-See the [curated Home preview and checks](docs/CURATED-HOME.md).
-Photo source/license: [Madison background](docs/MADISON-BACKGROUND.md).
+| Measure | Earlier | Improved |
+| --- | ---: | ---: |
+| Launcher package | 4.02 MB | **1.56 MB · 61% smaller** |
+| Fresh page load, sample runs | 4.15 s | **1.84–2.00 s** |
+| Wake handoff | 13.68 s | **2.40 s** |
 
-Native input registration and Home mapping now select Reframe; a controlled
-restart reports it as the first app and actual foreground, with the old delayed
-helper removed. The separate root SSH callback remains active. The previous
-configuration's undo was demonstrated live. Owner-visible standby/spinner and
-native/casting acceptance passed. The owner confirmed no LG Home flash or
-default spinner on wake at the earlier accepted checkpoint. The early native
-cover now hides LG's Reframe Loading presentation without playing an animation.
-Native Prime Video and Screen Mirroring exits return to Reframe, owner-confirmed.
-See [direct startup](docs/DIRECT-START-PERFORMANCE.md) and [native startup results and undo](docs/NATIVE-STARTUP.md).
+These are local measurements on one TV. Wake handoff measures the native startup
+cover opening to the launcher reaching the foreground; a full restart still
+takes about 36 seconds. [Measurement details and limits →](docs/PERFORMANCE.md)
 
-Launcher-only undo/reinstall and session-marker undo were demonstrated live.
-Private original-state/LG package backups are hash-verified; complete unroot
-and firmware rescue are not established. No signed firmware partition or LG
-startup script was patched. See [launcher behavior and undo](docs/LAUNCH-PERSISTENCE.md),
-[session independence](docs/SESSION-INDEPENDENCE.md) and
-[recovery](docs/ROOT-RECOVERY.md). Weather uses Sheboygan city coordinates and refreshes every 15 minutes while visible.
+## Built with
 
-webOS IPTV Player 1.17.0 is installed and has passed native TV playback trials.
-The original ten channels are saved as Favorites, and the full GitHub US
-catalog is enabled for browsing/search. Manage Favorites directly with the TV
-remote; see [remote instructions](docs/IPTV-REMOTE-GUIDE.md) and
-[trial results](docs/IPTV-TRIAL.md). Additional catalog streams were not tested.
+**TypeScript · Vite · CSS · webOS service APIs**
 
-## Develop
+The launcher uses no UI framework. Artwork is packaged locally, weather loads
+asynchronously, and the app works without waiting for a network connection.
+The project combines interface design, remote-input handling, performance
+profiling, and careful integration with an existing device.
 
-Requires Node.js/npm (Node 22+ for the manual inspector check). Run from the project directory:
+## Try the interface
 
-```bash
+```sh
 npm ci
-npm run dev        # http://localhost:5173; arrow keys / Enter simulate the remote
-npm run build      # TypeScript check and production build into dist/
-npm test           # bridge, root controls and launcher regression tests; no TV access
+npm run dev
 ```
 
-The Vite development server listens on the LAN for TV previewing. Desktop app
-launches are simulated; native requests are used on the TV. A missing bridge
-on a detected TV raises an error instead of simulating success.
+Open `http://127.0.0.1:5173`. Use arrow keys and Enter; app launches are simulated
+in a desktop browser. `npm test` runs the bridge tests, and `npm run build`
+produces the packaged web assets.
 
-## Package and deploy
+[Architecture](docs/ARCHITECTURE.md) · [Development and customization](docs/DEVELOPMENT.md) · [Artwork credits](public/backgrounds/ATTRIBUTION.md)
 
-**This TV now uses dedicated root SSH on port 2222.** Build/package locally,
-then use the validated root deployment controller:
+<details>
+<summary>More of the original experience</summary>
 
-```bash
-npm run build
-ares-package dist -o .
-python scripts/deploy-root.py com.reframe.home_0.3.8_all.ipk       # local validation
-python scripts/deploy-root.py com.reframe.home_0.3.8_all.ipk --execute
-```
+The same home screen also devoted space to promotional panels and full-screen
+advertising. These additional photos show what motivated the redesign.
 
-It uses the existing external root key and strict host pin, validates the
-Reframe-only package, preserves the previous local package in ignored backups,
-verifies upload/installed file hashes and version, launches Reframe and cleans
-only its upload stage. This route was exercised live for 0.2.0. Do not reinstall
-LG Developer Mode alongside the session-independent rooted setup.
+![Original home screen with promotional panels and sponsored recommendations](docs/images/before-promotions.jpg)
 
-The older Bash deployment and inspector commands below document developer SSH
-9922, which is retired. Use the root controller above for this TV; the inspector
-workflow still needs a separate migration.
+![Full-screen promotional content on the original TV interface](docs/images/before-fullscreen.jpg)
 
-### Earlier developer transport
-
-Install LG's webOS CLI for the local `ares-package` command, and configure
-Developer Mode and SSH as described in [Phase 0](docs/PHASE-0-SETUP.md).
-On this TV, `ares-install`, `ares-launch`, and `ares-shell` failed SSH
-authentication. Use the existing OpenSSH deployment script from Git Bash:
-
-```bash
-npm run package                     # local build and .ipk packaging only
-bash scripts/deploy.sh --no-build    # installs and launches the newest .ipk
-# Or build, package, install, and launch together:
-bash scripts/deploy.sh
-```
-
-This script changes the installed Reframe app and foreground application. It
-sends one install request and one launch request, checks the replies, and
-verifies the installed app version. It does not root the TV or install a
-Home/boot hook. It uses the local developer
-SSH key (`REFRAME_KEY` overrides the default) and a project-local known-hosts
-file (`REFRAME_KNOWN_HOSTS` overrides it). First-use host trust is recorded;
-subsequent connections reject a changed host key. Verify the TV identity when
-establishing that first trust. Do not commit SSH keys or pairing files.
-
-The npm `install:tv`/`launch:tv` shortcuts still use ares and are not the working
-deployment path for this unit. An OpenSSH uninstall procedure has not been
-validated; do not use Developer Mode removal as a proposed root rollback.
-
-## Manual TV launch check
-
-Only run while the TV is available: this opens Settings, YouTube, and HDMI 1/2
-from Reframe and restores Reframe afterward, using its developer inspector.
-It creates a loopback SSH tunnel and removes its temporary in-page observer.
-No root or persistent system changes are involved.
-
-```bash
-node scripts/check-tv-launches.mjs
-node scripts/check-tv-launches.mjs --only settings
-```
-
-The default uses the saved developer key and host trust file. `--host` and
-`--key` override the target/key. This tool checks launch replies, not actual
-playback or casting. Logs go to ignored `docs/fingerprint-launches-*.txt`.
-
-## Project notes
-
-- [Handoff](docs/HANDOFF.md): current state, hardware facts, known issues.
-- [Root investigation](docs/ROOT-INVESTIGATION.md): measured evidence and limits.
-- [Root attempt plan](docs/ROOT-ATTEMPT-PLAN.md): persistent effects, risks, and
-  original risk review and staged preparation; read the current handoff first.
-- [System compatibility](docs/SYSTEM-COMPATIBILITY.md): native functionality and
-  casting baseline, plus repeat checks required after later integration stages.
-
-`src/core/` contains configuration, remote focus, and TV service helpers;
-`src/widgets/` contains the clock, greeting, and weather; `src/launcher/`
-contains the tiles. Styling lives in `src/styles.css` and uses a 4K layout.
-`scripts/` contains app tools and explicitly selected root/persistence
-controllers. Mutations require `--execute`; some diagnostics pair with the TV
-or change foreground. Do not run TV controllers as part of a local build.
-
-## Local-only files
-
-Git excludes dependencies, generated builds/packages, raw `docs/fingerprint*.txt`/`.json`
-logs/inventories/pairing files, `.research/` downloads, `/backups/`, private-key
-formats, local environment files, and OS caches. These remain on this machine;
-a GitHub source checkpoint does not back up the TV or provide firmware recovery.
-Share sanitized findings rather than raw fingerprints, which can contain serial
-numbers, MAC addresses, unique device IDs, or credentials.
+</details>

@@ -17,9 +17,16 @@ export interface ReframeConfig {
   clock24h: boolean;
   tiles: AppTile[];
 }
+// Public previews use the skyline's city. Personal preferences stay in .env.local.
+const latitude = Number(import.meta.env.VITE_REFRAME_LATITUDE ?? "43.07476");
+const longitude = Number(import.meta.env.VITE_REFRAME_LONGITUDE ?? "-89.38484");
+const weatherEnabled = import.meta.env.VITE_REFRAME_WEATHER !== "false";
 export const config: ReframeConfig = {
-  name: "Alex",
-  location: { label: "Sheboygan, WI", lat: 43.75083, lon: -87.71453 },
+  name: (import.meta.env.VITE_REFRAME_NAME ?? "").trim(),
+  location: weatherEnabled && Number.isFinite(latitude) && Number.isFinite(longitude)
+    && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180
+    ? { label: import.meta.env.VITE_REFRAME_LOCATION || "Madison, WI", lat: latitude, lon: longitude }
+    : null,
   clock24h: false,
   tiles: [
   {
