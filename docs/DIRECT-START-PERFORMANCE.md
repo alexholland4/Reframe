@@ -91,8 +91,8 @@ reported at 36.61 seconds. The earlier accepted optimization restart reported
 visibility at about 35.76 seconds. These samples show **no demonstrated cold-boot
 speed improvement**. Removing the drawing/hold/fade removes deliberate display
 work, but the native boot/readiness and web-engine startup still dominate a full
-restart. Ordinary standby/wake is a different path and needs an owner off/on
-check for the final presentation. Do not describe an after-boot screenshot as a
+restart. Ordinary standby/wake is a different path; final owner off/on acceptance
+passed as below. Do not describe an after-boot screenshot as a
 recording of the entire power-on sequence.
 
 Local checks: 96 Node and 50 Python tests pass, including partial-swap rollback,
@@ -107,8 +107,21 @@ corrected: an overlay does not replace Reframe's foreground app ID.
 
 A single later fresh relaunch measured browser load complete at 2.36 s and
 FCP at 1.98 s, versus 3.27 s / 2.93 s in the pre-cleanup sample. Different
-uptime, caching, swapping and workloads limit causal conclusions. Owner final
-wake/playback/casting acceptance is pending; no app/power actions during checks.
+uptime, caching, swapping and workloads limit causal conclusions.
+
+**Final owner acceptance passed:** remote off / wait about 10 s / on went from
+black directly to Madison/Reframe without AH, Loading text or a spinner. The
+owner reported a reasonable few seconds from when the TV visibly turned on.
+Settings/Back, Prime playback/exit, iPhone Screen Mirroring, AirPlay and YouTube
+Cast all still work. No automated launch, recovery, restart or power request
+was made during those checks.
+
+The passive wake log records cover open at 688.6389 s and Reframe foreground at
+691.0387 s, a 2.40-second interval. This does not establish remote-to-picture
+latency or an improvement over the earlier accepted 2.32-second wake sample.
+Evidence: `direct-owner-wake.json`. No acceptance checks remain pending.
+The owner would welcome further speed improvement or a short reveal fade.
+Those are optional follow-ups; no new fade or additional timing gate is installed.
 
 ## Controllers and undo
 

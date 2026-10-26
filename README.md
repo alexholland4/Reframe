@@ -15,8 +15,10 @@ hashes/mounts verified. Root, firmware-popup suppression, app updates and native
 Home/return routing are preserved. LG Home's preload and optional Live Plus /
 live promotions / screensaver ads are disabled with separate undo journals.
 Blue still opens stock Home on demand. No apps or system services were deleted.
-96 Node / 50 Python tests pass. Final owner wake/playback/casting checks are
-pending; no TV launch/recovery/power requests during those checks.
+96 Node / 50 Python tests pass. The owner confirmed black -> Madison/Reframe
+within a reasonable few seconds on wake, with no AH/loading/spinner, and all
+Settings/Back, Prime and iPhone casting checks passed. A brief reveal fade and
+further measured startup work remain optional follow-ups.
 See [direct startup, audit findings and undo](docs/DIRECT-START-PERFORMANCE.md).
 
 Reframe remains **0.3.13**. Earlier artwork/offline/Quick Start improvements

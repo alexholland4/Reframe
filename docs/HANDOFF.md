@@ -24,10 +24,13 @@ dependencies remain. Reframe stays 0.3.13; 96 Node / 50 Python tests pass.
 Full restart still reported Reframe at 36.61 s; do not claim a large cold-boot
 improvement. A single fresh relaunch measured load 2.36 s / FCP 1.98 s versus
 3.27 s / 2.93 s before cleanup, with different uptime/workloads. No guaranteed
-speed or exact RAM saving is established. Owner confirmed Reframe/Settings/Back
-after the first restart. Final direct-presentation remote off/on and full
-playback/casting checks are now pending. **No launch/recovery/restart/power
-requests during those checks.** Read [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
+speed or exact RAM saving is established. Final owner acceptance now passed:
+black -> Madison/Reframe, no AH/loading/spinner, a reasonable few seconds after
+the TV visibly turned on. Settings/Back, Prime playback/exit, Screen Mirroring,
+AirPlay and YouTube Cast all work. The passive cover-open -> foreground interval
+was 2.40 s (not remote-to-picture time). No checks remain pending. The owner
+would welcome further speed work or a subtle reveal fade; neither is promised
+as an existing feature. Read [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
 for the audit, limitations, evidence and the three independent undo commands.
 The AH acceptance narratives below are historical, superseded by this request.
 

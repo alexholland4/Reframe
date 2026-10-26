@@ -12,7 +12,11 @@ Full restart still reported Reframe at 36.61 seconds. A single fresh-document
 sample measured load complete 2.36 s / FCP 1.98 s versus 3.27 s / 2.93 s before
 this cleanup. Conditions/uptime differ; neither a guaranteed speedup nor an
 exact whole-TV RAM saving is established. Final owner direct-start wake and
-playback/casting checks are pending; no TV app/power actions during those checks.
+playback/casting checks all passed. The passive accepted wake's cover-open to
+foreground interval was 2.40 s; the owner described a reasonable few seconds
+from visible power-on to Reframe. This is distinct from a full restart and from
+remote-button-to-picture measurement. A short reveal fade/further profiling
+remain optional follow-ups.
 
 ## Installed optimization checkpoint
 

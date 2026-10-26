@@ -2,8 +2,8 @@
 
 **Retired October 25 at the owner's request.** The installed early resource now
 uses direct presentation: no monogram, Loading text, hold or fade. Reframe remains
-0.3.13. Full reboot and actual displayed Madison are verified; the final owner
-wake check is pending. Read [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
+0.3.13. Full reboot, actual displayed Madison and final owner wake/playback/casting
+checks passed. Read [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
 for current behavior and presentation-only undo. The animation history below
 is retained for recovery and is not the current requested presentation.
 

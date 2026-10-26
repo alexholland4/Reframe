@@ -16,9 +16,12 @@ app updates, playback/casting/HDMI dependencies and firmware block preserved.
 Reframe remains 0.3.13. 96 Node / 50 Python tests pass. Full restart is still
 about 36.6 s; large cold-boot improvement is unproven.
 
-Final owner remote off/on and playback/casting checks are pending. **Make no TV
-launch, recovery, restart or power requests during those checks.** The owner
-already confirmed Reframe/Settings/Back after the first restart. Keep the private
+Final owner remote off/on and playback/casting checks all passed. The owner
+confirmed no logo/loading/spinner and a reasonable few seconds from visible
+power-on to Reframe. Passive cover-open -> foreground was 2.40 s; this is not
+remote-to-picture time. No checks are pending. Optional next work: further
+measured startup reduction or a short reveal fade without adding a hold/loading
+screen. Keep the private
 direct-cover revision journal, both preload journals and distractions journal.
 All monogram acceptance notes below are historical and superseded.
 
