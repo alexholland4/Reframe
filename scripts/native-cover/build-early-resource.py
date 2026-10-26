@@ -12,8 +12,12 @@ NAME = "com.reframe.nativecover"
 DOMAINS = ["snu.lge.com", "su-dev.lge.com", "su.lge.com", "su-ssl.lge.com"]
 
 
-def build(builder):
-    root = PROJECT / ".research/early-cover-build"
+def build(builder, presentation="personal", output=None):
+    root = output or PROJECT / ".research/early-cover-build"
+    if presentation not in {"personal", "direct"}:
+        raise ValueError("Unknown presentation")
+    if output is not None and root.exists():
+        raise ValueError("Preserve the existing build; choose a new output directory")
     payload = root / "payload"
     cover = payload / "usr/lib/qml/CoverUI"
     original = json.loads((PROJECT / "backups/native-cover/original.json").read_text(encoding="utf-8"))
@@ -33,7 +37,8 @@ def build(builder):
         if hashlib.sha256(data).hexdigest() != item["sha256"]:
             raise ValueError("Original snapshot hash mismatch")
         if item["name"] == "UserInterfaceLayer/Containers/MainView.qml":
-            data = patcher.patch(data.decode("utf-8")).encode("utf-8")
+            transform = patcher.patch_direct if presentation == "direct" else patcher.patch
+            data = transform(data.decode("utf-8")).encode("utf-8")
         path.write_bytes(data)
     (cover / "UserInterfaceLayer/Containers/PersonalMark.qml").write_bytes(
         (PROJECT / "scripts/native-cover/PersonalMark.qml").read_bytes())
@@ -52,7 +57,7 @@ def build(builder):
              for p in payload.rglob("*") if p.is_file()}
     if len(files) != 58:
         raise ValueError("Unexpected payload inventory")
-    manifest = {"schema": 1, "purpose": "reframe-early-cover-build", "files": files,
+    manifest = {"schema": 1, "purpose": "reframe-early-cover-build", "presentation": presentation, "files": files,
                 "imageSha256": hashlib.sha256(image.read_bytes()).hexdigest(),
                 "hostsBeforeSha256": hashlib.sha256(before).hexdigest(), "domains": DOMAINS}
     (root / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -62,4 +67,7 @@ def build(builder):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--builder", required=True, type=Path)
-    build(parser.parse_args().builder)
+    parser.add_argument("--presentation", choices=["personal", "direct"], default="personal")
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    build(args.builder, args.presentation, args.output)

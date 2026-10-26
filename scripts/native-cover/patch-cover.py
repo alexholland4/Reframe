@@ -55,3 +55,26 @@ def patch(source):
             raise ValueError("Native cover differs from the reviewed structure; refusing patch: " + old)
         source = source.replace(old, new, 1)
     return source
+
+
+def patch_direct(source):
+    """Hide only Reframe's cover artwork and close it as soon as LG is ready.
+
+    Keep the original launch/readiness/failure paths and stolen-device UI.
+    No personal QML loader, timer, drawing or minimum display time is added.
+    """
+    changes = [
+        ('    color: "black"', '''    property bool reframeDirect: !systemProperties.isStolenDevice
+                                 && !!systemProperties.appToLaunch
+                                 && systemProperties.appToLaunch.id === "com.reframe.home"
+
+    color: "black"'''),
+        ('        visible: !blockUI.visible', '        visible: !blockUI.visible && !root.reframeDirect'),
+        ('            duration: 500', '            duration: root.reframeDirect ? 0 : 500'),
+        ('            duration: 1500', '            duration: root.reframeDirect ? 0 : 1500'),
+    ]
+    for old, new in changes:
+        if source.count(old) != 1:
+            raise ValueError("Native cover structure changed; refusing direct patch: " + old)
+        source = source.replace(old, new, 1)
+    return source

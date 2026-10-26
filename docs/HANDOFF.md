@@ -3,6 +3,34 @@
 _Last updated: 2026-10-25. Written so a new coding agent can pick up the work
 without the original conversation._
 
+**Latest October 25: direct startup installed; AH retired at the owner's request.**
+The private early resource now hides Reframe's native cover artwork/text and
+uses zero fade duration. No drawing, minimum hold or launch/readiness bypass.
+The existing hosts bytes and all other resource files are unchanged. A guarded
+full restart returned pinned root at uptime 45.53 s and an actual display capture
+showed normal Madison/Reframe without any recovery/app launch. Exact hashes and
+three readonly mounts passed; the trial was accepted and its own Activity removed.
+An earlier unconfirmed trial rolled back correctly after a compositor screenshot
+endpoint failed; use the standard capture service for future display checks.
+
+LG Home preload is disabled under a separate home.json journal; Blue still opens
+stock Home on demand, native Home returns Reframe, Settings overlay and Prime
+launch passed. The test-opened background Home was closed through the native
+processId close API. Screen saver ads, Live Plus and live promotions changed
+on -> off; Home Promotion/recommendations were already off. All five preferences
+are journaled. No app/service was removed. Native playback/casting/update/root
+dependencies remain. Reframe stays 0.3.13; 96 Node / 50 Python tests pass.
+
+Full restart still reported Reframe at 36.61 s; do not claim a large cold-boot
+improvement. A single fresh relaunch measured load 2.36 s / FCP 1.98 s versus
+3.27 s / 2.93 s before cleanup, with different uptime/workloads. No guaranteed
+speed or exact RAM saving is established. Owner confirmed Reframe/Settings/Back
+after the first restart. Final direct-presentation remote off/on and full
+playback/casting checks are now pending. **No launch/recovery/restart/power
+requests during those checks.** Read [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
+for the audit, limitations, evidence and the three independent undo commands.
+The AH acceptance narratives below are historical, superseded by this request.
+
 **Current 2026-10-25 - owner accepted Reframe 0.3.13 speed and compatibility.**
 The owner confirmed the real remote off / wait about 10 seconds / on sequence
 is notably faster, with AH drawing on black then Madison working correctly.

@@ -1,5 +1,19 @@
 # Startup performance investigation
 
+## Latest: direct presentation and deeper background audit
+
+The owner retired AH. A guarded direct-cover revision, Home preload exclusion
+and native optional-advertising/Live Plus switches are now installed. Reframe
+itself remains 0.3.13; the native cover and preload changes are independent of
+the app package. See [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
+for the live findings, full-reboot/screenshot validation and exact undo.
+
+Full restart still reported Reframe at 36.61 seconds. A single fresh-document
+sample measured load complete 2.36 s / FCP 1.98 s versus 3.27 s / 2.93 s before
+this cleanup. Conditions/uptime differ; neither a guaranteed speedup nor an
+exact whole-TV RAM saving is established. Final owner direct-start wake and
+playback/casting checks are pending; no TV app/power actions during those checks.
+
 ## Installed optimization checkpoint
 
 Later October 25: **Reframe 0.3.13 is installed**, with all 46 package files

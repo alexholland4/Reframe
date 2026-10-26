@@ -8,29 +8,24 @@ Target: **LG 55UA7050PUB**, webOS TV Lite 10.3.0 / webOS 25, firmware 33.30.97.
 
 ## Current status
 
-Latest performance follow-up: **0.3.13 is installed**. The app package is about
-61% smaller and fresh-document loading measured 1.84-2.00 s versus 4.15 s.
-LG Channels/browser/voice preloads are disabled with demonstrated undo and
-restart persistence; their apps remain available. Cold boot improved little
-in one comparison (35.8 s to compositor visibility versus 36.5 s). Quick Start
-opt-in is installed. The owner confirmed a notably faster wake and all controls,
-Prime and iPhone casting checks passed. The recorded cover-to-foreground wake
-interval fell from 13.68 s to 2.32 s; this is distinct from full reboot time.
-No native cover, firmware, root or Home/return routing change was made for
-performance.
-See [measured results and undo](docs/STARTUP-PERFORMANCE.md) and
+Latest October 25: **direct startup is installed**. The owner retired AH;
+Reframe's native cover now has no logo, Loading text, minimum hold or fade.
+A guarded full restart returned normal Madison/Reframe with exact resource
+hashes/mounts verified. Root, firmware-popup suppression, app updates and native
+Home/return routing are preserved. LG Home's preload and optional Live Plus /
+live promotions / screensaver ads are disabled with separate undo journals.
+Blue still opens stock Home on demand. No apps or system services were deleted.
+96 Node / 50 Python tests pass. Final owner wake/playback/casting checks are
+pending; no TV launch/recovery/power requests during those checks.
+See [direct startup, audit findings and undo](docs/DIRECT-START-PERFORMANCE.md).
+
+Reframe remains **0.3.13**. Earlier artwork/offline/Quick Start improvements
+made the package about 61% smaller, and the owner accepted a notably faster
+standby/wake. The latest full restart still took about 36.6 seconds to Reframe;
+a large cold-boot improvement is not established. Hardware/native readiness
+can still leave a black interval before the launcher appears.
+See [earlier measured results](docs/STARTUP-PERFORMANCE.md) and
 [the local Fox/Packers stream findings](docs/PACKERS-LOCAL-TV.md).
-
-Latest 2026-10-25: the owner accepted the **early native AH startup animation**
-on real off/on: complete cream monogram on pure black, then Madison, with no
-Reframe Loading words or default spinner. No firmware/Alexa reminder appeared
-in that use. Controls, Prime playback/exit and all requested iPhone casting
-checks passed. That accepted baseline was 0.3.11; the old late override is disabled. Firmware-only
-host mappings preserve app-store DNS and app-update services. All 134 tests
-passed at this installed checkpoint. See [evidence and undo](docs/EARLY-COVER-TRIAL.md).
-
-The completed mark still waits for native startup. Page loading and optional
-preload changes are now deployed; a large power-on speedup is not established.
 
 
 As of 2026-10-21, **authenticated root SSH and automatic Reframe startup are
@@ -61,10 +56,10 @@ restart reports it as the first app and actual foreground, with the old delayed
 helper removed. The separate root SSH callback remains active. The previous
 configuration's undo was demonstrated live. Owner-visible standby/spinner and
 native/casting acceptance passed. The owner confirmed no LG Home flash or
-default spinner on wake. The early native cover now replaces LG's Reframe
-Loading words with the accepted personal AH animation on pure black.
+default spinner on wake at the earlier accepted checkpoint. The early native
+cover now hides LG's Reframe Loading presentation without playing an animation.
 Native Prime Video and Screen Mirroring exits return to Reframe, owner-confirmed.
-See [personal startup animation](docs/PERSONAL-STARTUP.md). See [current startup results and undo](docs/NATIVE-STARTUP.md).
+See [direct startup](docs/DIRECT-START-PERFORMANCE.md) and [native startup results and undo](docs/NATIVE-STARTUP.md).
 
 Launcher-only undo/reinstall and session-marker undo were demonstrated live.
 Private original-state/LG package backups are hash-verified; complete unroot

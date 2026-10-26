@@ -1,5 +1,14 @@
 # Early cover and firmware notices: installed native resource
 
+**Latest October 25: presentation revised to direct startup at the owner's request.**
+The same owned resource/readonly mounts and firmware-only hosts remain active.
+Only its private MainView.qml and containing image changed. The revision hides
+Reframe's cover text/artwork and removes its fade; it no longer plays AH. Guarded
+full reboot and real display capture passed, and the trial was accepted. Read
+[DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md) for current evidence,
+additional optional-background cleanup and presentation-only undo. Earlier AH
+acceptance below is historical; the original resource snapshots are preserved.
+
 The earlier October 25 wake check with the late environment override **failed**: Reframe Loading still appeared,
 followed by black and Madison. Home/Blue/Settings/app returns passed. Firmware
 reminders still appeared; Alexa did not. Prime Video's remote shortcut asked

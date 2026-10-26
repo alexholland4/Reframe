@@ -1,5 +1,27 @@
 # Next session: startup performance
 
+**Latest October 25: AH retired; direct startup installed and full-reboot verified.**
+Start with [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md). Reframe's
+private native cover has no logo/text/hold/fade; existing readiness gates and
+firmware-only hosts remain. A real post-boot display capture shows Madison,
+root and all exact resource hashes/mounts passed, and the guarded revision was
+accepted. First unconfirmed trial rolled back safely after screenshot-check
+failure. Use standard one-shot capture rather than captureCompositorOutput.
+
+Stock Home preload is now disabled, with separate backups/preloads/home.json.
+Blue -> LG Home on demand, native Home -> Reframe, Settings overlay and Prime
+launch passed. Optional screensaver ads / Live Plus / live promotions are off;
+Home ads/recommendations were already off. No apps or services deleted. Root,
+app updates, playback/casting/HDMI dependencies and firmware block preserved.
+Reframe remains 0.3.13. 96 Node / 50 Python tests pass. Full restart is still
+about 36.6 s; large cold-boot improvement is unproven.
+
+Final owner remote off/on and playback/casting checks are pending. **Make no TV
+launch, recovery, restart or power requests during those checks.** The owner
+already confirmed Reframe/Settings/Back after the first restart. Keep the private
+direct-cover revision journal, both preload journals and distractions journal.
+All monogram acceptance notes below are historical and superseded.
+
 **Current 2026-10-25 - owner accepted Reframe 0.3.13 speed and compatibility.**
 The owner confirmed the real remote off / wait about 10 seconds / on sequence
 is notably faster, with AH drawing on black then Madison working correctly.

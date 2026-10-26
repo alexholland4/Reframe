@@ -1,4 +1,4 @@
-"""Disable only three optional app preloads with a private journal and exact undo."""
+"""Disable selected optional app preloads with separate journals and exact undo."""
 import argparse
 import base64
 import hashlib
@@ -8,6 +8,10 @@ from tv_connection import HOST, PROJECT, luna, ssh
 TARGETS = ("com.webos.app.lgchannels", "com.webos.app.browser", "com.webos.app.voice")
 CONFIG = "/var/preferences/webos-preload-manager-conf.json"
 PLAN = PROJECT / "backups/preloads/current.json"
+PROFILES = {
+    "optional": (TARGETS, PLAN),
+    "home": (("com.webos.app.home",), PROJECT / "backups/preloads/home.json"),
+}
 
 
 def config_read():
@@ -95,14 +99,17 @@ def change(restore=False):
             plan["policyBefore"][app]["isEnabled"] if restore else False) for app in TARGETS):
         raise RuntimeError("Preload state not observed; preserve journal and inspect")
     print("Original optional preloads restored" if restore else "Disabled optional preloads:", ", ".join(TARGETS))
-    print("No apps closed/uninstalled; Home, inputs, casting, media and update services unchanged.")
+    print("No apps closed/uninstalled; app launching, inputs, casting, media and update services unchanged.")
 
 
 def main():
+    global TARGETS, PLAN
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["apply", "restore", "status"])
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--profile", choices=PROFILES, default="optional")
     args = parser.parse_args()
+    TARGETS, PLAN = PROFILES[args.profile]
     if args.action != "status" and not args.execute:
         print("Prepared", args.action, "for", ", ".join(TARGETS), "(no TV connection; --execute required)")
         return

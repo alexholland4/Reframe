@@ -1,5 +1,12 @@
 # Alex's portfolio startup animation
 
+**Retired October 25 at the owner's request.** The installed early resource now
+uses direct presentation: no monogram, Loading text, hold or fade. Reframe remains
+0.3.13. Full reboot and actual displayed Madison are verified; the final owner
+wake check is pending. Read [DIRECT-START-PERFORMANCE.md](DIRECT-START-PERFORMANCE.md)
+for current behavior and presentation-only undo. The animation history below
+is retained for recovery and is not the current requested presentation.
+
 **Current 2026-10-25 - owner accepted Reframe 0.3.13 speed and compatibility.**
 The owner confirmed the real remote off / wait about 10 seconds / on sequence
 is notably faster, with AH drawing on black then Madison working correctly.
